@@ -108,16 +108,17 @@ public class BoardServiceImpl implements BoardService{
         log.info("---------remove-------");
 
         replyRepository.removeAllByBno(bno);
-        boardImageRepository.deleteAllByBno(bno);
+        boardImageRepository.deleteByBno(bno);
         boardRepository.deleteById(bno);
     }
 
+    @Transactional
     @Override
     public void modify(BoardDTO boardDTO) {
 
         log.info("---------modify-------");
 
-        boardImageRepository.deleteById(boardDTO.getBno());
+        boardImageRepository.deleteByBno(boardDTO.getBno());
 
         Optional<Board> result = boardRepository.findById(boardDTO.getBno());
 
@@ -125,6 +126,8 @@ public class BoardServiceImpl implements BoardService{
 
         board.changeTitle(boardDTO.getTitle());
         board.changeContent(boardDTO.getContent());
+
+        boardRepository.save(board);
 
         List<BoardImage> boardImageList = boardImageDTOToEntity(boardDTO);
 
@@ -135,7 +138,15 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
+    @Override
+    public List<BoardImageDTO> getBoardImageList(Long bno) {
 
+        log.info("---------getBoardImageList via entityToDTO-----------");
+
+        List<BoardImage> result = boardImageRepository.getBoardImagesByBno(bno);
+
+        return imageEntityToDTO(result);
+    }
 
 
 }

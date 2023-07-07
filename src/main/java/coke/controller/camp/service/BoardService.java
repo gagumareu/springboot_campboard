@@ -21,6 +21,7 @@ public interface BoardService {
     BoardDTO getBoardWithImagesMemberAndReplies(Long bno);
     void remove(Long bno);
     void modify(BoardDTO boardDTO);
+    List<BoardImageDTO> getBoardImageList(Long bno);
 
     default Map<String, Object> dtoToEntity(BoardDTO boardDTO){
 
@@ -101,6 +102,23 @@ public interface BoardService {
         }).collect(Collectors.toList());
 
         return boardImageList;
+    }
+
+    default List<BoardImageDTO> imageEntityToDTO(List<BoardImage> boardImageList){
+
+        List<BoardImageDTO> boardImageDTOList = boardImageList.stream().map(boardImage -> {
+            if (boardImage != null){
+                return BoardImageDTO.builder()
+                        .folderPath(boardImage.getFolderPath())
+                        .uuid(boardImage.getUuid())
+                        .fileName(boardImage.getFileName())
+                        .build();
+            }else {
+                return null;
+            }
+        }).collect(Collectors.toList());
+        return boardImageDTOList;
+
     }
 
 

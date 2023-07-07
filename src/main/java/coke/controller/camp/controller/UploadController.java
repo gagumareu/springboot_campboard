@@ -1,17 +1,18 @@
 package coke.controller.camp.controller;
 
+import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.UploadResultDTO;
+import coke.controller.camp.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -29,7 +30,10 @@ import java.util.UUID;
 
 @RestController
 @Log4j2
+@RequiredArgsConstructor
 public class UploadController {
+
+    private final BoardService boardService;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -148,7 +152,14 @@ public class UploadController {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
+    }
 
+    @GetMapping(value = "/board/images/{bno}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BoardImageDTO>> getImageList(@PathVariable("bno") Long bno){
+
+        log.info("bno: " + bno);
+
+        return new ResponseEntity<>(boardService.getBoardImageList(bno), HttpStatus.OK);
 
     }
 

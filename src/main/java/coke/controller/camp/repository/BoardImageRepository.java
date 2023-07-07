@@ -11,7 +11,7 @@ public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
 
     @Modifying
     @Query("DELETE FROM BoardImage bi WHERE bi.board.bno = :bno")
-    void deleteAllByBno(Long bno);
+    void deleteByBno(Long bno);
 
     @Query("SELECT bi FROM BoardImage bi WHERE bi.board.bno = :bno")
     List<BoardImage> getBoardImagesByBno(Long bno);

@@ -108,9 +108,25 @@ public class BoardController {
             log.info("thumbnail: " + thumbnail);
             thumbnail.delete();
 
-
         });
-
     }
+
+    @PostMapping("/modify")
+    public String modify(BoardDTO boardDTO, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO,
+                         RedirectAttributes redirectAttributes){
+
+        log.info("----------modify---------");
+        log.info(boardDTO);
+
+        boardService.modify(boardDTO);
+
+        redirectAttributes.addAttribute("bno", boardDTO.getBno());
+        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+
+        return "redirect:/board/read";
+    }
+
+
+
 
 }

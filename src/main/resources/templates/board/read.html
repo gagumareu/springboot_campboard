@@ -37,7 +37,9 @@
           <a th:href="@{/board/list(page=${pageRequestDTO.page})}">
           <button>리스트</button>
           </a>
-          <button class="modifyBtn">수정</button>
+          <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
+              <button class="modifyBtn">수정</button>
+          </a>
           <button class="removeBtn">삭제</button>
       </div>
 
