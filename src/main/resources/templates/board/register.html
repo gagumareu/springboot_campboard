@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        form{
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+
+    <th:blcok th:fragment="content">
+
+        <div class="container">
+            <form th:action="@{/board/register}" method="post">
+                <div class="col-md-12 col-sm-12">
+                    <input name="title" type="text" class="form-control" placeholder="TITLE">
+                </div>
+                <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
+                <script>
+                    $(document).ready(function() {
+
+                        var targetImageList = [];
+
+                        $('#summernote').summernote({
+                            height: 600,
+                            callbacks:{
+                                onImageUpload: function (files, editor, welEditable){
+                                    for (var i = files.length -1; i >= 0; i--){
+                                        console.info(files[i]);
+                                        uploadImageFiles(files[i], this);
+                                    } //for
+                                }, // onImageUpload
+                                onMediaDelete: function (target){
+
+                                    var fileName = target.attr('src');
+
+                                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+
+                                    console.log("fileName: " + fileName);
+
+                                    targetImageList.forEach(function (i){
+
+                                        var targetName = i;
+
+                                        if (i == fileName){
+
+                                            var targetLI = $("li[name='"+fileName+"']");
+
+                                            targetLI.remove();
+
+                                            $.ajax({
+                                                url: '/deleteFile',
+                                                data: {files: fileName},
+                                                dataType: 'text',
+                                                type: 'POST',
+                                                success: function (result){
+                                                }
+                                            })
+                                        }
+
+                                    }); // targetImageList forEach
+
+                                } // onMediaDelete
+                            } // callbacks
+                        }); // summernote
+
+                        function uploadImageFiles(files, el){
+
+                            var formData = new FormData();
+
+                            formData.append("uploadFiles", files);
+
+                            $.ajax({
+                                url: '/uploadAjax',
+                                data: formData,
+                                dataType: 'json',
+                                contentType: false,
+                                processData: false,
+                                type: 'POST',
+                                success:function (result){
+                                    console.info(result);
+                                    uploadResultUL(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown){
+                                    console.info(textStatus);
+                                }
+                            }); // ajax
+                        } // function uploadImageFiles
+
+                        function uploadResultUL(result){
+
+                            var uploadResultUL = $(".uploadResultUL ul");
+                            var str = "";
+
+                            $(result).each(function (i, dto){
+
+                                str += '<li data-path="'+dto.folderPath+'" ' +
+                                    'data-uuid="'+dto.uuid+'" ' +
+                                    'data-name="'+dto.fileName+'" ' +
+                                    'name="display?files='+dto.imageURL+'"></li>';
+
+                                var imageURL = dto.imageURL;
+
+                                console.log("imageURL: " + imageURL);
+
+                                $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+
+                                targetImageList.push("display?files="+dto.imageURL);
+
+                            }); // result each
+
+                            uploadResultUL.append(str);
+
+                        }; // function uploadResultUL
+
+                    }); // the end
+                </script>
+                <div class="col-md-12 col-sm-12">
+                    <input name="email" type="text" class="form-control" placeholder="EMAIL">
+                </div>
+                <div class="hiddenBox">
+
+                </div>
+                <div class="col-md-12 col-sm-12">
+                    <button class="registBtn">register</button>
+                </div>
+            </form>
+        </div>
+        <div class="uploadResultUL">
+            <ul>
+
+            </ul>
+        </div>
+
+        <script th:inline="javascript">
+
+            $(document).ready(function (){
+
+                $(".registBtn").on("click", function (e){
+
+                    e.preventDefault();
+
+                    var str = "";
+
+                    $(".uploadResultUL li").each(function (i, dto){
+
+                        var target = $(dto);
+
+                        str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+                        str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+                        str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+
+                    });
+
+                    $(".hiddenBox").html(str);
+                    $("form").submit();
+                });
+
+            }); // the end
+
+
+        </script>
+
+    </th:blcok>
+
+</th:block>
+
+</body>
+</html>

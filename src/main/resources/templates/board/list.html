@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+
+        .boardListBoxes{
+            border: 1px solid black;
+        }
+    </style>
+
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+
+        <a th:href="@{/board/register}">
+        <button>Register</button>
+        </a>
+
+        <div class="container" >
+            <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
+                <div>
+                    NO. [[${dto.bno}]]
+                </div>
+                <div>
+                    <a th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
+                        [[${dto.title}]]
+                    </a>
+                </div>
+                <div>
+                    [[${dto.memberName}]] <small>[[${dto.email}]]</small>
+                </div>
+                <div th:if="${dto.regDate == dto.modDate}">
+                    등록일: [[${#temporals.format(dto.regDate, 'yyyy/MM/dd') }]]
+                </div>
+                <div th:unless="${dto.regDate == dto.modDate}">
+                    수정일: [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
+                </div>
+            </div> <!-- boardListBoxes -->
+        </div>  <!-- container -->
+
+        <div>
+            <div th:if="${boardList.prev}">
+                <a th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
+            </div>
+
+            <div th:each="page : ${boardList.pageList}">
+                <a th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
+            </div>
+
+            <div th:if="${boardList.next}">
+                <a th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
+            </div>
+        </div>
+
+    </th:block>
+</th:block>
+
+</body>
+</html>

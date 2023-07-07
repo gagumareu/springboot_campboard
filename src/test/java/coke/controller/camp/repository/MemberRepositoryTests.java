@@ -1,0 +1,28 @@
+package coke.controller.camp.repository;
+
+import coke.controller.camp.entity.Member;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.stream.IntStream;
+
+@SpringBootTest
+public class MemberRepositoryTests {
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Test
+    public void insert(){
+        IntStream.rangeClosed(1, 100).forEach(i -> {
+            Member member = Member.builder()
+                    .email("user" + i + "@email.com")
+                    .memberName("user" + i)
+                    .build();
+            memberRepository.save(member);
+        });
+    }
+
+
+}
