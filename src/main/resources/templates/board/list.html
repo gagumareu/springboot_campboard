@@ -9,6 +9,11 @@
         .boardListBoxes{
             border: 1px solid black;
         }
+
+        .pagination{
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 
 </head>
@@ -16,11 +21,28 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
 
-        <a th:href="@{/board/register}">
-        <button>Register</button>
-        </a>
-
         <div class="container" >
+
+            <form th:action="@{/board/list}" method="get">
+                <div class="input-group-prepend">
+                    <select name="type" class="custom-select">
+                        <option th:selected="${pageRequestDTO.type == null}">---------</option>
+                        <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                        <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
+                        <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                        <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">제목+내용+작성자</option>
+                    </select>
+                </div> <!-- input-group-prepend -->
+                <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
+                <div class="group-append">
+                    <button type="submit">SEARCH</button>
+                </div> <!-- group-append -->
+            </form>
+
+
+            <a th:href="@{/board/register}">
+                <button>Register</button>
+            </a>
             <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
                 <div>
                     NO. [[${dto.bno}]]
@@ -39,22 +61,26 @@
                 <div th:unless="${dto.regDate == dto.modDate}">
                     수정일: [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
                 </div>
+                <div>
+                    [[${dto.replyCount}]]
+                </div>
             </div> <!-- boardListBoxes -->
+
+            <ul class="pagination h-100 justify-content-center align-items-center">
+                <li class="page-item" th:if="${boardList.prev}">
+                    <a th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
+                </li>
+
+                <li class="page-item" th:each="page : ${boardList.pageList}">
+                    <a th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
+                </li>
+
+                <li class="page-item" th:if="${boardList.next}">
+                    <a th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
+                </li>
+            </ul>
+
         </div>  <!-- container -->
-
-        <div>
-            <div th:if="${boardList.prev}">
-                <a th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
-            </div>
-
-            <div th:each="page : ${boardList.pageList}">
-                <a th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
-            </div>
-
-            <div th:if="${boardList.next}">
-                <a th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
-            </div>
-        </div>
 
     </th:block>
 </th:block>

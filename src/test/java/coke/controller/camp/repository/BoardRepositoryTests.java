@@ -48,4 +48,12 @@ public class BoardRepositoryTests {
         });
 
     }
+
+    @Test
+    public void search(){
+        boardRepository.search();
+    }
+
+
+
 }
