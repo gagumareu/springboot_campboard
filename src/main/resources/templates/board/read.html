@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+    <style>
+        .reply-box{
+            border: 1px solid black;
+            margin-bottom: 20px;
+        }
+
+        .box{
+            border: 1px solid black;
+        }
+
+        .replyModifyingForm{
+            display: none;
+        }
+
+    </style>
 <body>
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
@@ -43,13 +59,47 @@
           <button class="removeBtn">삭제</button>
       </div>
 
+      <div class="container">
+          <div class="row">
+              <div class="col-md-4 col-sm-12 box">Hellow </div>
+              <div class="col-md-4 col-sm-6 box">안녕</div>
+              <div class="col-md-4 col-sm-6 box">Holla</div>
+          </div>
+      </div>
+
+      <div>
+          <form th:action="@{/replies/}">
+              <input type="hidden" name="bno" th:value="${dto.bno}">
+              <input type="text" name="text" class="form-control" placeholder="REPLY">
+              <input type="text" name="email" class="form-control" placeholder="EMAIL 임시">
+              <button type="submit" class="insertReplyBtn" >작성</button>
+          </form>
+      </div>
+
+
+      <div class="container replyContainer">
+
+      </div>
+
+
+
       <script th:inline="javascript">
 
           $(document).ready(function (){
 
               var bno = [[${dto.bno}]];
 
-              console.log("bno: " + bno);
+              function formatTime(str){
+
+                  var date = new Date();
+
+                  return date.getFullYear() + "/" +
+                      date.getMonth() + "/" +
+                      date.getHours() + ":" +
+                      date.getMinutes();
+
+              }  // formatTime
+
 
               $(".removeBtn").on("click", function (){
 
@@ -61,6 +111,138 @@
                   $("form").submit();
 
               }); // removeBtn
+
+              loadReplyList();
+
+              $(".insertReplyBtn").on("click", function (e){
+
+                  e.preventDefault();
+
+                  var replyText = $("input[name='text']").val();
+                  var replyWriter = $("input[name='email']").val();
+
+                  var reply = {
+                      bno: bno,
+                      text: replyText,
+                      email: replyWriter
+                  }
+
+                  console.info(reply);
+
+                  $.ajax({
+                      url:'/replies/',
+                      method: 'POST',
+                      data: JSON.stringify(reply),
+                      contentType: 'application/json; charset=utf-8',
+                      dataType: 'json',
+                      success: function (result){
+
+                          if (result == "success"){
+                              console.info(result+ "번 댓글 작성 성공");
+
+                          }
+                          loadReplyList();
+                          $("input[name='text']").val("");
+                          $("input[name='email']").val("");
+                      }
+
+                  }); // ajax
+
+              }); // insertReplyBtn event
+
+              var repliesContainer = $(".replyContainer");
+
+              function loadReplyList(){
+
+                  $.getJSON('/replies/board/' + bno, function (arr){
+
+
+                      var str = "";
+
+                      $.each(arr, function (idx, dto){
+
+                          str += ' <div class="reply-box" data-rno="'+dto.rno+'"><b>'+dto.rno+'</b>';
+                          str += ' <h5 class="reply-title">text: '+dto.text+'</h5>';
+                          str += ' <h6 class="reply-writer">writer: '+dto.memberName+'</h6>';
+                          str += ' <p class="reply-regDate">등록일: '+formatTime(dto.regDate)+'</p>';
+                          str += '<div><button type="button" class="reply-modify-btn">수정</button>' +
+                              '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'">삭제</button></div>';
+                          str += '<div class="replyModifyingForm"><input type="text" name="text" value="'+dto.text+'" class="replyModifyText">' +
+                              '<div><button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>' +
+                              '<button type="button" class="cancelReplyModifying">취소</button></div></div>';
+                          str += ' </div>';
+
+
+                      }); // each
+
+                      repliesContainer.html(str);
+
+                  }); // getJSON /replies/board
+
+              } // loadReplyList
+
+              $(".replyContainer").on("click", ".replyDeleteBtn", function (){
+
+                 var rno = $(this).data("rno");
+                 console.info("rno: " + rno);
+
+                  $.ajax({
+                      url: '/replies/' + rno,
+                      method: 'DELETE',
+                      success: function (result){
+                          if (result === "success"){
+                              console.info(rno + "번 댓글이 삭제되었습니다.");
+                              loadReplyList();
+                          }
+                      }
+                  }); // ajax
+
+              }); // reply delete event
+
+
+              $(".replyContainer").on("click", ".reply-modify-btn", function (){
+
+                  $(".replyModifyingForm").css("display", "block");
+
+                  $(".doReplyModifying").on('click', function (){
+
+                      var rno = $(this).data("rno");
+                      var email = $(this).data("email");
+
+                      console.info("rno: " + rno);
+                      console.info("email: " + email);
+
+                      var reply = {
+                          rno: rno,
+                          bno: bno,
+                          text: $(".replyModifyText").val(),
+                          email: email
+                      }
+
+                      $.ajax({
+                          url: '/replies/' + rno,
+                          method: 'PUT',
+                          data: JSON.stringify(reply),
+                          contentType: 'application/json; charset=utf-8',
+                          success: function (result){
+                              if(result === "success"){
+                                  console.info(rno + "번 댓글 수정완료");
+                              }
+                              loadReplyList();
+                          }
+                      }) // ajax
+
+                  }) // doReplyModifying event
+
+              }); // reply modifying event
+
+
+              $(".replyContainer").on("click", ".cancelReplyModifying", function (){
+
+                  $(".replyModifyingForm").css("display", "none");
+
+              });  // reply canceling modify event
+
 
           }); // the end
 

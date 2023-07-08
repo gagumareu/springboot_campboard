@@ -17,7 +17,7 @@ public class ReplyDTO {
     private String text;
     private LocalDateTime regDate, modDate;
 
-    private String bno;
+    private Long bno;
 
     private String email;
     private String memberName;
