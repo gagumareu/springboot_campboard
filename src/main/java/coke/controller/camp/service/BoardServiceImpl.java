@@ -112,8 +112,9 @@ public class BoardServiceImpl implements BoardService{
     public void remove(Long bno) {
 
         log.info("---------remove-------");
+        log.info("bno: " + bno);
 
-        replyRepository.removeAllByBno(bno);
+        replyRepository.deleteByBno(bno);
         boardImageRepository.deleteByBno(bno);
         boardRepository.deleteById(bno);
     }

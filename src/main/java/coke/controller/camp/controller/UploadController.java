@@ -2,6 +2,7 @@ package coke.controller.camp.controller;
 
 import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.UploadResultDTO;
+import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +35,8 @@ import java.util.UUID;
 public class UploadController {
 
     private final BoardService boardService;
+
+    private final BoardImageService boardImageService;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -86,7 +89,7 @@ public class UploadController {
 
                 File thumbnailFile = new File(thumbnailName);
 
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 200, 200);
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
 
                 uploadResultDTOList.add(new UploadResultDTO(folderPath, uuid , fileName));
 

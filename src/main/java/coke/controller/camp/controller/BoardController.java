@@ -1,10 +1,12 @@
 package coke.controller.camp.controller;
 
 import coke.controller.camp.dto.BoardDTO;
+import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.entity.BoardImage;
 import coke.controller.camp.repository.BoardImageRepository;
+import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +28,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    private final BoardImageRepository boardImageRepository;
+    private final BoardImageService boardImageService;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -77,8 +79,10 @@ public class BoardController {
     public String remove(Long bno){
 
         log.info("---------remove-------");
+        log.info("bno: " + bno);
 
-        List<BoardImage> boardImageList = boardImageRepository.getBoardImagesByBno(bno);
+        List<BoardImageDTO> boardImageList = boardImageService.getImageList(bno);
+        log.info("boardImageList: " + boardImageList);
 
         if (boardImageList != null && boardImageList.size() > 0){
             deleteFiles(boardImageList);
@@ -90,7 +94,7 @@ public class BoardController {
 
     }
 
-    public void deleteFiles(List<BoardImage> boardImageList){
+    public void deleteFiles(List<BoardImageDTO> boardImageList){
 
         log.info("------------deleteFiles-----------");
 

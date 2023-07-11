@@ -1,6 +1,10 @@
 package coke.controller.camp.repository.BoardSearch;
 
 import coke.controller.camp.entity.*;
+import coke.controller.camp.entity.QBoard;
+import coke.controller.camp.entity.QBoardImage;
+import coke.controller.camp.entity.QMember;
+import coke.controller.camp.entity.QReply;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -48,10 +52,12 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
         jpqlQuery.leftJoin(reply).on(reply.board.eq(board));
         jpqlQuery.leftJoin(boardImage).on(boardImage.board.eq(board));
 
-        JPQLQuery<Tuple> tuple = jpqlQuery.select(board, boardImage, member, reply.count());
+        JPQLQuery<Tuple> tuple = jpqlQuery.select(board, boardImage, member, reply.countDistinct());
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression expression = board.bno.gt(0L);
+
+        booleanBuilder.and(expression);
 
         if (type != null){
             String[] typeArr = type.split("");
