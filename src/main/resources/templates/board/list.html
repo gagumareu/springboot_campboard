@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -46,6 +46,29 @@
         .board_thumbnail_img{
             height: 100%;
         }
+
+        .board-title-a{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .board-memberName{
+            flex: 20%;
+        }
+
+        .board-replyCount{
+            flex: 20%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .board-title-div{
+            flex: 60%;
+        }
+
+        #board-title{
+            color: #000;
+        }
     </style>
 
 </head>
@@ -61,11 +84,12 @@
                     <input type="hidden" name="page" value="1">
                     <div class="form-control">
                         <select name="type" class="custom-select">
-                            <option th:selected="${pageRequestDTO.type == null}">---------</option>
+<!--                            <option th:selected="${pageRequestDTO.type == null}">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+                            <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
                             <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
                             <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
                             <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
-                            <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">제목+내용+작성자</option>
+
                         </select>
                     </div>
                     <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
@@ -73,7 +97,7 @@
 
             </form>
 
-            <div>
+            <div sec:authorize="isAuthenticated()">
                 <a th:href="@{/board/register}">
                     <button>Register</button>
                 </a>
@@ -92,25 +116,25 @@
 
                 </div>
 
-                <div class="boardList-content">
-<!--                    <div>-->
-<!--                        NO. [[${dto.bno}]]-->
-<!--                    </div>-->
-                    <div class="col-md-3">
-                        <a th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
-                            [[${dto.title}]]
+                <div class="container boardList-content">
+
+                    <div class="col-md-3 board-title-div">
+                        <a th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}" class="board-title-a">
+                            <div id="board-title">[[${dto.title}]]</div>
+                            <div th:if="${dto.regDate == dto.modDate}">
+                                [[${#temporals.format(dto.regDate, 'yyyy/MM/dd') }]]
+                            </div>
+                            <div th:unless="${dto.regDate == dto.modDate}">
+                                [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
+                            </div>
                         </a>
                     </div>
-                    <div class="col-md-3">
-                        [[${dto.memberName}]] <small>[[${dto.email}]]</small>
+
+                    <div class="col-md-3 board-memberName">
+                        <a>[[${dto.memberName}]]</a>
                     </div>
-                    <div th:if="${dto.regDate == dto.modDate}" class="col-md-3">
-                        [[${#temporals.format(dto.regDate, 'yyyy/MM/dd') }]]
-                    </div>
-                    <div th:unless="${dto.regDate == dto.modDate}" class="col-md-3">
-                        [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
-                    </div>
-                    <div class="col-md-3">
+
+                    <div class="col-md-3 board-replyCount">
                         <img th:src="@{/icon/chatIcon3.svg}">
                         <div>[[${dto.replyCount}]]</div>
                     </div>

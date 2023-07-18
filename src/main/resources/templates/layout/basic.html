@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <th:block th:fragment="setContent(content)">
 <head>
     <meta charset="UTF-8">
@@ -55,6 +55,10 @@
             margin-top: auto;
         }
 
+        a{
+            text-decoration: none;
+        }
+
         .footer{
             padding : 30px 0;
         }
@@ -68,18 +72,23 @@
             <div>
                 <a th:href="@{/board/list}"><h3>HOME</h3></a>
             </div>
-            <div>
-                <a th:href="@{/member/loginPage}">
+            <div sec:authorize="isAnonymous()">
+<!--                <a th:href="@{/member/loginPage}">-->
+                <a th:href="@{/login}">
                     <span>로그인</span>
                 </a>
-                <a th:href="@{/#}">
-                    <span>로그아웃</span>
-                </a>
+
             </div>
-            <div>
+            <div sec:authorize="isAuthenticated()">
                 <a th:href="@{/member/myPage(email='test')}">
                     <span>마이페이지</span>
                 </a>
+                <a th:href="@{/logout}">
+                    <span>로그아웃</span>
+                </a>
+                <div>
+                    <span sec:authentication="principal.name"></span>
+                </div>
             </div>
             <div>
 
