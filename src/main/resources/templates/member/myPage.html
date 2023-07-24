@@ -14,8 +14,8 @@
             <h1>For Member...............</h1>
 
             <div sec:authorize="hasRole('USER')">Has USER ROLE</div>
-            <div sec:authorize="hasRole('MANAGER')">Has USER ROLE</div>
-            <div sec:authorize="hasRole('ADMIN')">Has USER ROLE</div>
+            <div sec:authorize="hasRole('MANAGER')">Has MANAGER ROLE</div>
+            <div sec:authorize="hasRole('ADMIN')">Has ADMIN ROLE</div>
             <h5>--------------------------------------------------------</h5>
             <div sec:authorize="isAuthenticated()">
                 Only Authenticated user can see this Text

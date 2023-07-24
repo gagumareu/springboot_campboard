@@ -29,8 +29,6 @@ public class Member {
     @ElementCollection
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
-//    @ElementCollection(fetch = FetchType.LAZY)
-//    private Set<MemberRole> roleSet;
 
     public void addMemberRole(MemberRole memberRole){
         roleSet.add(memberRole);

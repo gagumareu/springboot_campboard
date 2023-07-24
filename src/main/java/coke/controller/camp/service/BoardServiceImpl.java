@@ -99,10 +99,10 @@ public class BoardServiceImpl implements BoardService{
 
         Long replyCount = (Long) result.get(0)[3];
 
-        log.info(board);
-        log.info(boardImageDTOList.size());
-        log.info(member);
-        log.info(replyCount);
+        log.info("board: " + board);
+        log.info("image size: " + boardImageDTOList.size());
+        log.info("member: " + member);
+        log.info("reply counting : " + replyCount);
 
         return entityToDTO(board, boardImageDTOList, member, replyCount);
     }

@@ -95,11 +95,11 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
 
         List<Tuple> result = tuple.fetch();
 
-        log.info(result);
+        log.info("result: " + result);
 
         Long count = tuple.fetchCount();
 
-        log.info(count);
+        log.info("count: " + count);
 
         return new PageImpl<Object[]>(result.stream().map(t -> t.toArray()).collect(Collectors.toList()), pageable, count);
     }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$Title$</title>
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+  <th:block th:fragment="content">
+    <div class="container">
+
+      <h1>member modify page</h1>
+
+      <from th:action="@{/member/modify}" method="post">
+          <input type="text" name="name" class="form-control" placeholder="NAME">
+          <input type="text" name="password" class="form-control" placeholder="PASSWORD">
+          <button class="" type="submit">수정</button>
+      </from>
+
+    </div>
+
+  </th:block>
+</th:block>
+</body>
+</html>

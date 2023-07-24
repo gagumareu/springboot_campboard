@@ -4,17 +4,11 @@ import coke.controller.camp.dto.BoardDTO;
 import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
-import coke.controller.camp.entity.BoardImage;
-import coke.controller.camp.repository.BoardImageRepository;
-import coke.controller.camp.security.dto.MemberAuthDTO;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +30,10 @@ public class BoardController {
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/list")
-    public void getList(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal MemberAuthDTO memberAuthDTO){
+    public void getList(PageRequestDTO pageRequestDTO, Model model){
 
         log.info("---------list-------");
-        log.info(memberAuthDTO);
 
         PageResultDTO<BoardDTO, Object[]> result =  boardService.getListWithImageMemberAndReplyCnt(pageRequestDTO);
 
