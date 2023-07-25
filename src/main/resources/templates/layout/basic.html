@@ -73,22 +73,27 @@
                 <a th:href="@{/board/list}"><h3>HOME</h3></a>
             </div>
             <div sec:authorize="isAnonymous()">
-<!--                <a th:href="@{/member/loginPage}">-->
-                <a th:href="@{/login}">
-                    <span>로그인</span>
+                <a th:href="@{/member/loginPage}">
+<!--                <a th:href="@{/login}">-->
+                    <div>로그인</div>
                 </a>
 
             </div>
             <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/member/myPage(email='test')}">
-                    <span>마이페이지</span>
+                <a th:href="@{/member/myPage(email='use3@email.com')}">
+                    <div>마이페이지</div>
                 </a>
                 <a th:href="@{/logout}">
-                    <span>로그아웃</span>
+                    <div>로그아웃</div>
                 </a>
-                <div>
-                    <span sec:authentication="principal.name"></span>
-                </div>
+                <a th:href="@{/member/myGear(email='user3@email.com')}">
+                    <div>
+                        마이기어
+                    </div>
+                </a>
+<!--                <div>-->
+<!--                    <span sec:authentication="principal.name"></span>-->
+<!--                </div>-->
             </div>
             <div>
 

@@ -24,6 +24,8 @@ public class Gear extends BaseEntity{
 
     private String material;
 
+    private String script;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 

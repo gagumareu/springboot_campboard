@@ -26,11 +26,11 @@ public class Member {
 
     private boolean fromSocial;
 
-    @ElementCollection
-    @Builder.Default
-    private Set<MemberRole> roleSet = new HashSet<>();
-
-    public void addMemberRole(MemberRole memberRole){
-        roleSet.add(memberRole);
-    }
+//    @ElementCollection
+//    @Builder.Default
+//    private Set<MemberRole> roleSet = new HashSet<>();
+//
+//    public void addMemberRole(MemberRole memberRole){
+//        roleSet.add(memberRole);
+//    }
 }

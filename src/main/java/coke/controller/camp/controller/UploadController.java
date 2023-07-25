@@ -131,6 +131,8 @@ public class UploadController {
     @PostMapping("/deleteFile")
     public ResponseEntity<Boolean> deleteFile(String files){
 
+        log.info("----delete file for ckeditor -------");
+
         String srcFile = null;
 
         files = files.substring(14);
@@ -154,6 +156,32 @@ public class UploadController {
             e.printStackTrace();
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    @PostMapping("/removeFile")
+    public ResponseEntity<Boolean>  removeFile(String files){
+
+        String srcFile = null;
+
+        try {
+            srcFile = URLDecoder.decode(files, "UTF-8");
+
+            log.info(srcFile);
+
+            File file = new File(uploadPath + File.separator + srcFile );
+
+            boolean result = file.delete();
+
+            File thumbnail = new File(file.getParent(), "s_" + file.getName());
+
+            result = thumbnail.delete();
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
