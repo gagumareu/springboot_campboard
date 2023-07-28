@@ -16,6 +16,7 @@ public class BoardDTO {
     private Long bno;
     private String title;
     private String content;
+    private String category;
     private LocalDateTime regDate, modDate;
 
     private String email;

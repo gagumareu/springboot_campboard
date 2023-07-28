@@ -21,7 +21,14 @@
             <form th:action="@{/board/register}" method="post">
                 <div class="col-md-12 col-sm-12">
                     <input name="title" type="text" class="form-control" placeholder="TITLE">
+                    <select class="form-select" aria-label="Default select example" name="category">
+                        <option value="잡담">잡담</option>
+                        <option value="모임">모임</option>
+                        <option value="캠핑장">캠핑장</option>
+                        <option value="중고거래">중고거래</option>
+                    </select>
                 </div>
+
                 <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
                 <script>
                     $(document).ready(function() {

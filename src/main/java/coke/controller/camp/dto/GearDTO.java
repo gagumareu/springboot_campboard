@@ -19,6 +19,7 @@ public class GearDTO {
     private String material;
     private String size;
     private String script;
+    private String sort;
 
     private String email;
     private String memberName;

@@ -55,6 +55,14 @@ public class BoardRepositoryTests {
         boardRepository.search();
     }
 
+    @Test
+    public void insertCategory(){
+
+        IntStream.rangeClosed(627, 999).forEach(value -> {
+
+        });
+
+    }
 
 
 

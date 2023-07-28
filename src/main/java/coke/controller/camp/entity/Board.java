@@ -20,6 +20,8 @@ public class Board extends BaseEntity{
 
     private String content;
 
+    private String category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -28,5 +30,8 @@ public class Board extends BaseEntity{
     }
     public void changeContent(String content){
         this.content = content;
+    }
+    public void changeCategory(String category){
+        this.category = category;
     }
 }

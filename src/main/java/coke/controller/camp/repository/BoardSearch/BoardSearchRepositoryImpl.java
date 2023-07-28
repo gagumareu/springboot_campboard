@@ -40,7 +40,7 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Page<Object[]> getSearchList(String type, String keyword, Pageable pageable) {
+    public Page<Object[]> getSearchList(String type, String keyword, Pageable pageable, String category) {
 
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
@@ -56,8 +56,12 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression expression = board.bno.gt(0L);
-
         booleanBuilder.and(expression);
+
+        if (category != null){
+            BooleanExpression expression1 = board.category.eq(category);
+            booleanBuilder.and(expression1);
+        }
 
         if (type != null){
             String[] typeArr = type.split("");

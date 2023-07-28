@@ -19,6 +19,7 @@
                 <input type="text" name="size" placeholder="SIZE" class="form-control">
                 <input type="text" name="material" placeholder="MATERIAL" class="form-control">
                 <input type="text" name="script" placeholder="SCRIPT" class="form-control">
+                <input type="text" name="sort" class="form-control" placeholder="SORT">
                 <input type="text" name="email" placeholder="EMAIL" class="form-control">
                 <input type="file" name="uploadFiles" multiple>
                 <div class="hidden-box">
@@ -55,6 +56,7 @@
                         <input id="gear-modal-size" type="text" name="size" class="form-control" placeholder="SIZE">
                         <input id="gear-modal-material" type="text" name="material" class="form-control" placeholder="MATERIAL">
                         <input id="gear-modal-script" type="text" name="script" class="form-control" placeholder="SCRIPT">
+                        <input id="gear-modal-sort" type="text" name="sort" class="form-control" placeholder="SORT">
                         <input id="gear-modal-gno" type="hidden" name="gno" >
                     </div>
                     <div class="modal-footer">
@@ -173,6 +175,7 @@
                         size : $("input[name='size']").val(),
                         material: $("input[name='material']").val(),
                         script: $("input[name='script']").val(),
+                        sort: $("input[name='sort']").val(),
                         email: $("input[name='email']").val(),
                         gearImageDTOList : imageList
                     }
@@ -215,9 +218,11 @@
                             str += '<span>브랜드: '+dto.brand+'</span>';
                             str += '<span>사이즈: '+dto.size+'</span>';
                             str += '<span>소재: '+dto.material+'</span>';
-                            str += '<span>설명: '+dto.script+'</span></div>';
+                            str += '<span>설명: '+dto.script+'</span>';
+                            str += '<span>분류: '+dto.sort+'</span></div>';
                             str += '<div><button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" ' +
-                                'data-name="'+dto.gname+'" data-brand="'+dto.brand+'" data-size="'+dto.size+'" data-material="'+dto.material+'" data-script="'+dto.script+'">수정</button>';
+                                'data-name="'+dto.gname+'" data-brand="'+dto.brand+'" data-size="'+dto.size+'" data-material="'+dto.material+'" ' +
+                                'data-script="'+dto.script+'"data-sort="'+dto.sort+'">수정</button>';
                             str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button></div>';
                             str += '</div>';
 
@@ -257,6 +262,7 @@
                     $("#gear-modal-size").val($(this).data("size"));
                     $("#gear-modal-material").val($(this).data("material"));
                     $("#gear-modal-script").val($(this).data("script"));
+                    $("#gear-modal-sort").val($(this).data("sort"));
                     $("#gear-modal-gno").val($(this).data("gno"));
 
                     $(".gear-modal").modal('show');
@@ -275,6 +281,7 @@
                        size: $("#gear-modal-size").val(),
                        material: $("#gear-modal-material").val(),
                        script: $("#gear-modal-script").val(),
+                       sort: $("#gear-modal-sort").val(),
                        email: email
                    }
 

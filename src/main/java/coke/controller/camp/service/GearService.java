@@ -33,6 +33,7 @@ public interface GearService {
                 .size(gearDTO.getSize())
                 .material(gearDTO.getMaterial())
                 .script(gearDTO.getScript())
+                .sort(gearDTO.getSort())
                 .member(Member.builder().email(gearDTO.getEmail()).build())
                 .build();
 
@@ -66,6 +67,7 @@ public interface GearService {
                 .size(gear.getSize())
                 .material(gear.getMaterial())
                 .script(gear.getScript())
+                .sort(gear.getSort())
                 .regDate(gear.getRegDate())
                 .modDate(gear.getModDate())
                 .memberName(member.getMemberName())

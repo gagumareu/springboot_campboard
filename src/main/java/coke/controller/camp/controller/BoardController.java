@@ -58,6 +58,7 @@ public class BoardController {
         return "redirect:/board/read";
     }
 
+
     @GetMapping({"/read", "modify"})
     public void readOrModify(Model model, @RequestParam("bno") Long bno, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO){
 
@@ -68,6 +69,7 @@ public class BoardController {
         BoardDTO boardDTO = boardService.getBoardWithImagesMemberAndReplies(bno);
 
         log.info(boardDTO);
+        log.info("category: " + pageRequestDTO.getCategory());
 
         model.addAttribute("dto", boardDTO);
     }

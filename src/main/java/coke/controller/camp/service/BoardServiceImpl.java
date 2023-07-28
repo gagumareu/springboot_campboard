@@ -73,7 +73,8 @@ public class BoardServiceImpl implements BoardService{
         Page<Object[]> result = boardRepository.getSearchList(
                 pageRequestDTO.getType(),
                 pageRequestDTO.getKeyword(),
-                pageRequestDTO.getPageable(Sort.by("bno").descending())
+                pageRequestDTO.getPageable(Sort.by("bno").descending()),
+                pageRequestDTO.getCategory()
         );
 
         return new PageResultDTO<>(result, fn);
@@ -133,6 +134,7 @@ public class BoardServiceImpl implements BoardService{
 
         board.changeTitle(boardDTO.getTitle());
         board.changeContent(boardDTO.getContent());
+        board.changeCategory(boardDTO.getCategory());
 
         boardRepository.save(board);
 

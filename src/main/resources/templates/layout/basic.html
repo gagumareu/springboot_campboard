@@ -69,35 +69,42 @@
 <div class="wrapper">
     <div class="container">
         <div class="header">
+
             <div>
                 <a th:href="@{/board/list}"><h3>HOME</h3></a>
             </div>
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{/member/loginPage}">
-<!--                <a th:href="@{/login}">-->
-                    <div>로그인</div>
-                </a>
-
+            <div>
+                <a href="/board/list?category=잡담"><h5>커뮤니티</h5></a>
             </div>
-            <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/member/myPage(email='use3@email.com')}">
-                    <div>마이페이지</div>
+            <div>
+                <a href="/board/list?category=모임"><h5>캠핑모임</h5></a>
+            </div>
+            <div>
+                <a href="/board/list?category=캠핑장"><h5>캠핑장</h5></a>
+            </div>
+            <div>
+                <a href="/board/list?category=중고거래"><h5>중고거래</h5></a>
+            </div>
+            <div>
+                <a th:href="@{/member/loginPage}">
+                    <div>로그인</div>
                 </a>
                 <a th:href="@{/logout}">
                     <div>로그아웃</div>
+                </a>
+                <a th:href="@{/member/myPage(email='use3@email.com')}">
+                    <div>마이페이지</div>
                 </a>
                 <a th:href="@{/member/myGear(email='user3@email.com')}">
                     <div>
                         마이기어
                     </div>
                 </a>
-<!--                <div>-->
-<!--                    <span sec:authentication="principal.name"></span>-->
-<!--                </div>-->
-            </div>
-            <div>
 
             </div>
+
+
+
         </div>
     </div>
 

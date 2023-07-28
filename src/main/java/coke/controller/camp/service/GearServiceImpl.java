@@ -47,10 +47,6 @@ public class GearServiceImpl implements GearService{
                 log.info("gearImage :" + gearImage );
                 gearImageRepository.save(gearImage);
             });
-        }else {
-            log.info("gearImageList null" );
-
-            return null;
         }
 
         log.info("getGno: " + gear.getGno());
