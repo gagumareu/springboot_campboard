@@ -88,11 +88,14 @@
                 <a th:href="@{/board/list(category='중고거래')}"><h5>중고거래</h5></a>
             </div>
             <div>
-                <a th:href="@{/member/loginPage}">
+                <a th:href="@{/member/login}">
                     <div>로그인</div>
                 </a>
                 <a th:href="@{/logout}">
                     <div>로그아웃</div>
+                </a>
+                <a href="/member/join">
+                    <div class="btn-secondary">회원 가입</div>
                 </a>
                 <a th:href="@{/member/myPage(email='use3@email.com')}">
                     <div>마이페이지</div>

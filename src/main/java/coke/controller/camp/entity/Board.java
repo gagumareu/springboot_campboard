@@ -18,6 +18,7 @@ public class Board extends BaseEntity{
 
     private String title;
 
+    @Column(length = 10000)
     private String content;
 
     private String category;

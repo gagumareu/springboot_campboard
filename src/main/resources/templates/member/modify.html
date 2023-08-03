@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Title</title>
 </head>
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
@@ -11,14 +13,19 @@
 
       <h1>member modify page</h1>
 
-      <from th:action="@{/member/modify}" method="post">
+      <form th:action="@{/member/modify}" method="post">
           <input type="text" name="name" class="form-control" placeholder="NAME">
-          <input type="text" name="password" class="form-control" placeholder="PASSWORD">
-          <button class="" type="submit">수정</button>
-      </from>
+          <input type="password" name="password" class="form-control" placeholder="PASSWORD">
+          <input type="hidden" name="email" th:value="${#authentication.principal.username}">
+          <button type="submit">수정</button>
+      </form>
 
     </div>
+<script th:inline="javascript">
 
+
+
+</script>
   </th:block>
 </th:block>
 </body>

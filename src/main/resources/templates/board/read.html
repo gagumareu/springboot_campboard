@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" >
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -48,6 +48,7 @@
           </div>
           <form id="remove-form" th:action="@{/board/remove}" method="post">
               <input type="hidden" name="bno" th:value="${dto.bno}">
+              <input type="hidden" name="email" th:value="${dto.email}">
           </form>
 
           <div>
@@ -57,17 +58,23 @@
               <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
                   <button>리스트</button>
               </a>
-              <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
-                  <button class="modifyBtn">수정</button>
-              </a>
-              <button class="removeBtn">삭제</button>
+              <th:block th:with="user=${#authentication.principal}">
+                  <div th:if="${user.username != null && user.username == dto.email}">
+                      <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
+                          <button class="modifyBtn">수정</button>
+                      </a>
+                      <button class="removeBtn">삭제</button>
+                  </div>
+              </th:block>
+
+
           </div>
 
-          <div>
+          <div th:with="user=${#authentication.principal}">
               <form th:action="@{/replies/}">
                   <input type="hidden" name="bno" th:value="${dto.bno}">
                   <input type="text" name="text" class="form-control" placeholder="REPLY" id="reply-input">
-                  <input type="text" name="email" class="form-control" placeholder="EMAIL">
+                  <input type="text" name="email" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
                   <button type="submit" class="insertReplyBtn" >작성</button>
               </form>
           </div>
@@ -86,9 +93,20 @@
 
       <script th:inline="javascript">
 
+          const auth = [[${#authentication.principal}]]
+
+          const errors = [[${errors}]]
+          console.info(errors)
+
           $(document).ready(function (){
 
               var bno = [[${dto.bno}]];
+
+              var currentUser = [[${#authentication.principal.username}]]
+              console.info("currentUser: " + currentUser);
+
+              var userEmail = [[${dto.email}]];
+              console.log("userEmail: " + userEmail);
 
               function formatTime(str){
 
@@ -144,6 +162,7 @@
 
                           }
                           loadReplyList();
+                          self.location.reload();
                           $("input[name='text']").val("");
                           $("input[name='email']").val("");
                       }
@@ -192,7 +211,12 @@
                  console.info("rno: " + rno);
 
                  var writerEmail = $(this).data("email");
-                 console.info(writerEmail);
+                 console.info(writerEmail)
+
+                  if(currentUser != userEmail){
+                      alert("댓글 작성자만 삭제가 가능합니다.");
+                      return;
+                  }
 
                  $.ajax({
                      url: '/replies/' + rno,
@@ -214,49 +238,50 @@
                   console.info("writerEmail: " + writerEmail);
 
                   // if(principalEmail == writerEmail){
+                  if(currentUser != userEmail){
+                      alert("댓글 작성자만 삭제가 가능합니다.");
+                      return;
+                  }
 
-                      console.info("equals");
+                  console.info("equals");
 
-                      $(this).closest('.reply-box').find('.replyModifyingForm').css("display", "block");
-                      $(this).closest('.reply-box').find('.reply-modify-div').css("display", "none");
+                  $(this).closest('.reply-box').find('.replyModifyingForm').css("display", "block");
+                  $(this).closest('.reply-box').find('.reply-modify-div').css("display", "none");
 
-                      $(".doReplyModifying").on('click', function (){
+                  $(".doReplyModifying").on('click', function (){
 
-                          var rno = $(this).data("rno");
-                          var email = $(this).data("email");
-                          var replyModifyInput = $(this).closest('.reply-box').find('.replyModifyTextInput').val();
-                          console.info("replyModifyInput: " + replyModifyInput);
+                      var rno = $(this).data("rno");
+                      // var email = $(this).data("email");
+                      var replyModifyInput = $(this).closest('.reply-box').find('.replyModifyTextInput').val();
+                      console.info("replyModifyInput: " + replyModifyInput);
 
-                          console.info("rno: " + rno);
-                          console.info("email: " + email);
+                      console.info("rno: " + rno);
+                      // console.info("email: " + email);
 
-                          var reply = {
-                              rno: rno,
-                              bno: bno,
-                              text: replyModifyInput,
-                              email: email
-                          }
+                      var reply = {
+                          rno: rno,
+                          bno: bno,
+                          text: replyModifyInput,
+                          email: currentUser
+                      }
 
-                          console.info(reply);
+                      console.info(reply);
 
-                          $.ajax({
-                              url: '/replies/' + rno,
-                              method: 'PUT',
-                              data: JSON.stringify(reply),
-                              contentType: 'application/json; charset=utf-8',
-                              success: function (result){
-                                  if(result === "success"){
-                                      console.info(rno + "번 댓글 수정완료");
-                                  }
-                                  loadReplyList();
+                      $.ajax({
+                          url: '/replies/' + rno,
+                          method: 'PUT',
+                          data: JSON.stringify(reply),
+                          contentType: 'application/json; charset=utf-8',
+                          success: function (result){
+                              if(result === "success"){
+                                  console.info(rno + "번 댓글 수정완료");
                               }
-                          }) // ajax
+                              loadReplyList();
+                          }
+                      }) // ajax
 
-                      }) // doReplyModifying event
-                  // }else {
-                  //     alert("작성자만 수정 가능합니다.");
-                  //     return;
-                  // }
+                  }) // doReplyModifying event
+
 
               }); // reply modifying event
 
