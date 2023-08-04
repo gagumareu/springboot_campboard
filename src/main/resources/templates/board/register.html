@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
     <meta charset="UTF-8">
     <title>Title</title>
 
@@ -19,9 +20,17 @@
 
         <div class="container">
             <form th:action="@{/board/register}" method="post">
+
                 <div class="col-md-12 col-sm-12">
                     <input name="title" type="text" class="form-control" placeholder="TITLE">
+                    <select class="form-select" aria-label="Default select example" name="category">
+                        <option value="잡담">잡담</option>
+                        <option value="모임">모임</option>
+                        <option value="캠핑장">캠핑장</option>
+                        <option value="중고거래">중고거래</option>
+                    </select>
                 </div>
+
                 <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
                 <script>
                     $(document).ready(function() {
@@ -123,8 +132,9 @@
 
                     }); // the end
                 </script>
+
                 <div class="col-md-12 col-sm-12">
-                    <input name="email" type="text" class="form-control" placeholder="EMAIL">
+                    <input name="email" type="text" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
                 </div>
                 <div class="hiddenBox">
 
@@ -140,7 +150,12 @@
             </ul>
         </div>
 
-        <script th:inline="javascript">
+        <script layout:frgment="script" th:inline="javascript">
+
+            const auth = [[${#authentication.principal}]]
+
+            const errors = [[${errors}]]
+            console.info(errors)
 
             $(document).ready(function (){
 

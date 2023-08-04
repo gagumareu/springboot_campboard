@@ -4,14 +4,12 @@ import coke.controller.camp.dto.BoardDTO;
 import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
-import coke.controller.camp.entity.BoardImage;
-import coke.controller.camp.repository.BoardImageRepository;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +31,7 @@ public class BoardController {
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/list")
     public void getList(PageRequestDTO pageRequestDTO, Model model){
 
@@ -44,6 +43,7 @@ public class BoardController {
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/register")
     public void register(){
     }
@@ -57,10 +57,13 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("msg", bno);
         redirectAttributes.addAttribute("bno", bno);
+        redirectAttributes.addAttribute("category", boardDTO.getCategory());
 
         return "redirect:/board/read";
     }
 
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping({"/read", "modify"})
     public void readOrModify(Model model, @RequestParam("bno") Long bno, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO){
 
@@ -71,24 +74,26 @@ public class BoardController {
         BoardDTO boardDTO = boardService.getBoardWithImagesMemberAndReplies(bno);
 
         log.info(boardDTO);
+        log.info("category: " + pageRequestDTO.getCategory());
 
         model.addAttribute("dto", boardDTO);
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/remove")
-    public String remove(Long bno){
+    public String remove(BoardDTO boardDTO){
 
         log.info("---------remove-------");
-        log.info("bno: " + bno);
+        log.info("boardDTO: " + boardDTO);
 
-        List<BoardImageDTO> boardImageList = boardImageService.getImageList(bno);
+        List<BoardImageDTO> boardImageList = boardImageService.getImageList(boardDTO.getBno());
         log.info("boardImageList: " + boardImageList);
 
         if (boardImageList != null && boardImageList.size() > 0){
             deleteFiles(boardImageList);
         }
 
-        boardService.remove(bno);
+        boardService.remove(boardDTO.getBno());
 
         return "redirect:/board/list";
 
@@ -115,6 +120,7 @@ public class BoardController {
         });
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/modify")
     public String modify(BoardDTO boardDTO, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO,
                          RedirectAttributes redirectAttributes){

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -25,78 +25,98 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
   <th:block th:fragment="content">
 
-      <div>
-          <label>제목</label>
-          <input type="text" class="form-control" th:value="${dto.title}">
-      </div>
-
-      <div>
-          <label>이름: </label>[[${dto.memberName}]]
-          <div th:if="${dto.regDate == dto.modDate}">
-              <label>등록일: </label>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
-          </div>
-          <div th:unless="${dto.regDate == dto.modDate}">
-              <label>수정일: </label>[[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
-          </div>
-
-          <label>댓글 수</label><div>[[${dto.replyCount}]]</div>
-      </div>
-
-      <div>
-          <div th:utext="${dto.content}"></div>
-      </div>
-      <form id="remove-form" th:action="@{/board/remove}" method="post">
-          <input type="hidden" name="bno" th:value="${dto.bno}">
-      </form>
-
-      <div>
-          <a th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
-          <button>리스트</button>
-          </a>
-          <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
-              <button class="modifyBtn">수정</button>
-          </a>
-          <button class="removeBtn">삭제</button>
-      </div>
-
       <div class="container">
-          <div class="row">
-              <div class="col-md-4 col-sm-12 box">Hellow </div>
-              <div class="col-md-4 col-sm-6 box">안녕</div>
-              <div class="col-md-4 col-sm-6 box">Holla</div>
+          <div>
+              <label>제목</label>
+              <input type="text" class="form-control" th:value="${dto.title}">
+          </div>
+
+          <div>
+              <label>이름: </label><a><span>[[${dto.memberName}]]</span></a>
+              <div th:if="${dto.regDate == dto.modDate}">
+                  <label>등록일: </label>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
+              </div>
+              <div th:unless="${dto.regDate == dto.modDate}">
+                  <label>수정일: </label>[[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
+              </div>
+
+              <label>댓글 수</label><div>[[${dto.replyCount}]]</div>
+          </div>
+
+          <div>
+              <div th:utext="${dto.content}"></div>
+          </div>
+          <form id="remove-form" th:action="@{/board/remove}" method="post">
+              <input type="hidden" name="bno" th:value="${dto.bno}">
+              <input type="hidden" name="email" th:value="${dto.email}">
+          </form>
+
+          <div>
+              <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
+              <button>리스트</button>
+              </a>
+              <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
+                  <button>리스트</button>
+              </a>
+              <th:block th:with="user=${#authentication.principal}">
+                  <div th:if="${user.username != null && user.username == dto.email}">
+                      <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
+                          <button class="modifyBtn">수정</button>
+                      </a>
+                      <button class="removeBtn">삭제</button>
+                  </div>
+              </th:block>
+
+
+          </div>
+
+          <div th:with="user=${#authentication.principal}">
+              <form th:action="@{/replies/}">
+                  <input type="hidden" name="bno" th:value="${dto.bno}">
+                  <input type="text" name="text" class="form-control" placeholder="REPLY" id="reply-input">
+                  <input type="text" name="email" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+                  <button type="submit" class="insertReplyBtn" >작성</button>
+              </form>
+          </div>
+
+<!--          <div>-->
+<!--              <dvi>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</dvi>-->
+<!--          </div>-->
+
+          <div class="container replyContainer">
+
           </div>
       </div>
 
-      <div>
-          <form th:action="@{/replies/}">
-              <input type="hidden" name="bno" th:value="${dto.bno}">
-              <input type="text" name="text" class="form-control" placeholder="REPLY">
-              <input type="text" name="email" class="form-control" placeholder="EMAIL 임시">
-              <button type="submit" class="insertReplyBtn" >작성</button>
-          </form>
-      </div>
-
-
-      <div class="container replyContainer">
-
-      </div>
 
 
 
       <script th:inline="javascript">
 
+          const auth = [[${#authentication.principal}]]
+
+          const errors = [[${errors}]]
+          console.info(errors)
+
           $(document).ready(function (){
 
               var bno = [[${dto.bno}]];
 
+              var currentUser = [[${#authentication.principal.username}]]
+              console.info("currentUser: " + currentUser);
+
+              var userEmail = [[${dto.email}]];
+              console.log("userEmail: " + userEmail);
+
               function formatTime(str){
 
-                  var date = new Date();
+                  var data = new Date(str);
 
-                  return date.getFullYear() + "/" +
-                      date.getMonth() + "/" +
-                      date.getHours() + ":" +
-                      date.getMinutes();
+                  return data.getFullYear() + "/" +
+                      (data.getMonth() +1) + "/" +
+                      data.getDate() + ":" +
+                      data.getHours() + ":" +
+                      data.getMinutes();
 
               }  // formatTime
 
@@ -118,7 +138,7 @@
 
                   e.preventDefault();
 
-                  var replyText = $("input[name='text']").val();
+                  var replyText = $("#reply-input").val();
                   var replyWriter = $("input[name='email']").val();
 
                   var reply = {
@@ -142,6 +162,7 @@
 
                           }
                           loadReplyList();
+                          self.location.reload();
                           $("input[name='text']").val("");
                           $("input[name='email']").val("");
                       }
@@ -165,10 +186,13 @@
                           str += ' <h5 class="reply-title">text: '+dto.text+'</h5>';
                           str += ' <h6 class="reply-writer">writer: '+dto.memberName+'</h6>';
                           str += ' <p class="reply-regDate">등록일: '+formatTime(dto.regDate)+'</p>';
-                          str += '<div><button type="button" class="reply-modify-btn">수정</button>' +
-                              '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'">삭제</button></div>';
-                          str += '<div class="replyModifyingForm"><input type="text" name="text" value="'+dto.text+'" class="replyModifyText">' +
-                              '<div><button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>' +
+                          str += '<div class="reply-modify-div">' +
+                              '<button type="button" class="reply-modify-btn" data-email="'+dto.email+'">수정</button>' +
+                              '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">삭제</button></div>';
+                          str += '<div class="replyModifyingForm">' +
+                              '<input type="text" name="text" value="'+dto.text+'" class="replyModifyTextInput">' +
+                              '<div>' +
+                              '<button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>' +
                               '<button type="button" class="cancelReplyModifying">취소</button></div></div>';
                           str += ' </div>';
 
@@ -186,38 +210,62 @@
                  var rno = $(this).data("rno");
                  console.info("rno: " + rno);
 
-                  $.ajax({
-                      url: '/replies/' + rno,
-                      method: 'DELETE',
-                      success: function (result){
-                          if (result === "success"){
-                              console.info(rno + "번 댓글이 삭제되었습니다.");
-                              loadReplyList();
-                          }
-                      }
-                  }); // ajax
+                 var writerEmail = $(this).data("email");
+                 console.info(writerEmail)
+
+                  if(currentUser != userEmail){
+                      alert("댓글 작성자만 삭제가 가능합니다.");
+                      return;
+                  }
+
+                 $.ajax({
+                     url: '/replies/' + rno,
+                     method: 'DELETE',
+                     success: function (result){
+                         if (result === "success"){
+                             console.info(rno + "번 댓글이 삭제되었습니다.");
+                             loadReplyList();
+                         }
+                     }
+                 }); // ajax
 
               }); // reply delete event
 
 
               $(".replyContainer").on("click", ".reply-modify-btn", function (){
 
-                  $(".replyModifyingForm").css("display", "block");
+                  var writerEmail = $(this).data("email");
+                  console.info("writerEmail: " + writerEmail);
+
+                  // if(principalEmail == writerEmail){
+                  if(currentUser != userEmail){
+                      alert("댓글 작성자만 삭제가 가능합니다.");
+                      return;
+                  }
+
+                  console.info("equals");
+
+                  $(this).closest('.reply-box').find('.replyModifyingForm').css("display", "block");
+                  $(this).closest('.reply-box').find('.reply-modify-div').css("display", "none");
 
                   $(".doReplyModifying").on('click', function (){
 
                       var rno = $(this).data("rno");
-                      var email = $(this).data("email");
+                      // var email = $(this).data("email");
+                      var replyModifyInput = $(this).closest('.reply-box').find('.replyModifyTextInput').val();
+                      console.info("replyModifyInput: " + replyModifyInput);
 
                       console.info("rno: " + rno);
-                      console.info("email: " + email);
+                      // console.info("email: " + email);
 
                       var reply = {
                           rno: rno,
                           bno: bno,
-                          text: $(".replyModifyText").val(),
-                          email: email
+                          text: replyModifyInput,
+                          email: currentUser
                       }
+
+                      console.info(reply);
 
                       $.ajax({
                           url: '/replies/' + rno,
@@ -234,12 +282,17 @@
 
                   }) // doReplyModifying event
 
+
               }); // reply modifying event
+
+
 
 
               $(".replyContainer").on("click", ".cancelReplyModifying", function (){
 
                   $(".replyModifyingForm").css("display", "none");
+                  $(".reply-modify-div").css("display", "block");
+
 
               });  // reply canceling modify event
 

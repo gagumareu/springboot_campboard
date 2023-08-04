@@ -32,6 +32,7 @@ public interface BoardService {
         Board board = Board.builder()
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
+                .category(boardDTO.getCategory())
                 .member(member)
                 .build();
         map.put("board", board);
@@ -61,6 +62,7 @@ public interface BoardService {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .email(member.getEmail())
+                .category(board.getCategory())
                 .memberName(member.getMemberName())
                 .replyCount(replyCount.intValue())
                 .regDate(board.getRegDate())

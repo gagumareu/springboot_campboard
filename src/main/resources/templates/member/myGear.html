@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
+    <th:block th:fragment="content">
+
+        <div class="container">
+
+            <h1>My Gear Page</h1>
+            <h6>[[${email}]]</h6>
+
+            <form class="form-group" th:action="@{/gear/}" method="post">
+                <input type="text" name="gname" placeholder="NAME" class="form-control">
+                <input type="text" name="brand" PLACEHOLDER="BRAND" class="form-control">
+                <input type="text" name="size" placeholder="SIZE" class="form-control">
+                <input type="text" name="material" placeholder="MATERIAL" class="form-control">
+                <input type="text" name="script" placeholder="SCRIPT" class="form-control">
+                <input type="text" name="sort" class="form-control" placeholder="SORT">
+                <input type="text" name="email" placeholder="EMAIL" class="form-control">
+                <input type="file" name="uploadFiles" multiple>
+                <div class="hidden-box">
+
+                </div>
+                <button type="submit" class="gear-image-submit-btn">등록</button>
+            </form>
+
+            <div class="uploadResultDVI">
+                <ul class="uploadUL">
+
+                </ul>
+            </div>
+
+            <div class="gear-list">
+                <ul class="gear-list-ul">
+
+                </ul>
+            </div>
+
+        </div> <!--container -->
+
+
+        <div class="modal gear-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">MY GEAR</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="gear-modal-name" type="text" name="gname" class="form-control" placeholder="NAME">
+                        <input id="gear-modal-brand" type="text" name="brand" class="form-control" placeholder="BRAND">
+                        <input id="gear-modal-size" type="text" name="size" class="form-control" placeholder="SIZE">
+                        <input id="gear-modal-material" type="text" name="material" class="form-control" placeholder="MATERIAL">
+                        <input id="gear-modal-script" type="text" name="script" class="form-control" placeholder="SCRIPT">
+                        <input id="gear-modal-sort" type="text" name="sort" class="form-control" placeholder="SORT">
+                        <input id="gear-modal-gno" type="hidden" name="gno" >
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary gear-modal-close" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary gear-modal-modify">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+
+            $(document).ready(function (){
+
+                var email = [[${email}]];
+                console.info(email);
+
+                loadGearData();
+
+                $("input[name='uploadFiles']").on("change", function (){
+                    console.info("changed....");
+
+                    var inputFile = $(this);
+                    var formData = new FormData();
+                    var files = inputFile[0].files;
+
+                    for (var i = 0; i < files.length; i++){
+                        formData.append("uploadFiles", files[i]);
+                    }
+
+                    for (var value of formData.values()){
+                        console.info(value);
+                    }
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        data: formData,
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        dataType: 'JSON',
+                        success: function (result){
+                            console.info(result);
+                            showUploadImage(result);
+
+                        }
+                    }); // ajax
+
+                }); // register
+
+                function showUploadImage(arr){
+
+                    var resultUL = $(".uploadResultDVI ul");
+
+                    var str = "";
+
+                    $(arr).each(function (i, dto){
+
+                        str += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'">';
+                        str += '<div class="img-thumbnail" data-file="'+dto.imageURL+'">';
+                        str += '<img src="/display?files='+dto.thumbnailURL+'">';
+                        str += '</div>';
+                        str += '</li>';
+
+                    });
+
+                    resultUL.append(str);
+
+                } // showUploadImage
+
+                $(".uploadUL").on("click", ".img-thumbnail", function (e){
+
+                    var file = $(this).data("file");
+                    console.info(file);
+                    var targetLI = $(this).closest("li");
+
+                    $.ajax({
+                        url: '/removeFile',
+                        data: { files: file},
+                        type: 'POST',
+                        dataType: 'text',
+                        success: function (result){
+                            console.info(result);
+                            targetLI.remove();
+                        }
+                    })
+
+
+                }); // uploadUl clicking
+
+                $(".gear-image-submit-btn").on("click", function (e){
+
+                    e.preventDefault();
+
+                    var imageList = []
+
+                    $(".uploadUL li").each(function (i, arr){
+
+                        var target = $(arr);
+
+                        var gearImageDTOList = {
+                            folderPath: target.data("path"),
+                            uuid: target.data("uuid"),
+                            fileName: target.data("name")
+                        }
+                        console.info(gearImageDTOList)
+                        imageList.push(gearImageDTOList);
+
+                    }); // uploadUL li
+
+                    console.info(imageList);
+
+                    var gearData  = {
+                        gname : $("input[name='gname']").val(),
+                        brand : $("input[name='brand']").val(),
+                        size : $("input[name='size']").val(),
+                        material: $("input[name='material']").val(),
+                        script: $("input[name='script']").val(),
+                        sort: $("input[name='sort']").val(),
+                        email: $("input[name='email']").val(),
+                        gearImageDTOList : imageList
+                    }
+
+                    console.info(gearData);
+
+                    $.ajax({
+                        url: '/gear/',
+                        data: JSON.stringify(gearData),
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        success: function (result){
+                            var replyNo = parseInt(result);
+                            alert(replyNo + "번 기어가 저장됐습니다.");
+                            loadGearData();
+                            self.location.reload();
+                        }
+
+                    }); // ajax
+
+                }); // gear-image-submit-btn
+
+                function loadGearData(){
+
+                    $.getJSON('/gear/' + email, function (arr){
+
+                        var gearListLI = $(".gear-list ul");
+                        var str = "";
+
+                        console.info(arr);
+
+                        $.each(arr, function (i, dto){
+
+                            var imageURL = "noneImage";
+
+                            str += '<div class="gear-box">';
+                            // str += '<img class="img-thumbnail" scr="/display?files='+dto.gearImageDTOList[i].thumbnailURL+'>';
+                            str += '<div><span>이름: '+dto.gname+'</span>';
+                            str += '<span>브랜드: '+dto.brand+'</span>';
+                            str += '<span>사이즈: '+dto.size+'</span>';
+                            str += '<span>소재: '+dto.material+'</span>';
+                            str += '<span>설명: '+dto.script+'</span>';
+                            str += '<span>분류: '+dto.sort+'</span></div>';
+                            str += '<div><button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" ' +
+                                'data-name="'+dto.gname+'" data-brand="'+dto.brand+'" data-size="'+dto.size+'" data-material="'+dto.material+'" ' +
+                                'data-script="'+dto.script+'"data-sort="'+dto.sort+'">수정</button>';
+                            str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button></div>';
+                            str += '</div>';
+
+
+                        }) // each
+
+                        gearListLI.html(str);
+
+                    }); // getJson
+
+                } // loadGearData
+
+                $(".gear-list-ul").on("click", ".gear-remove-btn", function (e){
+                    e.preventDefault();
+                    console.info("clicking");
+
+                    var gno = $(this).data("gno");
+                    console.info(gno);
+
+                    $.ajax({
+                        url: '/gear/' + gno,
+                        method: "DELETE",
+                        success: function (result){
+                            if (result == "success"){
+                                console.info("removed");
+                            }
+                            loadGearData();
+                        }
+                    })
+
+                }) // gear-list-ul
+
+                $(".gear-list-ul").on("click", ".gear-modify-btn", function (){
+
+                    $("#gear-modal-name").val($(this).data("name"));
+                    $("#gear-modal-brand").val($(this).data("brand"));
+                    $("#gear-modal-size").val($(this).data("size"));
+                    $("#gear-modal-material").val($(this).data("material"));
+                    $("#gear-modal-script").val($(this).data("script"));
+                    $("#gear-modal-sort").val($(this).data("sort"));
+                    $("#gear-modal-gno").val($(this).data("gno"));
+
+                    $(".gear-modal").modal('show');
+
+                });
+
+                $(".gear-modal-modify").on("click", function (){
+
+                   console.info("clicking...");
+
+                   var gno = $("#gear-modal-gno").val();
+
+                   var gearData = {
+                       gname: $("#gear-modal-name").val(),
+                       brand: $("#gear-modal-brand").val(),
+                       size: $("#gear-modal-size").val(),
+                       material: $("#gear-modal-material").val(),
+                       script: $("#gear-modal-script").val(),
+                       sort: $("#gear-modal-sort").val(),
+                       email: email
+                   }
+
+                   console.info(gearData);
+
+                   $.ajax({
+                       url: '/gear/' + gno,
+                       data: JSON.stringify(gearData),
+                       method: 'PUT',
+                       contentType: 'application/json; charset=utf-8',
+                       dataType: 'text',
+                       success: function (result){
+                           console.info(result);
+                          if (result === "success"){
+                              alert("기어 정보 수정 완료");
+                              loadGearData();
+                              $(".gear-modal").modal('hide');
+                          }
+
+                       }
+                   })
+
+                }); //gear-modal-modify
+
+
+                $(".gear-modal-close").click(function (){
+                    $(".gear-modal").modal('hide');
+                })
+
+
+            });  // the end
+
+
+        </script>
+
+    </th:block>
+</th:block>
+
+</body>
+</html>

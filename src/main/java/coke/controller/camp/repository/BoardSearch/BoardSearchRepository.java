@@ -8,5 +8,5 @@ public interface BoardSearchRepository {
 
     Board search();
 
-    Page<Object[]> getSearchList(String type, String keyword, Pageable pageable);
+    Page<Object[]> getSearchList(String type, String keyword, Pageable pageable, String category);
 }

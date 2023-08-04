@@ -22,6 +22,11 @@
           <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
           <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
           <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
+          <th:block th:if="${pageRequestDTO.category != ''}">
+            <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
+          </th:block>
+          <th:block th:unless="${pageRequestDTO.category != ''}">
+          </th:block>
           <input type="hidden" name="email" th:value="${dto.email}">
           <input type="hidden" name="bno" th:value="${dto.bno}">
 
@@ -203,6 +208,7 @@
             var page = $("input[name='page']");
             var type = $("input[name='type']");
             var keyword = $("input[name='keyword']");
+            var category = $("input[name='category']");
 
             var actionForm = $("form");
 
@@ -210,6 +216,7 @@
             actionForm.append(page);
             actionForm.append(type);
             actionForm.append(keyword);
+            actionForm.append(category);
 
             actionForm.attr("action", "/board/list").attr("method", "get").submit();
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+<th:block th:fragment="content">
+
+    <div class="container">
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        JOIN
+                    </div>
+                    <div class="card-body">
+                        <form id="registerForm" action="/member/join" method="post">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">EMAIL</span>
+                                <input type="email" name="email" class="form-control">
+                            </div>
+                            <div class="input-group-text">
+                                <span class="input-group-text">PASSWORD</span>
+                                <input type="password" name="password" class="form-control">
+                            </div>
+                            <div class="input-group-text">
+                                <span class="input-group-text">NAME</span>
+                                <input type="text" name="name" class="form-control">
+                            </div>
+                            <div class="my-4">
+                                <div class="float-end">
+                                    <button type="submit" class="btn btn-primary">JOIN</button>
+                                    <button type="reset" class="btn btn-secondary">RESET</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script layout:fragment="script" th:inline="javascript">
+
+        const error = [[${error}]]
+
+        if (error && error === 'email'){
+            alert("동일한 email를 가진 계정이 존재합니다.")
+        }
+
+    </script>
+</th:block>
+</th:block>
+</body>
+</html>

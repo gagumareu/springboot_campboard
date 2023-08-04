@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 <th:block th:fragment="setContent(content)">
 <head>
     <meta charset="UTF-8">
@@ -55,6 +57,10 @@
             margin-top: auto;
         }
 
+        a{
+            text-decoration: none;
+        }
+
         .footer{
             padding : 30px 0;
         }
@@ -65,25 +71,45 @@
 <div class="wrapper">
     <div class="container">
         <div class="header">
+
             <div>
                 <a th:href="@{/board/list}"><h3>HOME</h3></a>
             </div>
             <div>
-                <a th:href="@{/member/loginPage}">
-                    <span>로그인</span>
-                </a>
-                <a th:href="@{/#}">
-                    <span>로그아웃</span>
-                </a>
+                <a th:href="@{/board/list(category='잡담')}"><h5>커뮤니티</h5></a>
             </div>
             <div>
-                <a th:href="@{/member/myPage(email='test')}">
-                    <span>마이페이지</span>
-                </a>
+                <a th:href="@{/board/list(category='모임')}"><h5>캠핑모임</h5></a>
             </div>
             <div>
+                <a th:href="@{/board/list(category='캠핑장')}"><h5>캠핑장</h5></a>
+            </div>
+            <div>
+                <a th:href="@{/board/list(category='중고거래')}"><h5>중고거래</h5></a>
+            </div>
+            <div>
+                <a th:href="@{/member/login}">
+                    <div>로그인</div>
+                </a>
+                <a th:href="@{/logout}">
+                    <div>로그아웃</div>
+                </a>
+                <a href="/member/join">
+                    <div class="btn-secondary">회원 가입</div>
+                </a>
+                <a th:href="@{/member/myPage(email='use3@email.com')}">
+                    <div>마이페이지</div>
+                </a>
+                <a th:href="@{/member/myGear(email='user3@email.com')}">
+                    <div>
+                        마이기어
+                    </div>
+                </a>
 
             </div>
+
+
+
         </div>
     </div>
 
