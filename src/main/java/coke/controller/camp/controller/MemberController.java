@@ -7,6 +7,7 @@ import coke.controller.camp.service.GearService;
 import coke.controller.camp.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +24,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
     public void myPage(){
 
         log.info("myPage...........");
-
-        log.info("-----------------------------");
 
     }
 
@@ -46,13 +46,14 @@ public class MemberController {
 
     @GetMapping("/modify")
     public void modify(){
+        log.info("member modify....");
 
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myGear")
-    public void myGear(@ModelAttribute("email") String email){
-
-
+    public void myGear(){
+        log.info("my gear....");
     }
 
     @GetMapping("/join")
@@ -79,6 +80,7 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
+    @PreAuthorize("principal.username == #memberJoinDTO.email")
     @PostMapping("/modify")
     public String modify(MemberJoinDTO memberJoinDTO){
 

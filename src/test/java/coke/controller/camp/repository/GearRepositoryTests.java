@@ -20,13 +20,25 @@ public class GearRepositoryTests {
     @Test
     public void getList(){
 
-        List<Object[]> result = repository.getGearByEmailOrderByGnoDesc("user3@email.com");
+        List<Object[]> result = repository.getGearByEmailOrderByGnoDesc("udekang@gmail.com");
 
         System.out.println(result);
 
         for (Object[] arr : result){
             System.out.println(Arrays.toString(arr));
         }
+    }
+
+    @Test
+    public void get(){
+
+        List<Object[]> result = repository.getGearByGno(49L);
+
+        for (Object[] arr: result){
+            System.out.println(Arrays.toString(arr));
+        }
+
+
     }
 
 }

@@ -21,6 +21,7 @@ public interface GearService {
     void remove(Long gno);
     void modify(GearDTO gearDTO);
     List<GearImageDTO> getImagesList(Long gno);
+    GearDTO getByGno(Long gno);
 
 
     default Map<String, Object> dtoToEntity(GearDTO gearDTO){
@@ -28,6 +29,7 @@ public interface GearService {
         Map<String, Object> map = new HashMap<>();
 
         Gear gear = Gear.builder()
+                .gno(gearDTO.getGno())
                 .gname(gearDTO.getGname())
                 .brand(gearDTO.getBrand())
                 .size(gearDTO.getSize())

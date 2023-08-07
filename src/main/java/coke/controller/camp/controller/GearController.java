@@ -93,7 +93,14 @@ public class GearController {
             thumbnail.delete();
 
         });
+    }
 
+    @GetMapping("/myGear/{gno}")
+    public ResponseEntity<GearDTO> getGearByGno(@PathVariable Long gno){
+
+        log.info("get gear...");
+
+        return new ResponseEntity<>(gearService.getByGno(gno), HttpStatus.OK);
     }
 
 
