@@ -80,7 +80,7 @@ public class BoardController {
     }
 
     @PostMapping("/register")
-    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes, Model model){
+    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
 
         log.info("---------register-------");
         log.info(boardDTO);

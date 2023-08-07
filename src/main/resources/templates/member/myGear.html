@@ -4,6 +4,67 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<style>
+
+    .form-control{
+        margin-bottom: 13px;
+    }
+
+    ul{
+        list-style-type: none;
+
+    }
+    .uploadUL{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .uploadUL li{
+        margin-right: 10px;
+    }
+
+    .modal-gear-img-ul{
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .modal-gear-img-ul li{
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .register-main-body{
+        display: flex;
+    }
+
+    .form-group{
+        flex: 50%;
+    }
+
+    .gear-list{
+        flex: 50%;
+    }
+
+    .my-gear-li{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+    }
+
+    .loadGear-img-box{
+        flex: 20%;
+    }
+
+    .gear-info{
+        flex: 60%;
+    }
+
+    .gear-btn-box{
+        flex: 10%;
+    }
+
+</style>
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
     <th:block th:fragment="content">
@@ -13,33 +74,33 @@
             <h1>My Gear Page</h1>
             <h6>[[${#authentication.principal.username}]]</h6>
 
-            <form class="form-group" th:action="@{/gear/}" method="post">
-                <input type="text" name="gname" placeholder="NAME" class="form-control">
-                <input type="text" name="brand" PLACEHOLDER="BRAND" class="form-control">
-                <input type="text" name="size" placeholder="SIZE" class="form-control">
-                <input type="text" name="material" placeholder="MATERIAL" class="form-control">
-                <input type="text" name="script" placeholder="SCRIPT" class="form-control">
-                <input type="text" name="sort" class="form-control" placeholder="SORT">
-                <input type="hidden" name="email" placeholder="EMAIL" class="form-control" th:value="${#authentication.principal.username}">
-                <input type="file" name="uploadFiles" multiple>
-                <div class="hidden-box">
+            <div class="register-main-body">
+                <form class="form-group" th:action="@{/gear/}" method="post">
+                    <input type="text" name="gname" placeholder="NAME" class="form-control">
+                    <input type="text" name="brand" PLACEHOLDER="BRAND" class="form-control">
+                    <input type="text" name="size" placeholder="SIZE" class="form-control">
+                    <input type="text" name="material" placeholder="MATERIAL" class="form-control">
+                    <input type="text" name="script" placeholder="SCRIPT" class="form-control">
+                    <input type="text" name="sort" class="form-control" placeholder="SORT">
+                    <input type="hidden" name="email" placeholder="EMAIL" class="form-control" th:value="${#authentication.principal.username}">
+                    <input type="file" name="uploadFiles" multiple>
+                    <div class="hidden-box">
 
+                    </div>
+                    <button type="submit" class="gear-image-submit-btn">등록</button>
+                    <div class="uploadResultDVI">
+                        <ul class="uploadUL">
+
+                        </ul>
+                    </div>
+                </form>
+
+                <div class="gear-list">
+                    <ul class="gear-list-ul">
+
+                    </ul>
                 </div>
-                <button type="submit" class="gear-image-submit-btn">등록</button>
-            </form>
-
-            <div class="uploadResultDVI">
-                <ul class="uploadUL">
-
-                </ul>
             </div>
-
-            <div class="gear-list">
-                <ul class="gear-list-ul">
-
-                </ul>
-            </div>
-
         </div> <!--container -->
 
 
@@ -66,7 +127,7 @@
                             </ul>
                         </div>
                         <div class="modal-gear-img">
-                            <ul>
+                            <ul class="modal-gear-img-ul">
 
                             </ul>
                         </div>
@@ -153,7 +214,7 @@
                     $.ajax({
                         url: '/removeFile',
                         data: { files: file},
-                        type: 'POST',
+                        type: 'DELETE',
                         dataType: 'text',
                         success: function (result){
                             console.info(result);
@@ -230,14 +291,21 @@
                             console.info("-----imgDTOList----");
                             console.info(dto.gearImageDTOList);
 
-                            str += '<li>';
+                            str += '<li class="my-gear-li">';
                             if (dto.gearImageDTOList[0] !== null){
+                                str += '<div class="loadGear-img-box">';
                                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                                str += '</div>';
                             }else {
-                                str += "<img src='/icon/noImage2.svg'>";
+                                str += '<div class="loadGear-img-box">';
+                                str += "<img src='/icon/noImage2.svg' style='height: 100%'>";
+                                str += '</div>';
                             }
                             str += '<div class="gear-info">';
-                            str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span><span>설명: '+dto.script+'</span><span>분류: '+dto.sort+'</span>';
+                            str += '<div class="gear-info">';
+                            str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                            str += '</div>';
+                            str += '<span>설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                             str += '</div>';
 
                             str += '<div class="gear-btn-box">';
