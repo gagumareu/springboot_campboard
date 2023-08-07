@@ -247,7 +247,6 @@
 
                             str += '</li>';
 
-
                         }) // each
 
                         gearList.html(str);
@@ -257,22 +256,24 @@
                 } // loadGearData
 
                 $(".gear-list-ul").on("click", ".gear-remove-btn", function (e){
+
                     e.preventDefault();
-                    console.info("clicking");
 
-                    var gno = $(this).data("gno");
-                    console.info(gno);
+                    if (confirm("삭제하시겠습니까?")){
+                        var gno = $(this).data("gno");
+                        console.info(gno);
 
-                    $.ajax({
-                        url: '/gear/' + gno,
-                        method: "DELETE",
-                        success: function (result){
-                            if (result == "success"){
-                                console.info("removed");
+                        $.ajax({
+                            url: '/gear/' + gno,
+                            method: "DELETE",
+                            success: function (result){
+                                if (result == "success"){
+                                    console.info("removed");
+                                }
+                                loadGearData();
                             }
-                            loadGearData();
-                        }
-                    })
+                        })
+                    }
 
                 }) // gear-list-ul
 
@@ -285,12 +286,6 @@
                 $(".gear-list-ul").on("click", ".gear-modify-btn", function (){
 
                     var gno = $(this).data("gno");
-
-                    // var str = "";
-                    //
-                    // var str2 = "";
-
-                    // var imgModifyList = [];
 
                     $.getJSON('/gear/myGear/' + gno, function (dto){
 
@@ -316,19 +311,11 @@
 
                             if (imgs !== null ){
 
-                                // var folderPath = imgs.folderPath;
-                                // var uuid = imgs.uuid;
-                                // var fileName = imgs.fileName;
-
                                 str += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old">';
                                 str += '<img src="/display?files='+imgs.thumbnailURL+'" data-name="'+imgs.imageURL+'" data-tell="old">';
                                 str += '</li>';
                                 str2 += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old"></li>';
                                 console.info("adding liList for images");
-                                // var list = {folderPath, uuid, fileName};
-
-                                // console.info("push list to ImgModifyList 1");
-                                // imgModifyList.push(list);
 
                             }else {
                                 console.info("there are no pictures");
@@ -337,8 +324,6 @@
 
                         modalGearUL.html(str);
                         modalGearDataUl.html(str2);
-                        // console.info("----imgModifyList by getJSON----");
-                        // console.info(imgModifyList);
 
                     }); // getJSON
 
@@ -367,31 +352,8 @@
                         type: 'POST',
                         dataType: 'JSON',
                         success: function (result){
-
-                            console.info("---result on uploadJAX----")
                             console.log(result);
-
-                            // console.info("----imageModifyList before add result-----")
-                            // console.info(imgModifyList);
-
                             uploadImageOnModal(result);
-
-                            // console.info("----dto ----");
-                            //
-                            // $(result).each(function (i, dto){
-                            //
-                            //     var folderPath = dto.folderPath;
-                            //     var uuid = dto.uuid;
-                            //     var fileName = dto.fileName;
-                            //
-                            //     var resultList = {folderPath, uuid, fileName}
-                            //     console.info("push list to ImgModifyList 2");
-                            //     imgModifyList.push(resultList);
-                            // })
-
-                            // console.info("----imageModifyList after add result-----")
-                            // console.info(imgModifyList);
-
                         }
                     })
                 }); // inputFile changing event

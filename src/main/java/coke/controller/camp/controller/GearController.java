@@ -103,6 +103,14 @@ public class GearController {
         return new ResponseEntity<>(gearService.getByGno(gno), HttpStatus.OK);
     }
 
+    @GetMapping("/images/{gno}")
+    public ResponseEntity<List<GearImageDTO>> getImagesByGno(@PathVariable("gno") Long gno){
+
+        log.info("get gear image list ....");
+
+        return new ResponseEntity<>(gearService.getImagesList(gno), HttpStatus.OK);
+    }
+
 
 
 

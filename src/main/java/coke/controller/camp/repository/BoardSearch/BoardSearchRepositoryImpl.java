@@ -46,11 +46,13 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
         QReply reply = QReply.reply;
         QMember member = QMember.member;
         QBoardImage boardImage = QBoardImage.boardImage;
+        QGear gear = QGear.gear;
 
         JPQLQuery<Board> jpqlQuery = from(board);
         jpqlQuery.leftJoin(member).on(board.member.eq(member));
         jpqlQuery.leftJoin(reply).on(reply.board.eq(board));
         jpqlQuery.leftJoin(boardImage).on(boardImage.board.eq(board));
+        jpqlQuery.leftJoin(gear).on(gear.board.eq(board));
 
         JPQLQuery<Tuple> tuple = jpqlQuery.select(board, boardImage, member, reply.countDistinct());
 

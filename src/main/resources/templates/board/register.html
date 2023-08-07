@@ -21,9 +21,32 @@
         <div class="container">
             <form th:action="@{/board/register}" method="post">
 
+                <div th:if="${gearList != null}" class="gear-div">
+                    <ul>
+                        <li th:each="list : ${gearList}" th:attrappend="data-gno=${list.gno}">
+                            <div>
+                                <img th:if="${list.gearImageDTOList[0] != null}" th:src="|/display?files=${list.gearImageDTOList[0].getThumbnailURL()}|"
+                                     th:attr="data-url=${list.gearImageDTOList[0].getImageURL()}" th:attrappend="data-gno=${list.gno}">
+                                <img th:unless="${list.gearImageDTOList[0] != null}" th:src="@{/icon/noImage2.svg}">
+                            </div>
+                            <div>
+                                <span>이름: [[${list.gname}]]</span>
+                                <span>브랜드: [[${list.brand}]]</span>
+                                <span>소재: [[${list.material}]]</span>
+                                <span>사이즈: [[${list.size}]]</span>
+                                <span>분류: [[${list.sort}]]</span>
+                                <span>[[${list.script}]]</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="resetBtn">
+
+                </div>
                 <div class="col-md-12 col-sm-12">
                     <input name="title" type="text" class="form-control" placeholder="TITLE">
-                    <select class="form-select" aria-label="Default select example" name="category">
+                    <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
+                    <select th:unless="${category == '중고거래'}" class="form-select" aria-label="Default select example" name="category">
                         <option value="잡담">잡담</option>
                         <option value="모임">모임</option>
                         <option value="캠핑장">캠핑장</option>
@@ -139,6 +162,9 @@
                 <div class="hiddenBox">
 
                 </div>
+                <div class="hiddenGearBox">
+
+                </div>
                 <div class="col-md-12 col-sm-12">
                     <button class="registBtn">register</button>
                 </div>
@@ -150,39 +176,153 @@
             </ul>
         </div>
 
-        <script layout:frgment="script" th:inline="javascript">
+<script layout:frgment="script" th:inline="javascript">
 
-            const auth = [[${#authentication.principal}]]
+    const auth = [[${#authentication.principal}]]
+    console.info(auth);
 
-            const errors = [[${errors}]]
-            console.info(errors)
+    const errors = [[${errors}]]
+    console.info(errors)
 
-            $(document).ready(function (){
+    $(document).ready(function (){
 
-                $(".registBtn").on("click", function (e){
+        var memberEmail = [[${pricipalName}]];
+        console.info(memberEmail);
 
-                    e.preventDefault();
+        var username = [[${#authentication.principal.username}]];
+        console.info(username);
 
-                    var str = "";
+        $(".registBtn").on("click", function (e){
 
-                    $(".uploadResultUL li").each(function (i, dto){
+            e.preventDefault();
 
-                        var target = $(dto);
+            var str = "";
 
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+            $(".uploadResultUL li").each(function (i, dto){
 
-                    });
+                var target = $(dto);
 
-                    $(".hiddenBox").html(str);
-                    $("form").submit();
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+
+            });
+
+            $(".hiddenBox").html(str);
+            $("form").submit();
+
+        }); // register btn clicking event
+
+        $(".gear-div").on("click", "li", function (){
+
+            var gno = $(this).data("gno");
+
+            console.info(gno);
+
+            var str ="";
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                    }else {
+                        // str += "<img src='/icon/noImage2.svg'>";
+                        console.info("there are no avalable images");
+                    }
                 });
 
-            }); // the end
+            }); // getJSON
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                // $('#summernote').summernote('insertText',
+                //     '이름: ' + name + '\n\n\n' +
+                //     '브랜드: ' + brand
+                // );
 
 
-        </script>
+            }); // getJSON
+
+
+            $(".gear-div ul").html("");
+
+            var resetBtn = $(".resetBtn");
+
+            str = "<button type='button' id='reBackToGearList'>기어 등록 취소</button>"
+
+            resetBtn.html(str);
+
+        }); // gear-div clicking event
+
+        $(".resetBtn").on("click", "#reBackToGearList", function (){
+            console.info("reBackGearList clicking");
+            loadGearData();
+            // $('#summernote').summernote('code', "");
+            $('#summernote').summernote('reset');
+            $(".resetBtn").html("");
+        });
+
+        function loadGearData(){
+
+            console.info("---------loadGearData()----------");
+
+            var gearDivUl = $(".gear-div ul");
+
+
+            $.getJSON('/gear/' + username, function (arr){
+
+                var str = "";
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    console.info(dto.gearImageDTOList);
+
+                    str += '<li data-gno="'+dto.gno+'">';
+                    if (dto.gearImageDTOList[0] !== null){
+                        str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"' data-gno='"+dto.gno+"'>";
+                    }else {
+                        str += "<img src='/icon/noImage2.svg'>";
+                    }
+                    str += '<div class="gear-info">';
+                    str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span><span>설명: '+dto.script+'</span><span>분류: '+dto.sort+'</span>';
+                    str += '</div>';
+                    str += '</li>';
+
+                }) // each
+                gearDivUl.html(str);
+            }); // getJson
+
+        } // loadGearData
+
+
+    }); // the end
+
+
+</script>
 
     </th:blcok>
 

@@ -83,12 +83,10 @@
                     <input type="hidden" name="page" value="1">
                     <div class="form-control">
                         <select name="type" class="form-select">
-                            <!--                            <option th:selected="${pageRequestDTO.type == null}">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
                             <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
                             <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
                             <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
                             <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
-
                         </select>
                     </div>
                     <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
@@ -96,7 +94,7 @@
 
             </form>
             <div>
-                <a th:href="@{/board/register}">
+                <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
                     <button>Register</button>
                 </a>
             </div>

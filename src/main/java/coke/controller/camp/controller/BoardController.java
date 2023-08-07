@@ -1,11 +1,9 @@
 package coke.controller.camp.controller;
 
-import coke.controller.camp.dto.BoardDTO;
-import coke.controller.camp.dto.BoardImageDTO;
-import coke.controller.camp.dto.PageRequestDTO;
-import coke.controller.camp.dto.PageResultDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
+import coke.controller.camp.service.GearService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -29,6 +28,8 @@ public class BoardController {
     private final BoardService boardService;
 
     private final BoardImageService boardImageService;
+
+    private final GearService gearService;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -52,13 +53,37 @@ public class BoardController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/register")
-    public void register(){
+    public String register(String category, Model model, Principal principal){
+
+        if(category.equals("중고거래")){
+
+            log.info("------------register for secondHands------------");
+
+            log.info(principal.getName());
+
+            List<GearDTO> gearList = gearService.getList(principal.getName());
+
+            log.info(gearList);
+
+            model.addAttribute("gearList", gearList);
+            model.addAttribute("category", category);
+            model.addAttribute("pricipalName", principal.getName());
+
+//            return "/secondHand/register";
+
+            return "/board/register";
+
+        }else {
+
+            return "/board/register";
+        }
     }
 
     @PostMapping("/register")
     public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes, Model model){
 
         log.info("---------register-------");
+        log.info(boardDTO);
 
         Long bno = boardService.register(boardDTO);
 

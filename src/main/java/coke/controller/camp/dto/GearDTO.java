@@ -20,9 +20,12 @@ public class GearDTO {
     private String size;
     private String script;
     private String sort;
+    private int state;
 
     private String email;
     private String memberName;
+
+    private Long bno;
 
     private LocalDateTime regDate, modDate;
 

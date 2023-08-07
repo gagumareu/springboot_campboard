@@ -6,6 +6,7 @@ import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.entity.Board;
 import coke.controller.camp.entity.BoardImage;
+import coke.controller.camp.entity.Gear;
 import coke.controller.camp.entity.Member;
 import org.springframework.data.domain.Page;
 
@@ -28,12 +29,14 @@ public interface BoardService {
         Map<String, Object> map = new HashMap<>();
 
         Member member = Member.builder().email(boardDTO.getEmail()).build();
+//        Gear gear = Gear.builder().gno(boardDTO.getGno()).build();
 
         Board board = Board.builder()
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
                 .category(boardDTO.getCategory())
                 .member(member)
+//                .gear(gear)
                 .build();
         map.put("board", board);
 
