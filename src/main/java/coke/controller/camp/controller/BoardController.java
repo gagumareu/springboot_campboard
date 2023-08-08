@@ -71,7 +71,7 @@ public class BoardController {
 
 //            return "/secondHand/register";
 
-            return "/board/register";
+            return "/board/secondMarket";
 
         }else {
 

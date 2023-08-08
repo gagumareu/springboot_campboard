@@ -47,6 +47,10 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            margin-top: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         }
 
         body{
@@ -70,11 +74,13 @@
         .header-memberPage{
             display: flex;
             flex-direction: row;
+            font-size: 12px;
         }
 
         .header-category{
             display: flex;
             flex-direction: row;
+            font-size: 1.2em;
         }
 
         .header-category a{
@@ -86,13 +92,14 @@
     <div class="container">
         <div class="header">
 
-            <a th:href="@{/board/list}"><h3>HOME</h3></a>
+            <a th:href="@{/board/list}" style="font-size: 2.2em">HOME</a>
 
             <div class="header-category">
                 <a th:href="@{/board/list(category='잡담')}">커뮤니티</a>
                 <a th:href="@{/board/list(category='모임')}">캠핑모임</a>
                 <a th:href="@{/board/list(category='캠핑장')}">캠핑장</a>
                 <a th:href="@{/board/list(category='중고거래')}">중고거래</a>
+                <a th:href="@{/member/myGear}">마이기어</a>
             </div>
 
             <div class="header-memberPage">
@@ -106,21 +113,17 @@
                         로그아웃
                     </a>
                 </div>
-                <div class="btn-secondary header-category" sec:authorize="isAnonymous()">
+                <div class="header-category" sec:authorize="isAnonymous()">
                     <a href="/member/join">
-                        회원 가입
+                        회원가입
                     </a>
                 </div>
-                <div class="header-category">
+                <div class="header-category" style="margin-right: 0px">
                     <a th:href="@{/member/myPage}">
                         마이페이지
                     </a>
                 </div>
-                <div class="header-category">
-                    <a th:href="@{/member/myGear}">
-                        마이기어
-                    </a>
-                </div>
+
             </div>
 
 

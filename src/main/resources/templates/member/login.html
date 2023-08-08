@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<style>
+    .card-body{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+</style>
+
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
   <th:blocK th:fragment="content">
@@ -19,12 +30,10 @@
                   </th:block>
                   <form id="registerForm" action="/member/login" method="post">
                       <div class="input-group mb-3">
-                          <span class="input-group-text">아이디</span>
                           <input type="text" name="username" class="form-control" placeholder="USER ID">
                       </div>
 
                       <div class="input-group mb-3">
-                          <span class="input-group-text">패스워드</span>
                           <input type="text" name="password" class="form-control" placeholder="PASSWORD">
                       </div>
                       <div class="my-4">

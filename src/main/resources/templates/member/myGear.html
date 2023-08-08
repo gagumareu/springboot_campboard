@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 <style>
 
     .form-control{
@@ -39,29 +42,54 @@
     }
 
     .form-group{
-        flex: 50%;
+        /*flex: 50%;*/
     }
 
     .gear-list{
-        flex: 50%;
+        /*flex: 50%;*/
     }
 
     .my-gear-li{
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 10px;
+        /*display: flex;*/
+        /*flex-direction: row;*/
+        /*margin-bottom: 10px;*/
+        /*border: 1px solid black;*/
+        height: 290px;
+
     }
 
     .loadGear-img-box{
-        flex: 20%;
+        /*flex: 20%;*/
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        height: 100px;
     }
 
     .gear-info{
-        flex: 60%;
+        /*flex: 60%;*/
+        display: flex;
+        flex-direction: column;
     }
 
     .gear-btn-box{
-        flex: 10%;
+        /*flex: 10%;*/
+        display: flex;
+        flex-direction: column;
+        height: 100px;
+        row-gap: 6px;
+        margin-top: 5px;
+    }
+
+    .loadGear-img-box img{
+        /*border: 1px solid;*/
+        width: 50%;
+    }
+
+    .gear-btn-box button{
+        background-color: white;
+        border: 1px solid;
+        border-radius: 5px;
     }
 
 </style>
@@ -74,34 +102,62 @@
             <h1>My Gear Page</h1>
             <h6>[[${#authentication.principal.username}]]</h6>
 
-            <div class="register-main-body">
-                <form class="form-group" th:action="@{/gear/}" method="post">
-                    <input type="text" name="gname" placeholder="NAME" class="form-control">
-                    <input type="text" name="brand" PLACEHOLDER="BRAND" class="form-control">
-                    <input type="text" name="size" placeholder="SIZE" class="form-control">
-                    <input type="text" name="material" placeholder="MATERIAL" class="form-control">
-                    <input type="text" name="script" placeholder="SCRIPT" class="form-control">
-                    <input type="text" name="sort" class="form-control" placeholder="SORT">
-                    <input type="hidden" name="email" placeholder="EMAIL" class="form-control" th:value="${#authentication.principal.username}">
-                    <input type="file" name="uploadFiles" multiple>
-                    <div class="hidden-box">
+<!--            <div class="register-main-body">-->
+<!--                -->
+<!--            </div>-->
+            <div class="readyForRegisterBtn">
+                <button type="button" class="btn btn-outline-secondary">등록하기</button>
+            </div>
+            <div class="gear-list">
+                <ul class="gear-list-ul">
+
+                </ul>
+            </div>
+
+            <div data-aos="fade-up"
+                 data-aos-duration="3000" class="gear-data-boxes">
+            </div>
+            <script>
+                AOS.init(); // 자바스크립트로 init()을 해야 동작한다.
+            </script>
+
+        </div> <!--container -->
+
+        <div class="modal gear-register-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">MY GEAR MODIFYING</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-group" th:action="@{/gear/}" method="post">
+                            <input type="text" name="gname" placeholder="NAME" class="form-control">
+                            <input type="text" name="brand" PLACEHOLDER="BRAND" class="form-control">
+                            <input type="text" name="size" placeholder="SIZE" class="form-control">
+                            <input type="text" name="material" placeholder="MATERIAL" class="form-control">
+                            <input type="text" name="script" placeholder="SCRIPT" class="form-control">
+                            <input type="text" name="sort" class="form-control" placeholder="SORT">
+                            <input type="hidden" name="email" placeholder="EMAIL" class="form-control" th:value="${#authentication.principal.username}">
+                            <input type="file" name="uploadFiles" multiple class="form-control">
+                            <div class="hidden-box">
+
+                            </div>
+                            <div class="uploadResultDVI">
+                                <ul class="uploadUL">
+
+                                </ul>
+                            </div>
+                        </form>
 
                     </div>
-                    <button type="submit" class="gear-image-submit-btn">등록</button>
-                    <div class="uploadResultDVI">
-                        <ul class="uploadUL">
 
-                        </ul>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary gear-modal-close" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary gear-submit-btn">Save</button>
                     </div>
-                </form>
-
-                <div class="gear-list">
-                    <ul class="gear-list-ul">
-
-                    </ul>
                 </div>
             </div>
-        </div> <!--container -->
+        </div>
 
 
         <div class="modal gear-modal" tabindex="-1">
@@ -139,7 +195,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary gear-modal-close" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary gear-modal-modify">Save changes</button>
+                        <button type="button" class="btn btn-primary gear-modal-modify">Save</button>
                     </div>
                 </div>
             </div>
@@ -151,6 +207,10 @@
 
                 var email = [[${#authentication.principal.username}]];
                 console.info(email);
+
+                $(".readyForRegisterBtn").click(function (){
+                    $(".gear-register-modal").modal('show');
+                })
 
                 loadGearData();
 
@@ -281,26 +341,34 @@
 
                     $.getJSON('/gear/' + email, function (arr){
 
-                        var gearList = $(".gear-list-ul");
+                        var gearList = $(".gear-data-boxes");
                         var str = "";
 
                         console.info(arr);
 
                         $.each(arr, function (i, dto){
 
-                            console.info("-----imgDTOList----");
-                            console.info(dto.gearImageDTOList);
-
-                            str += '<li class="my-gear-li">';
+                            str += '<div class="col-md-2 my-gear-li">';
                             if (dto.gearImageDTOList[0] !== null){
                                 str += '<div class="loadGear-img-box">';
                                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                                str += '<div class="gear-btn-box">';
+                                str += '<button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                                str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                                str += '<button type="button" class="gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
+                                str += '</div>';
                                 str += '</div>';
                             }else {
                                 str += '<div class="loadGear-img-box">';
-                                str += "<img src='/icon/noImage2.svg' style='height: 100%'>";
+                                str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                                str += '<div class="gear-btn-box">';
+                                str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                                str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                                str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
+                                str += '</div>';
                                 str += '</div>';
                             }
+
                             str += '<div class="gear-info">';
                             str += '<div class="gear-info">';
                             str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
@@ -308,12 +376,7 @@
                             str += '<span>설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                             str += '</div>';
 
-                            str += '<div class="gear-btn-box">';
-                            str += '<button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                            str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
                             str += '</div>';
-
-                            str += '</li>';
 
                         }) // each
 
@@ -323,7 +386,7 @@
 
                 } // loadGearData
 
-                $(".gear-list-ul").on("click", ".gear-remove-btn", function (e){
+                $(".gear-data-boxes").on("click", ".gear-remove-btn", function (e){
 
                     e.preventDefault();
 
@@ -351,7 +414,7 @@
 
                 var modalGearDataUl = $(".modal-gear-data ul");
 
-                $(".gear-list-ul").on("click", ".gear-modify-btn", function (){
+                $(".gear-data-boxes").on("click", ".gear-modify-btn", function (){
 
                     var gno = $(this).data("gno");
 
@@ -535,6 +598,9 @@
                     $(".gear-modal").modal('hide');
                 })
 
+                $(".gear-image-close-btn").click(function (){
+                    $(".gear-modal").modal('hide');
+                });
 
 
             });  // the end

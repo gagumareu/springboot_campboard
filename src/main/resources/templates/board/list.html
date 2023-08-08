@@ -7,7 +7,7 @@
     <style>
 
         .boardListBoxes{
-            border: 1px solid black;
+            border-bottom: 1px solid black;
             display: flex;
             flex-direction: row;
             height: 58px;
@@ -40,7 +40,7 @@
         }
 
         .img-thumbnail-div{
-            height: 100%;
+            height: 92%;
         }
 
         .board_thumbnail_img{
@@ -69,6 +69,38 @@
         #board-title{
             color: #000;
         }
+
+        .list-pagination{
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-box{
+            display: flex;
+            /*width: 400px;*/
+            justify-content: space-between;
+        }
+
+        .search-box input {
+            width: 400px;
+        }
+
+        .form-select{
+            display: flex;
+        }
+
+        .form-select select{
+            width: 129px;
+        }
+
+        .form-select input{
+            width: 394px;
+        }
+        .wrapper-list{
+            margin-top: 16px;
+            border-top: 21px solid lightblue;
+        }
+
     </style>
 
 </head>
@@ -79,7 +111,7 @@
         <div class="container" >
             <form th:action="@{/board/list}" method="get">
 
-                <div class="input-group">
+                <div class="search-box">
                     <input type="hidden" name="page" value="1">
                     <div class="form-select">
                         <select name="type" class="form-control">
@@ -88,17 +120,16 @@
                             <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
                             <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
                         </select>
+                        <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
                     </div>
-                    <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
+
+                    <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
+                        <button class="btn btn-outline-light">글작성</button>
+                    </a>
                 </div>
 
             </form>
-            <div>
-                <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
-                    <button>Register</button>
-                </a>
-            </div>
-
+            <div class="wrapper-list">
             <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
                 <div class="img-box">
                     <div class="img-thumbnail-div">
@@ -107,7 +138,7 @@
                              th:src="|/display?files=${dto.boardImageDTOList[0].getThumbnailURL()}|">
                         <img class="board_thumbnail_img" th:unless="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
                     dto.boardImageDTOList[0]?.fileName != null  }"
-                             th:src="@{/icon/noImage2.svg}">
+                             th:src="@{/icon/img3.svg}">
                     </div>
 
                 </div>
@@ -136,24 +167,25 @@
                     </div>
                 </div>
             </div> <!-- boardListBoxes -->
+            </div>
+            <div class="list-pagination">
+                <ul class="pagination h-100 justify-content-center align-items-center">
+                    <li class="page-item" th:if="${boardList.prev}">
+                        <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">PREV</a>
+                        <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
+                    </li>
 
-            <ul class="pagination h-100 justify-content-center align-items-center">
-                <li class="page-item" th:if="${boardList.prev}">
-                    <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">PREV</a>
-                    <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
-                </li>
+                    <li class="page-item" th:each="page : ${boardList.pageList}">
+                        <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">[[${page}]]</a>
+                        <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">[[${page}]]</a>
+                    </li>
 
-                <li class="page-item" th:each="page : ${boardList.pageList}">
-                    <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">[[${page}]]</a>
-                    <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">[[${page}]]</a>
-                </li>
-
-                <li class="page-item" th:if="${boardList.next}">
-                    <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">NEXT</a>
-                    <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
-                </li>
-            </ul>
-
+                    <li class="page-item" th:if="${boardList.next}">
+                        <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">NEXT</a>
+                        <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
+                    </li>
+                </ul>
+            </div>
         </div>  <!-- container -->
 
     </th:block>
