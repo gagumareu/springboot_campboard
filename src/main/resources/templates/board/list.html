@@ -109,24 +109,24 @@
     <th:block th:fragment="content">
 
         <div class="container" >
-            <form th:action="@{/board/list}" method="get">
 
-                <div class="search-box">
-                    <input type="hidden" name="page" value="1">
-                    <div class="form-select">
-                        <select name="type" class="form-control">
-                            <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
-                            <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
-                            <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
-                            <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
-                        </select>
-                        <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
-                    </div>
-
-                    <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
-                        <button class="btn btn-outline-light">글작성</button>
-                    </a>
+            <div class="search-box">
+                <input type="hidden" name="page" value="1">
+                <div class="form-select">
+                    <select name="type" class="form-control" style="margin-right: 7px">
+                        <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
+                        <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                        <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
+                        <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                    </select>
+                    <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
                 </div>
+                <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
+                    <button class="btn btn-outline-light">글작성</button>
+                </a>
+            </div>
+
+            <form th:action="@{/board/list}" method="get">
 
             </form>
             <div class="wrapper-list">
@@ -185,7 +185,9 @@
                         <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
                     </li>
                 </ul>
+
             </div>
+
         </div>  <!-- container -->
 
     </th:block>

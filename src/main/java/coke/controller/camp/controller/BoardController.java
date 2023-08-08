@@ -55,6 +55,8 @@ public class BoardController {
     @GetMapping("/register")
     public String register(String category, Model model, Principal principal){
 
+        log.info("----------secondhands deal..........");
+
         if(category.equals("중고거래")){
 
             log.info("------------register for secondHands------------");

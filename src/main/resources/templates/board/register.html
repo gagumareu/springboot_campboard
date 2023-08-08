@@ -10,6 +10,32 @@
             display: flex;
             flex-direction: column;
         }
+
+        .titleAndSearchBox{
+            display: flex;
+            flex-direction: row;
+            margin: 10px 0px 14px 0px;
+            padding: 0px;
+        }
+
+        .inputTitle{
+            margin-right: 10px;
+            flex: 70%;
+        }
+
+        .categorySelector{
+            flex: 20%;
+        }
+
+        .inputEmail{
+            padding: 0px;
+        }
+
+        .btnBox{
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
     </style>
 
 </head>
@@ -40,13 +66,15 @@
                         </li>
                     </ul>
                 </div>
+
                 <div class="resetBtn">
 
                 </div>
-                <div class="col-md-12 col-sm-12">
-                    <input name="title" type="text" class="form-control" placeholder="TITLE">
+
+                <div class="titleAndSearchBox">
+                    <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
                     <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
-                    <select th:unless="${category == '중고거래'}" class="form-select" aria-label="Default select example" name="category">
+                    <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
                         <option value="잡담">잡담</option>
                         <option value="모임">모임</option>
                         <option value="캠핑장">캠핑장</option>
@@ -157,7 +185,7 @@
                 </script>
 
                 <div class="col-md-12 col-sm-12">
-                    <input name="email" type="text" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+                    <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
                 </div>
                 <div class="hiddenBox">
 
@@ -165,8 +193,8 @@
                 <div class="hiddenGearBox">
 
                 </div>
-                <div class="col-md-12 col-sm-12">
-                    <button class="registBtn">register</button>
+                <div class="col-md-12 col-sm-12 btnBox">
+                    <button class="btn btn-outline-light registerBtn">글작성</button>
                 </div>
             </form>
         </div>

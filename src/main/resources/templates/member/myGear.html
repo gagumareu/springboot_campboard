@@ -92,6 +92,14 @@
         border-radius: 5px;
     }
 
+    .myGear-list-header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 35px;
+    }
+
 </style>
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
@@ -99,14 +107,16 @@
 
         <div class="container">
 
-            <h1>My Gear Page</h1>
-            <h6>[[${#authentication.principal.username}]]</h6>
+            <div class="myGear-list-header">
+            <h3>나의 캠핑 기어 리스트</h3>
+<!--            <h6>[[${#authentication.principal.username}]]</h6>-->
 
 <!--            <div class="register-main-body">-->
 <!--                -->
 <!--            </div>-->
             <div class="readyForRegisterBtn">
                 <button type="button" class="btn btn-outline-secondary">등록하기</button>
+            </div>
             </div>
             <div class="gear-list">
                 <ul class="gear-list-ul">

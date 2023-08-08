@@ -7,8 +7,10 @@
 
     <style>
         .reply-box{
-            border: 1px solid black;
-            margin-bottom: 20px;
+            /*border: 1px solid black;*/
+            /*margin-bottom: 20px;*/
+            padding: 18px 25px 24px;
+            border-bottom: 1px solid #ccc;
         }
 
         .box{
@@ -19,6 +21,87 @@
             display: none;
         }
 
+        .read-title{
+            font-size: 26px;
+            color: #000;
+        }
+
+        .read-title{
+            margin-top: 10px;
+        }
+
+        .writer-info{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .writer-nameNDate{
+            display: flex;
+            flex-direction: row;
+        }
+        .readBoard-btn-box{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 34px;
+        }
+
+        .read-reply-box{
+            background: #fafafa;
+            display: flex;
+            height: 207px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .read-reply-form{
+            width: 100%;
+            padding: 10px 60px 10px 60px;
+        }
+
+        .reply-textarea{
+            width: 100%;
+            /*height: 120px;*/
+            box-sizing: border-box;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #dfdfdf;
+            font-size: 14px;
+        }
+
+        .read-reply-btn{
+            display: flex;
+            position: static;
+            margin-top: 10px;
+            justify-content: flex-end;
+        }
+
+        .reply-writer-info{
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 10px;
+        }
+
+        .reply-writer{
+            margin-right: 18px;
+        }
+        .reply-regDate{
+            color: #aaa;
+        }
+
+        .reply-text{
+            font-size: 14px;
+            color: #3d3d3d;
+            font-weight: normal;
+            line-height: 1.714;
+        }
+
+        .container replyContainer{
+
+        }
     </style>
 <body>
 
@@ -26,24 +109,28 @@
   <th:block th:fragment="content">
 
       <div class="container">
-          <div>
-              <label>제목</label>
-              <input type="text" class="form-control" th:value="${dto.title}">
+          <div class="read-title">
+              <strong th:text="${dto.title}" class="read-title"></strong>
           </div>
 
-          <div>
-              <label>이름: </label><a><span>[[${dto.memberName}]]</span></a>
-              <div th:if="${dto.regDate == dto.modDate}">
-                  <label>등록일: </label>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
+          <div class="writer-info">
+              <div class="writer-nameNDate">
+                  <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">
+                      <span>[[${dto.memberName}]]</span>
+                  </a>
+                  <div th:if="${dto.regDate == dto.modDate}">
+                      [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
+                  </div>
+                  <div th:unless="${dto.regDate == dto.modDate}">
+                      [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
+                  </div>
               </div>
-              <div th:unless="${dto.regDate == dto.modDate}">
-                  <label>수정일: </label>[[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
+              <div class="replyCounting">
+                  <label>댓글 수</label>[[${dto.replyCount}]]
               </div>
-
-              <label>댓글 수</label><div>[[${dto.replyCount}]]</div>
           </div>
 
-          <div>
+          <div class="ckEditor-content">
               <div th:utext="${dto.content}"></div>
           </div>
           <form id="remove-form" th:action="@{/board/remove}" method="post">
@@ -51,33 +138,33 @@
               <input type="hidden" name="email" th:value="${dto.email}">
           </form>
 
-          <div>
+          <div class="readBoard-btn-box">
               <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
-              <button>리스트</button>
+              <button class="btn btn-outline-info">리스트</button>
               </a>
               <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
-                  <button>리스트</button>
+                  <button class="btn btn-outline-info">리스트</button>
               </a>
               <th:block th:with="user=${#authentication.principal}">
                   <div th:if="${user.username != null && user.username == dto.email}">
                       <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
-                          <button class="modifyBtn">수정</button>
+                          <button class="btn btn-outline-light modifyBtn">수정</button>
                       </a>
-                      <button class="removeBtn">삭제</button>
+                      <button class="btn btn-outline-info removeBtn">삭제</button>
                   </div>
               </th:block>
-
-
           </div>
 
-          <div th:with="user=${#authentication.principal}">
-              <form th:action="@{/replies/}">
+          <div th:with="user=${#authentication.principal}" class="read-reply-box">
+              <div th:action="@{/replies/}" class="read-reply-form">
                   <input type="hidden" name="bno" th:value="${dto.bno}">
-                  <input type="text" name="text" class="form-control" placeholder="REPLY" id="reply-input">
-                  <input type="text" name="email" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
-                  <button type="submit" class="insertReplyBtn" >작성</button>
-              </form>
-          </div>
+                  <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
+                  <input type="hidden" name="email" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+                  <div class="read-reply-btn">
+                    <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
+                  </div>
+              </div>
+          </div> <!--read-reply-box-->
 
 <!--          <div>-->
 <!--              <dvi>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</dvi>-->
@@ -182,18 +269,25 @@
 
                       $.each(arr, function (idx, dto){
 
-                          str += ' <div class="reply-box" data-rno="'+dto.rno+'"><b>'+dto.rno+'</b>';
-                          str += ' <h5 class="reply-title">text: '+dto.text+'</h5>';
-                          str += ' <h6 class="reply-writer">writer: '+dto.memberName+'</h6>';
-                          str += ' <p class="reply-regDate">등록일: '+formatTime(dto.regDate)+'</p>';
-                          str += '<div class="reply-modify-div">' +
-                              '<button type="button" class="reply-modify-btn" data-email="'+dto.email+'">수정</button>' +
-                              '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">삭제</button></div>';
-                          str += '<div class="replyModifyingForm">' +
-                              '<input type="text" name="text" value="'+dto.text+'" class="replyModifyTextInput">' +
-                              '<div>' +
-                              '<button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>' +
-                              '<button type="button" class="cancelReplyModifying">취소</button></div></div>';
+                          str += ' <div class="reply-box" data-rno="'+dto.rno+'">';
+
+                          str += '<div class="reply-writer-info">';
+                          str += ' <span class="reply-writer">'+dto.memberName+'</span>';
+                          str += ' <span class="reply-regDate">'+formatTime(dto.regDate)+'</span>';
+                          str += '</div>';
+
+                          str += ' <div class="reply-text"><span>'+dto.text+'</span></div>';
+
+                          str += '<div class="reply-modify-div">';
+                          str += '<button type="button" class="reply-modify-btn" data-email="'+dto.email+'">수정</button>';
+                          str += '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">삭제</button>';
+                          str += '</div>';
+
+                          str += '<div class="replyModifyingForm">';
+                          str += '<input type="text" name="text" value="'+dto.text+'" class="replyModifyTextInput">';
+                          str += '<div>';
+                          str += '<button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>';
+                          str += '<button type="button" class="cancelReplyModifying">취소</button></div></div>'
                           str += ' </div>';
 
 
