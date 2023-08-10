@@ -22,6 +22,8 @@ public class BoardDTO {
     private String email;
     private String memberName;
 
+//    private Long gno;
+
     private int replyCount;
 
     @Builder.Default

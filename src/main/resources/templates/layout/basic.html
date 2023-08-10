@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout/basic.html}">
 <th:block th:fragment="setContent(content)">
 <head>
@@ -45,6 +46,11 @@
         .header{
             display: flex;
             flex-direction: row;
+            justify-content: space-between;
+            margin-top: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         }
 
         body{
@@ -65,45 +71,59 @@
             padding : 30px 0;
         }
 
+        .header-memberPage{
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+        }
 
+        .header-category{
+            display: flex;
+            flex-direction: row;
+            font-size: 1.2em;
+        }
+
+        .header-category a{
+            margin-right: 20px;
+        }
     </style>
 <body>
 <div class="wrapper">
     <div class="container">
         <div class="header">
 
-            <div>
-                <a th:href="@{/board/list}"><h3>HOME</h3></a>
-            </div>
-            <div>
-                <a th:href="@{/board/list(category='잡담')}"><h5>커뮤니티</h5></a>
-            </div>
-            <div>
-                <a th:href="@{/board/list(category='모임')}"><h5>캠핑모임</h5></a>
-            </div>
-            <div>
-                <a th:href="@{/board/list(category='캠핑장')}"><h5>캠핑장</h5></a>
-            </div>
-            <div>
-                <a th:href="@{/board/list(category='중고거래')}"><h5>중고거래</h5></a>
-            </div>
-            <div>
-                <a th:href="@{/member/login}">
-                    <div>로그인</div>
-                </a>
-                <a th:href="@{/logout}">
-                    <div>로그아웃</div>
-                </a>
-                <a href="/member/join">
-                    <div class="btn-secondary">회원 가입</div>
-                </a>
+            <a th:href="@{/board/list}" style="font-size: 2.2em">HOME</a>
 
-                <a th:href="@{/member/myPage}">
-                    <div>마이페이지</div>
-                </a>
-                <a th:href="@{/member/myGear}">
-                    <div>마이기어</div>
-                </a>
+            <div class="header-category">
+                <a th:href="@{/board/list(category='잡담')}">커뮤니티</a>
+                <a th:href="@{/board/list(category='모임')}">캠핑모임</a>
+                <a th:href="@{/board/list(category='캠핑장')}">캠핑장</a>
+                <a th:href="@{/board/list(category='중고거래')}">중고거래</a>
+                <a th:href="@{/member/myGear}">마이기어</a>
+            </div>
+
+            <div class="header-memberPage">
+                <div sec:authorize="isAnonymous()" class="header-category">
+                    <a th:href="@{/member/login}">
+                        로그인
+                    </a>
+                </div>
+                <div  class="header-category" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/logout}" >
+                        로그아웃
+                    </a>
+                </div>
+                <div class="header-category" sec:authorize="isAnonymous()">
+                    <a href="/member/join">
+                        회원가입
+                    </a>
+                </div>
+                <div class="header-category" style="margin-right: 0px">
+                    <a th:href="@{/member/myPage}">
+                        마이페이지
+                    </a>
+                </div>
+
             </div>
 
 

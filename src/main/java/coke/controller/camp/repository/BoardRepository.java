@@ -26,6 +26,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
             "LEFT OUTER JOIN b.member m " +
             "LEFT OUTER JOIN Reply r ON r.board = b " +
             "LEFT OUTER JOIN BoardImage bi ON bi.board = b " +
+            "LEFT OUTER JOIN Gear g ON g.member = m " +
             "WHERE b.bno = :bno " +
             "GROUP BY bi")
     List<Object[]> getBoardWithAll(@Param("bno") Long bno);
