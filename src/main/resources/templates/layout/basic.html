@@ -43,6 +43,10 @@
             height: 100%
         }
 
+        .header a {
+            text-decoration: none;
+        }
+
         .header{
             display: flex;
             flex-direction: row;
@@ -51,7 +55,7 @@
             align-items: center;
             margin-bottom: 20px;
         }
-        }
+
 
         body{
             min-height: 100vh;
@@ -118,8 +122,8 @@
                         회원가입
                     </a>
                 </div>
-                <div class="header-category" style="margin-right: 0px">
-                    <a th:href="@{/member/myPage}">
+                <div class="header-category">
+                    <a th:href="@{/member/myPage}" style="margin-right: 0px">
                         마이페이지
                     </a>
                 </div>

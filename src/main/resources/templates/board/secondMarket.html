@@ -45,7 +45,23 @@
 
     .gear-btn-box{
         flex: 10%;
+        padding: 0px 6px 0px 6px;
     }
+
+    .my-gear-li:hover{
+        background: #fafafa;
+        cursor: grab;
+    }
+
+    .form-group{
+        margin-top: 10px;
+        row-gap: 11px;
+        display: flex;
+        flex-direction: column;
+    }
+
+
+
 </style>
 
 <body>
@@ -69,11 +85,120 @@
 
                   <div class="form-group">
                       <input type="text" name="title" placeholder="TITLE" class="form-control">
-                      <textarea name="content" placeholder="CONTENT" class="form-control"></textarea>
+<!--                      <textarea name="content" placeholder="CONTENT" class="form-control" rows="20"></textarea>-->
+                      <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
+                      <script>
+                          $(document).ready(function() {
+
+                              var targetImageList = [];
+
+                              $('#summernote').summernote({
+                                  height: 600,
+                                  lang: "ko-KR",
+                                  callbacks:{
+                                      onImageUpload: function (files, editor, welEditable){
+                                          for (var i = files.length -1; i >= 0; i--){
+                                              console.info(files[i]);
+                                              uploadImageFiles(files[i], this);
+                                          } //for
+                                      }, // onImageUpload
+                                      onMediaDelete: function (target){
+
+                                          var fileName = target.attr('src');
+
+                                          fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+
+                                          console.log("fileName: " + fileName);
+
+                                          targetImageList.forEach(function (i){
+
+                                              var targetName = i;
+
+                                              if (i == fileName){
+
+                                                  var targetLI = $("li[name='"+fileName+"']");
+
+                                                  targetLI.remove();
+
+                                                  $.ajax({
+                                                      url: '/deleteFile',
+                                                      data: {files: fileName},
+                                                      dataType: 'text',
+                                                      type: 'POST',
+                                                      success: function (result){
+                                                      }
+                                                  })
+                                              }
+
+                                          }); // targetImageList forEach
+
+                                      } // onMediaDelete
+                                  } // callbacks
+                              }); // summernote
+
+                              function uploadImageFiles(files, el){
+
+                                  var formData = new FormData();
+
+                                  formData.append("uploadFiles", files);
+
+                                  $.ajax({
+                                      url: '/uploadAjax',
+                                      data: formData,
+                                      dataType: 'json',
+                                      contentType: false,
+                                      processData: false,
+                                      type: 'POST',
+                                      success:function (result){
+                                          console.info(result);
+                                          uploadResultUL(result);
+                                      },
+                                      error: function (jqXHR, textStatus, errorThrown){
+                                          console.info(textStatus);
+                                      }
+                                  }); // ajax
+                              } // function uploadImageFiles
+
+                              function uploadResultUL(result){
+
+                                  var uploadResultUL = $(".uploadResultUL ul");
+                                  var str = "";
+
+                                  $(result).each(function (i, dto){
+
+                                      str += '<li data-path="'+dto.folderPath+'" ' +
+                                          'data-uuid="'+dto.uuid+'" ' +
+                                          'data-name="'+dto.fileName+'" ' +
+                                          'name="display?files='+dto.imageURL+'"></li>';
+
+                                      var imageURL = dto.imageURL;
+
+                                      console.log("imageURL: " + imageURL);
+
+                                      $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+
+                                      targetImageList.push("display?files="+dto.imageURL);
+
+                                  }); // result each
+
+                                  uploadResultUL.append(str);
+
+                              }; // function uploadResultUL
+
+                          }); // the end
+                      </script>
                       <input name="email" type="text" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+                      <div class="uploadResultUL">
+                          <ul>
+
+                          </ul>
+                      </div>
+                      <div class="hiddenBox">
+
+                      </div>
                   </div>
                   <div class="col-md-12 col-sm-12">
-                      <button class="btn btn-primary">register</button>
+                      <button class="btn btn-primary registerBtn">register</button>
                   </div>
               </form>
           </div>
@@ -87,8 +212,6 @@
         loadGearData();
 
         var username = [[${#authentication.principal.username}]];
-
-
 
         function loadGearData(){
 
@@ -105,7 +228,7 @@
 
                 $.each(arr, function (i, dto){
 
-                    str += '<li class="my-gear-li">';
+                    str += '<li class="my-gear-li" data-gno="'+dto.gno+'">';
                     if (dto.gearImageDTOList[0] !== null){
                         str += '<div class="loadGear-img-box">';
                         str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
@@ -122,10 +245,10 @@
                     str += '<span>설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                     str += '</div>';
 
-                    str += '<div class="gear-btn-box">';
-                    str += '<button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                    str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
-                    str += '</div>';
+                    // str += '<div class="gear-btn-box">';
+                    // str += '<button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                    // str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                    // str += '</div>';
 
                     str += '</li>';
 
@@ -136,6 +259,124 @@
             }); // getJson
 
         } // loadGearData
+
+        // $(".gear-list").on("click", ".my-gear-li", function (){
+        //     console.log("clicking");
+        //
+        //     var gno = $(this).data("gno");
+        //     console.log(gno);
+        //
+        //     $.getJSON('/gear/myGear/' + gno, function (dto){
+        //
+        //         console.log(dto);
+        //
+        //         var name = dto.gname;
+        //         var brand = dto.brand;
+        //         var size = dto.size;
+        //         var material = dto.material;
+        //         var script = dto.script;
+        //         var sort = dto.sort;
+        //
+        //         var textArea = $("textarea[name='content']");
+        //
+        //         var str ="";
+        //
+        //         textArea.html("이름: " + name + "\n" + "브랜드: " + brand +
+        //         "\n" + "사이즈: " + size + "\n" + "소재: " + material + "\n" + "설명" + script + "\n" + "카테고리: " + sort);
+        //
+        //     })
+        // }) // clicking gear-list event
+
+
+        $(".gear-list").on("click", "li", function (){
+
+            $('#summernote').summernote('reset');
+
+            var gno = $(this).data("gno");
+
+            console.info(gno);
+
+            var str ="";
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                    }else {
+                        // str += "<img src='/icon/noImage2.svg'>";
+                        console.info("there are no avalable images");
+                    }
+                });
+
+            }); // getJSON
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML',
+                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
+                    HTMLString
+                );
+
+
+            }); // getJSON
+
+
+            $(".gear-div ul").html("");
+
+            var resetBtn = $(".resetBtn");
+
+            str = "<button type='button' id='reBackToGearList'>기어 등록 취소</button>"
+
+            resetBtn.html(str);
+
+        }); // gear-div clicking event
+
+        $(".registerBtn").on("click", function (e){
+
+            e.preventDefault();
+
+            var str = "";
+
+            $(".uploadResultUL li").each(function (i, dto){
+
+                var target = $(dto);
+
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+
+            });
+
+            $(".hiddenBox").html(str);
+            $("form").submit();
+
+        }); // register btn clicking event
+
 
     });
 

@@ -53,7 +53,9 @@ public class BoardController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/register")
-    public String register(String category, Model model, Principal principal){
+    public String register(String category, Model model, Principal principal, Long gno){
+
+        log.info("----------secondHands deal..........");
 
         if(category.equals("중고거래")){
 
@@ -65,13 +67,16 @@ public class BoardController {
 
             log.info(gearList);
 
+            if (gno != null){
+                GearDTO gearDTO = gearService.getByGno(gno);
+                model.addAttribute("gearDTO", gearDTO);
+            }
+
             model.addAttribute("gearList", gearList);
             model.addAttribute("category", category);
             model.addAttribute("pricipalName", principal.getName());
 
-//            return "/secondHand/register";
-
-            return "/board/secondMarket";
+            return "/board/register";
 
         }else {
 
@@ -79,6 +84,7 @@ public class BoardController {
         }
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/register")
     public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
 
@@ -164,6 +170,7 @@ public class BoardController {
 
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
         redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("category", pageRequestDTO.getCategory());
 
         return "redirect:/board/read";
     }

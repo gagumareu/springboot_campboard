@@ -101,6 +101,14 @@
             border-top: 21px solid lightblue;
         }
 
+        .wrapper-list a{
+            text-decoration: none;
+        }
+
+        .availImg{
+            margin-left: 9px;
+        }
+
     </style>
 
 </head>
@@ -109,12 +117,12 @@
     <th:block th:fragment="content">
 
         <div class="container" >
-            <form th:action="@{/board/list}" method="get">
 
-                <div class="search-box">
+            <div class="search-box">
+                <form th:action="@{/board/list}" method="get">
                     <input type="hidden" name="page" value="1">
                     <div class="form-select">
-                        <select name="type" class="form-control">
+                        <select name="type" class="form-control" style="margin-right: 7px">
                             <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
                             <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
                             <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
@@ -122,18 +130,20 @@
                         </select>
                         <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="SEARCH">
                     </div>
+                </form>
+                <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
+                    <button class="btn btn-outline-light">글작성</button>
+                </a>
+            </div>
 
-                    <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
-                        <button class="btn btn-outline-light">글작성</button>
-                    </a>
-                </div>
 
-            </form>
+
+
             <div class="wrapper-list">
             <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
                 <div class="img-box">
                     <div class="img-thumbnail-div">
-                        <img class="board_thumbnail_img" th:if="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
+                        <img class="board_thumbnail_img availImg" th:if="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
                     dto.boardImageDTOList[0]?.fileName != null  }"
                              th:src="|/display?files=${dto.boardImageDTOList[0].getThumbnailURL()}|">
                         <img class="board_thumbnail_img" th:unless="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
@@ -185,7 +195,9 @@
                         <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
                     </li>
                 </ul>
+
             </div>
+
         </div>  <!-- container -->
 
     </th:block>

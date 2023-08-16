@@ -6,9 +6,66 @@
     <title>Title</title>
 
     <style>
+
         form{
             display: flex;
             flex-direction: column;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .titleAndSearchBox{
+            display: flex;
+            flex-direction: row;
+            margin: 10px 0px 14px 0px;
+            padding: 0px;
+        }
+
+        .inputTitle{
+            margin-right: 10px;
+            flex: 70%;
+        }
+
+        .categorySelector{
+            flex: 20%;
+        }
+
+        .inputEmail{
+            padding: 0px;
+        }
+
+        .btnBox{
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /*.gear-div ul li {*/
+        /*    display: flex;*/
+        /*    flex-direction: row;*/
+        /*    align-items: center;*/
+        /*    margin-bottom: 5px;*/
+        /*}*/
+
+        .gear-div-info{
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .gear-div-img{
+            height: 80px;
+        }
+
+        .gear-div-img img{
+            height: 93%;
+        }
+
+        .gear-list-box{
+            height: 180px;
         }
     </style>
 
@@ -22,31 +79,30 @@
             <form th:action="@{/board/register}" method="post">
 
                 <div th:if="${gearList != null}" class="gear-div">
-                    <ul>
-                        <li th:each="list : ${gearList}" th:attrappend="data-gno=${list.gno}">
-                            <div>
-                                <img th:if="${list.gearImageDTOList[0] != null}" th:src="|/display?files=${list.gearImageDTOList[0].getThumbnailURL()}|"
-                                     th:attr="data-url=${list.gearImageDTOList[0].getImageURL()}" th:attrappend="data-gno=${list.gno}">
-                                <img th:unless="${list.gearImageDTOList[0] != null}" th:src="@{/icon/noImage2.svg}">
+                        <div class="col-md-2 gear-list-box" th:each="dto : ${gearList}" th:attrappend="data-gno=${dto.gno}">
+                            <div class="gear-div-img">
+                                <img class="avail-img" th:if="${dto.gearImageDTOList[0] != null}" th:src="|/display?files=${dto.gearImageDTOList[0].getThumbnailURL()}|"
+                                     th:attr="data-url=${dto.gearImageDTOList[0].getImageURL()}" th:attrappend="data-gno=${dto.gno}">
+                                <img class="none-img" th:unless="${dto.gearImageDTOList[0] != null}" th:src="@{/icon/noImage2.svg}">
                             </div>
-                            <div>
-                                <span>이름: [[${list.gname}]]</span>
-                                <span>브랜드: [[${list.brand}]]</span>
-                                <span>소재: [[${list.material}]]</span>
-                                <span>사이즈: [[${list.size}]]</span>
-                                <span>분류: [[${list.sort}]]</span>
-                                <span>[[${list.script}]]</span>
+                            <div class="gear-div-info">
+                                <span>이름: [[${dto.gname}]]</span>
+                                <span>브랜드: [[${dto.brand}]]</span>
+                                <span>소재: [[${dto.material}]]</span>
+                                <span>사이즈: [[${dto.size}]]</span>
+                                <span>분류: [[${dto.sort}]]</span>
                             </div>
-                        </li>
-                    </ul>
+                        </div>
                 </div>
+
                 <div class="resetBtn">
 
                 </div>
-                <div class="col-md-12 col-sm-12">
-                    <input name="title" type="text" class="form-control" placeholder="TITLE">
+
+                <div class="titleAndSearchBox">
+                    <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
                     <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
-                    <select th:unless="${category == '중고거래'}" class="form-select" aria-label="Default select example" name="category">
+                    <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
                         <option value="잡담">잡담</option>
                         <option value="모임">모임</option>
                         <option value="캠핑장">캠핑장</option>
@@ -157,7 +213,7 @@
                 </script>
 
                 <div class="col-md-12 col-sm-12">
-                    <input name="email" type="text" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+                    <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
                 </div>
                 <div class="hiddenBox">
 
@@ -165,8 +221,8 @@
                 <div class="hiddenGearBox">
 
                 </div>
-                <div class="col-md-12 col-sm-12">
-                    <button class="registBtn">register</button>
+                <div class="col-md-12 col-sm-12 btnBox">
+                    <button class="btn btn-outline-light registerBtn">글작성</button>
                 </div>
             </form>
         </div>
@@ -192,9 +248,11 @@
         var username = [[${#authentication.principal.username}]];
         console.info(username);
 
-        $(".registBtn").on("click", function (e){
+        $(".registerBtn").on("click", function (e){
 
             e.preventDefault();
+
+            console.log("clicking");
 
             var str = "";
 
@@ -213,7 +271,9 @@
 
         }); // register btn clicking event
 
-        $(".gear-div").on("click", "li", function (){
+        $(".gear-div").on("click", ".gear-list-box", function (){
+
+            $('#summernote').summernote('reset');
 
             var gno = $(this).data("gno");
 
@@ -237,7 +297,7 @@
                     }
                 });
 
-            }); // getJSON
+            }); // getJSON for images
 
             $.getJSON('/gear/myGear/' + gno, function (dto){
 
@@ -257,66 +317,125 @@
                 console.info(sort);
                 console.info(state);
 
-                // $('#summernote').summernote('insertText',
-                //     '이름: ' + name + '\n\n\n' +
-                //     '브랜드: ' + brand
-                // );
+                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML',
+                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
+                    HTMLString
+                );
 
 
-            }); // getJSON
+            }); // getJSON for gear info
 
 
-            $(".gear-div ul").html("");
-
-            var resetBtn = $(".resetBtn");
-
-            str = "<button type='button' id='reBackToGearList'>기어 등록 취소</button>"
-
-            resetBtn.html(str);
+            // $(".gear-div ul").html("");
+            //
+            // var resetBtn = $(".resetBtn");
+            //
+            // str = "<button type='button' id='reBackToGearList'>기어 등록 취소</button>"
+            //
+            // resetBtn.html(str);
 
         }); // gear-div clicking event
 
-        $(".resetBtn").on("click", "#reBackToGearList", function (){
-            console.info("reBackGearList clicking");
-            loadGearData();
-            // $('#summernote').summernote('code', "");
-            $('#summernote').summernote('reset');
-            $(".resetBtn").html("");
-        });
+        // $(".resetBtn").on("click", "#reBackToGearList", function (){
+        //     console.info("reBackGearList clicking");
+        //     loadGearData();
+        //     // $('#summernote').summernote('code', "");
+        //     $('#summernote').summernote('reset');
+        //     $(".resetBtn").html("");
+        // });
+        //
+        // function loadGearData(){
+        //
+        //     console.info("---------loadGearData()----------");
+        //
+        //     var gearDivUl = $(".gear-div ul");
+        //
+        //
+        //     $.getJSON('/gear/' + username, function (arr){
+        //
+        //         var str = "";
+        //
+        //         console.info(arr);
+        //
+        //         $.each(arr, function (i, dto){
+        //
+        //             console.info(dto.gearImageDTOList);
+        //
+        //             str += '<li data-gno="'+dto.gno+'">';
+        //             if (dto.gearImageDTOList[0] !== null){
+        //                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"' data-gno='"+dto.gno+"'>";
+        //             }else {
+        //                 str += "<img src='/icon/noImage2.svg'>";
+        //             }
+        //             str += '<div class="gear-info">';
+        //             str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span><span>분류: '+dto.sort+'</span>';
+        //             str += '</div>';
+        //             str += '</li>';
+        //
+        //         }) // each
+        //         gearDivUl.html(str);
+        //     }); // getJson
+        //
+        // } // loadGearData
 
-        function loadGearData(){
+        var gearDTO = [[${gearDTO}]];
+        console.log(gearDTO)
 
-            console.info("---------loadGearData()----------");
+        if(gearDTO !== null){
 
-            var gearDivUl = $(".gear-div ul");
+            var gno = gearDTO.gno;
+            console.log(gno);
 
+            $.getJSON('/gear/myGear/' + gno, function (dto){
 
-            $.getJSON('/gear/' + username, function (arr){
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
 
-                var str = "";
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML',
+                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
+                    HTMLString
+                );
+
+            }); // getJSON
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
 
                 console.info(arr);
 
                 $.each(arr, function (i, dto){
 
-                    console.info(dto.gearImageDTOList);
-
-                    str += '<li data-gno="'+dto.gno+'">';
-                    if (dto.gearImageDTOList[0] !== null){
-                        str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"' data-gno='"+dto.gno+"'>";
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
                     }else {
-                        str += "<img src='/icon/noImage2.svg'>";
+                        // str += "<img src='/icon/noImage2.svg'>";
+                        console.info("there are no avalable images");
                     }
-                    str += '<div class="gear-info">';
-                    str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span><span>설명: '+dto.script+'</span><span>분류: '+dto.sort+'</span>';
-                    str += '</div>';
-                    str += '</li>';
+                });
 
-                }) // each
-                gearDivUl.html(str);
-            }); // getJson
+            }); // getJSON for images
 
-        } // loadGearData
+        } // load gearDTO
 
 
     }); // the end

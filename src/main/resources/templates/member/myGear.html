@@ -57,6 +57,9 @@
         height: 290px;
 
     }
+    .my-gear-li:hover{
+        background: #fafafa;
+    }
 
     .loadGear-img-box{
         /*flex: 20%;*/
@@ -70,28 +73,63 @@
         /*flex: 60%;*/
         display: flex;
         flex-direction: column;
+        overflow: auto;
+        height: 190px;
+        word-wrap: break-word;
+
+
+    }
+
+    .gear-info span{
+        margin-bottom: 2px;
     }
 
     .gear-btn-box{
+        display: none;
         /*flex: 10%;*/
-        display: flex;
+        /*display: flex;*/
         flex-direction: column;
-        height: 100px;
+        height: 72px;
         row-gap: 6px;
         margin-top: 5px;
     }
 
     .loadGear-img-box img{
         /*border: 1px solid;*/
-        width: 50%;
+        width: 60%;
     }
 
     .gear-btn-box button{
         background-color: white;
         border: 1px solid;
         border-radius: 5px;
+        margin-left: 8px;
+        margin-bottom: 1px;
     }
 
+    .myGear-list-header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 35px;
+    }
+
+    #justifyBtn{
+        width: 20px;
+
+    }
+
+    .loadGear-rightSide-box{
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        width: 40%;
+    }
+
+    .gear-script{
+        /*overflow: auto;*/
+    }
 </style>
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
@@ -99,14 +137,12 @@
 
         <div class="container">
 
-<!--            <h1>My Gear Page</h1>-->
-<!--            <h6>[[${#authentication.principal.username}]]</h6>-->
+            <div class="myGear-list-header">
+            <h3>나의 캠핑 기어 리스트</h3>
 
-<!--            <div class="register-main-body">-->
-<!--                -->
-<!--            </div>-->
             <div class="readyForRegisterBtn">
                 <button type="button" class="btn btn-outline-secondary">등록하기</button>
+            </div>
             </div>
             <div class="gear-list">
                 <ul class="gear-list-ul">
@@ -349,31 +385,27 @@
                         $.each(arr, function (i, dto){
 
                             str += '<div class="col-md-2 my-gear-li">';
+                            str += '<div class="loadGear-img-box">';
                             if (dto.gearImageDTOList[0] !== null){
-                                str += '<div class="loadGear-img-box">';
                                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
-                                str += '<div class="gear-btn-box">';
-                                str += '<button type="button" class="gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                                str += '<button type="button" class="gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
-                                str += '<button type="button" class="gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
-                                str += '</div>';
-                                str += '</div>';
                             }else {
-                                str += '<div class="loadGear-img-box">';
                                 str += "<img src='/icon/img3.svg' style='height: 100%'>";
-                                str += '<div class="gear-btn-box">';
-                                str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                                str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
-                                str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
-                                str += '</div>';
-                                str += '</div>';
                             }
+                            str += '<div class="loadGear-rightSide-box">'
+                            str += '<img id="justifyBtn" src="/icon/justify.svg">';
+
+                            str += '<div class="gear-btn-box">';
+                            str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                            str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                            str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
+                            str += '</div>';
+                            str += '</div>';
+                            str += '</div>';
 
                             str += '<div class="gear-info">';
-                            str += '<div class="gear-info">';
                             str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                            str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                             str += '</div>';
-                            str += '<span>설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                             str += '</div>';
 
                             str += '</div>';
@@ -604,9 +636,22 @@
 
                 $(".gear-data-boxes").on("click", ".gear-market-btn", function (){
 
-                    window.location.href = '/board/register?category="중고거래"';
+                    var gno = $(this).data("gno");
+                    console.log(gno)
+
+                    window.location.href = '/board/register?category=중고거래&gno=' + gno;
 
                 });
+
+                $(".gear-data-boxes").on("click", "#justifyBtn", function (e){
+
+                    if ($(this).closest(".my-gear-li").find(".gear-btn-box").css("display") == "none"){
+
+                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "block");
+                    }else {
+                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "none");
+                    }
+                })
 
 
             });  // the end
