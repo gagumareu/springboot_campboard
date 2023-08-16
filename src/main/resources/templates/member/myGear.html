@@ -86,11 +86,8 @@
 
     .gear-btn-box{
         display: none;
-        /*flex: 10%;*/
-        /*display: flex;*/
         flex-direction: column;
         height: 72px;
-        row-gap: 6px;
         margin-top: 5px;
     }
 
@@ -103,8 +100,7 @@
         background-color: white;
         border: 1px solid;
         border-radius: 5px;
-        margin-left: 8px;
-        margin-bottom: 1px;
+        margin-bottom: 2px;
     }
 
     .myGear-list-header{
@@ -627,7 +623,7 @@
 
 
                 $(".gear-modal-close").click(function (){
-                    $(".gear-modal").modal('hide');
+                    $(".modal").modal('hide');
                 })
 
                 $(".gear-image-close-btn").click(function (){
@@ -647,7 +643,7 @@
 
                     if ($(this).closest(".my-gear-li").find(".gear-btn-box").css("display") == "none"){
 
-                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "block");
+                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "flex");
                     }else {
                         $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "none");
                     }
