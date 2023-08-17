@@ -1,14 +1,16 @@
 package coke.controller.camp.repository;
 
 import coke.controller.camp.entity.Gear;
+import coke.controller.camp.repository.Search.GearSearchRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface GearRepository extends JpaRepository<Gear, Long> {
+public interface GearRepository extends JpaRepository<Gear, Long>, GearSearchRepository {
 
     @Query("SELECT g, m, gi " +
             "FROM Gear g " +
@@ -19,6 +21,14 @@ public interface GearRepository extends JpaRepository<Gear, Long> {
 
     @Query("SELECT g, m, gi FROM Gear g LEFT JOIN g.member m LEFT JOIN GearImage gi ON gi.gear = g WHERE g.gno = :gno")
     List<Object[]> getGearByGno(@Param("gno") Long gno);
+
+    @Query("SELECT g, m, gi " +
+            "FROM Gear g " +
+            "LEFT OUTER JOIN g.member m " +
+            "LEFT OUTER JOIN GearImage gi ON gi.gear = g " +
+            "WHERE g.member.email = :email " +
+            "GROUP BY g order by g.gno DESC ")
+    Page<Object[]> getGearListForPagination(String email, Pageable pageable);
 
 
 }

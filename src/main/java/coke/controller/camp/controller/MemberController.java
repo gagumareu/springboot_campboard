@@ -2,6 +2,8 @@ package coke.controller.camp.controller;
 
 import coke.controller.camp.dto.GearDTO;
 import coke.controller.camp.dto.MemberJoinDTO;
+import coke.controller.camp.dto.PageRequestDTO;
+import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.security.dto.MemberSecurityDTO;
 import coke.controller.camp.service.GearService;
 import coke.controller.camp.service.MemberService;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 @Controller
 @Log4j2
 @RequestMapping("/member")
@@ -23,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MemberController {
 
     private final MemberService memberService;
+    private final GearService gearService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
@@ -52,8 +57,16 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myGear")
-    public void myGear(){
+    public void myGear(Model model, Principal principal, PageRequestDTO pageRequestDTO){
+
         log.info("my gear....");
+
+        String email = principal.getName();
+        log.info(email);
+
+        PageResultDTO<GearDTO, Object[]> gearList = gearService.getListWithPagination(email, pageRequestDTO);
+
+        model.addAttribute("gearDTOList", gearList);
     }
 
     @GetMapping("/join")

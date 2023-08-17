@@ -1,7 +1,7 @@
 package coke.controller.camp.repository;
 
 import coke.controller.camp.entity.Board;
-import coke.controller.camp.repository.BoardSearch.BoardSearchRepository;
+import coke.controller.camp.repository.Search.BoardSearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

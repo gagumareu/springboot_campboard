@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.security.Principal;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/board")
 @Log4j2
 @RequiredArgsConstructor
+@Transactional
 public class BoardController {
 
     private final BoardService boardService;
@@ -86,12 +88,17 @@ public class BoardController {
 
     @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/register")
-    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
+    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes, GearDTO gearDTO){
 
         log.info("---------register-------");
         log.info(boardDTO);
+        log.info(gearDTO);
 
         Long bno = boardService.register(boardDTO);
+        if (gearDTO.getGno() != null && gearDTO.getState() == 1){
+            log.info("----update gear to register second deal------ ");
+            gearService.updateState(gearDTO);
+        }
 
         redirectAttributes.addFlashAttribute("msg", bno);
         redirectAttributes.addAttribute("bno", bno);

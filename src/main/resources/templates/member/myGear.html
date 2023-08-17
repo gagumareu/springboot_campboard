@@ -45,10 +45,6 @@
         /*flex: 50%;*/
     }
 
-    .gear-list{
-        /*flex: 50%;*/
-    }
-
     .my-gear-li{
         /*display: flex;*/
         /*flex-direction: row;*/
@@ -86,8 +82,11 @@
 
     .gear-btn-box{
         display: none;
+        /*flex: 10%;*/
+        /*display: flex;*/
         flex-direction: column;
         height: 72px;
+        row-gap: 6px;
         margin-top: 5px;
     }
 
@@ -100,7 +99,8 @@
         background-color: white;
         border: 1px solid;
         border-radius: 5px;
-        margin-bottom: 2px;
+        margin-left: 8px;
+        margin-bottom: 1px;
     }
 
     .myGear-list-header{
@@ -134,16 +134,11 @@
         <div class="container">
 
             <div class="myGear-list-header">
-            <h3>나의 캠핑 기어 리스트</h3>
+                <h3>나의 캠핑 기어 리스트</h3>
 
-            <div class="readyForRegisterBtn">
-                <button type="button" class="btn btn-outline-secondary">등록하기</button>
-            </div>
-            </div>
-            <div class="gear-list">
-                <ul class="gear-list-ul">
-
-                </ul>
+                <div class="readyForRegisterBtn">
+                    <button type="button" class="btn btn-outline-secondary">등록하기</button>
+                </div>
             </div>
 
             <div data-aos="fade-up"
@@ -152,6 +147,14 @@
             <script>
                 AOS.init(); // 자바스크립트로 init()을 해야 동작한다.
             </script>
+
+            <div class="pagination">
+                <ul class="pagination-ul justify-content-center align-items-center">
+                   <li class="page-link">
+
+                   </li>
+                </ul>
+            </div>
 
         </div> <!--container -->
 
@@ -244,7 +247,7 @@
                     $(".gear-register-modal").modal('show');
                 })
 
-                loadGearData();
+                showGearBoxes();
 
                 $("input[name='uploadFiles']").on("change", function (){
                     console.info("changed....");
@@ -361,7 +364,7 @@
                         success: function (result){
                             var replyNo = parseInt(result);
                             alert(replyNo + "번 기어가 저장됐습니다.");
-                            loadGearData();
+                            showGearBoxes();
                             self.location.reload();
                         }
 
@@ -369,50 +372,165 @@
 
                 }); // gear-image-submit-btn
 
-                function loadGearData(){
 
-                    $.getJSON('/gear/' + email, function (arr){
+                loadGearBoxes(1);
 
-                        var gearList = $(".gear-data-boxes");
-                        var str = "";
+                function loadGearBoxes(page){
 
-                        console.info(arr);
+                    console.log("page: " + page)
 
-                        $.each(arr, function (i, dto){
+                    var testing = "junghwan";
 
-                            str += '<div class="col-md-2 my-gear-li">';
-                            str += '<div class="loadGear-img-box">';
-                            if (dto.gearImageDTOList[0] !== null){
-                                str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
-                            }else {
-                                str += "<img src='/icon/img3.svg' style='height: 100%'>";
-                            }
-                            str += '<div class="loadGear-rightSide-box">'
-                            str += '<img id="justifyBtn" src="/icon/justify.svg">';
+                    $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
 
-                            str += '<div class="gear-btn-box">';
-                            str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                            str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
-                            str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
-                            str += '</div>';
-                            str += '</div>';
-                            str += '</div>';
+                        console.log(data.dtoList);
+                        console.log(data);
 
-                            str += '<div class="gear-info">';
-                            str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
-                            str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
-                            str += '</div>';
-                            str += '</div>';
+                        showGearBoxes(data.dtoList);
+                        makingPagination(data);
+                    })
 
-                            str += '</div>';
+                }
 
-                        }) // each
+                function showGearBoxes(dtoList){
 
-                        gearList.html(str);
+                    var gearList = $(".gear-data-boxes");
+                    var str = "";
 
-                    }); // getJson
+                    console.info(dtoList);
 
-                } // loadGearData
+                    $.each(dtoList, function (i, dto){
+
+                        str += '<div class="col-md-2 my-gear-li">';
+                        str += '<div class="loadGear-img-box">';
+                        if (dto.gearImageDTOList[0] !== null){
+                            str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                        }else {
+                            str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                        }
+                        str += '<div class="loadGear-rightSide-box">'
+                        str += '<img id="justifyBtn" src="/icon/justify.svg">';
+                        str += '<div class="gear-btn-box">';
+                        str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                        str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                        str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
+                        str += '</div>';
+                        str += '</div>';
+                        str += '</div>';
+
+                        str += '<div class="gear-info">';
+                        str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                        str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                        str += '</div>';
+                        str += '</div>';
+                        str += '</div>';
+
+                    }) // dtoList each
+
+                    gearList.html(str);
+                }
+
+                function makingPagination(data){
+
+                    var gearPageUl = $(".pagination-ul");
+
+                    var str = "";
+
+                    $(data).each(function (i, dto){
+
+                        console.log(dto);
+
+                        $.each(dto.pageList, function (i, page){
+                            str += '<li class="page-link">';
+                            // str += '<a href='+page+'>'+page+'</a>';
+                            str += '<a href="'+page+'">'+page+'</a>';
+                            str += '</li>';
+                        })
+
+                    }) // pageList each
+
+                    gearPageUl.html(str);
+
+                } //makingPagination
+
+                var page = 1;
+
+
+                $(".pagination ul").on("click", "a", function (e){
+
+                    e.preventDefault();
+
+                    console.log("clicking");
+
+                    var targetPage = $(this).attr("href");
+
+                    page = targetPage;
+
+                    console.log(page);
+
+                    loadGearBoxes(page);
+
+                })
+
+
+
+                // function loadGearData(){
+                //
+                //     $.getJSON('/gear/pagination/' + email, function (arr){
+                //
+                //         var gearList = $(".gear-data-boxes");
+                //         var gearPageUl = $(".pagination-ul");
+                //         var str = "";
+                //         var str2 = "";
+                //
+                //         console.info(arr.dtoList);
+                //
+                //         $.each(arr.dtoList, function (i, dto){
+                //
+                //             str += '<div class="col-md-2 my-gear-li">';
+                //             str += '<div class="loadGear-img-box">';
+                //             if (dto.gearImageDTOList[0] !== null){
+                //                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                //             }else {
+                //                 str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                //             }
+                //             str += '<div class="loadGear-rightSide-box">'
+                //             str += '<img id="justifyBtn" src="/icon/justify.svg">';
+                //             str += '<div class="gear-btn-box">';
+                //             str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
+                //             str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                //             str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
+                //             str += '</div>';
+                //             str += '</div>';
+                //             str += '</div>';
+                //
+                //             str += '<div class="gear-info">';
+                //             str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                //             str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                //             str += '</div>';
+                //             str += '</div>';
+                //             str += '</div>';
+                //
+                //         }) // dtoList each
+                //
+                //         $(arr).each(function (i, dto){
+                //
+                //             console.log(dto);
+                //
+                //             $.each(dto.pageList, function (i, page){
+                //                 str2 += '<li class="page-link">';
+                //                 str2 += '<a href="/member/myGear?page='+page+'">'+page+'</a>';
+                //                 str2 += '</li>';
+                //             })
+                //
+                //         }) // pageList each
+                //
+                //         gearList.html(str);
+                //         gearPageUl.html(str2);
+                //
+                //     }); // getJson
+                //
+                // } // loadGearData
 
                 $(".gear-data-boxes").on("click", ".gear-remove-btn", function (e){
 
@@ -429,7 +547,7 @@
                                 if (result == "success"){
                                     console.info("removed");
                                 }
-                                loadGearData();
+                                showGearBoxes();
                             }
                         })
                     }
@@ -582,7 +700,7 @@
                             if (result === "success"){
                                 console.info(result);
                                 alert("기어 정보 수정 완료");
-                                loadGearData();
+                                showGearBoxes();
                                 $(".gear-modal").modal('hide');
                                 self.location.reload();
                             }
@@ -608,22 +726,22 @@
 
                         targetLi.remove();
 
-                       $.ajax({
-                           url:'/removeFile',
-                           data: {files: targetName},
-                           dataType: 'text',
-                           type: 'DELETE',
-                           success: function (result){
-                               console.info(result);
-                           }
-                       })
+                        $.ajax({
+                            url:'/removeFile',
+                            data: {files: targetName},
+                            dataType: 'text',
+                            type: 'DELETE',
+                            success: function (result){
+                                console.info(result);
+                            }
+                        })
                     }
                 }); // modal image clicking for remove event
 
 
 
                 $(".gear-modal-close").click(function (){
-                    $(".modal").modal('hide');
+                    $(".gear-modal").modal('hide');
                 })
 
                 $(".gear-image-close-btn").click(function (){
@@ -643,7 +761,7 @@
 
                     if ($(this).closest(".my-gear-li").find(".gear-btn-box").css("display") == "none"){
 
-                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "flex");
+                        $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "block");
                     }else {
                         $(this).closest(".my-gear-li").find(".gear-btn-box").css("display", "none");
                     }

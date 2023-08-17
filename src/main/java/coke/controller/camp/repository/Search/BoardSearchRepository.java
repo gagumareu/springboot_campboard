@@ -1,4 +1,4 @@
-package coke.controller.camp.repository.BoardSearch;
+package coke.controller.camp.repository.Search;
 
 import coke.controller.camp.entity.Board;
 import org.springframework.data.domain.Page;

@@ -36,4 +36,7 @@ public class Gear extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
+    public void changeState(int state){
+        this.state = state;
+    }
 }

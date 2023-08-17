@@ -221,6 +221,9 @@
                 <div class="hiddenGearBox">
 
                 </div>
+                <div class="hidden-gear-box">
+
+                </div>
                 <div class="col-md-12 col-sm-12 btnBox">
                     <button class="btn btn-outline-light registerBtn">글작성</button>
                 </div>
@@ -279,7 +282,15 @@
 
             console.info(gno);
 
-            var str ="";
+            var str =""
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
+
 
             $.getJSON('/gear/images/' + gno, function (arr){
 
@@ -434,6 +445,15 @@
                 });
 
             }); // getJSON for images
+
+            var str = "";
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
 
         } // load gearDTO
 

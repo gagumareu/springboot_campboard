@@ -1,8 +1,6 @@
 package coke.controller.camp.service;
 
-import coke.controller.camp.dto.BoardImageDTO;
-import coke.controller.camp.dto.GearDTO;
-import coke.controller.camp.dto.GearImageDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.entity.BoardImage;
 import coke.controller.camp.entity.Gear;
 import coke.controller.camp.entity.GearImage;
@@ -22,6 +20,8 @@ public interface GearService {
     void modify(GearDTO gearDTO);
     List<GearImageDTO> getImagesList(Long gno);
     GearDTO getByGno(Long gno);
+    void updateState(GearDTO gearDTO);
+    PageResultDTO<GearDTO, Object[]> getListWithPagination(String email, PageRequestDTO pageRequestDTO);
 
 
     default Map<String, Object> dtoToEntity(GearDTO gearDTO){
