@@ -41,6 +41,7 @@ public class MemberController {
         log.info(email);
 
         MemberDTO memberDTO = memberService.getMemberByEmail(email);
+        log.info(memberDTO);
 
         model.addAttribute("dto", memberDTO);
 

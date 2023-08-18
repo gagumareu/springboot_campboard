@@ -20,6 +20,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private String memberName;
     private boolean del;
     private boolean social;
+    private String profileImg;
 
     private Map<String, Object> props;
 
@@ -28,6 +29,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
                              String memberName,
                              boolean del,
                              boolean social,
+                             String profileImg,
                              Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
 
@@ -36,6 +38,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.memberName = memberName;
         this.del = del;
         this.social = social;
+        this.profileImg = profileImg;
 
     }
 

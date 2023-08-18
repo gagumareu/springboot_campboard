@@ -10,5 +10,6 @@ public class MemberJoinDTO {
     private String name;
     private boolean del;
     private boolean social;
+    private String profileImg;
 
 }

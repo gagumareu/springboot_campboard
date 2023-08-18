@@ -28,6 +28,8 @@ public class Member {
 
     private boolean fromSocial;
 
+    private String profileImg;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
@@ -58,5 +60,9 @@ public class Member {
 
     public void changeSocial(boolean fromSocial){
         this.fromSocial = fromSocial;
+    }
+
+    public void changeProfileImg(String profileImg){
+        this.profileImg = profileImg;
     }
 }

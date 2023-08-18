@@ -14,4 +14,5 @@ public class MemberDTO {
     private String email;
     private String memberName;
     private boolean social;
+    private String profileImg;
 }

@@ -26,6 +26,7 @@ public interface MemberService {
                 .memberName(memberJoinDTO.getName())
                 .del(false)
                 .fromSocial(false)
+                .profileImg(memberJoinDTO.getProfileImg())
                 .build();
 
         return member;
@@ -37,6 +38,7 @@ public interface MemberService {
                 .email(member.getEmail())
                 .memberName(member.getMemberName())
                 .social(member.isFromSocial())
+                .profileImg(member.getProfileImg())
                 .build();
         return memberDTO;
     }

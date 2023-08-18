@@ -19,9 +19,9 @@
     }
 
 
-    .myPage-header{
+    .myPage-left-side{
         flex: 30%;
-        background-color: lightblue;
+        /*background-color: lightblue;*/
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -29,45 +29,59 @@
     }
 
 
-    .meyPage-header-myName{
-        background-color: #9ec0dc;
-        width: 78%;
+    .meyPage-left-myName{
+        /*background-color: #9ec0dc;*/
+        width: 100%;
         display: flex;
         align-self: center;
         align-items: center;
-        height: 130px;
-        margin-bottom: 36px;
-    }
-
-    .myPage-header-imgDiv{
-        width: 75px;
-        margin-left: 15px;
-    }
-
-    .myPage-header-imgDiv img{
-        width: 100%;
-    }
-
-    .myPage-header-imgDiv span{
-        margin-left: 10px;
-    }
-
-    .myPage-header-category{
-        display: flex;
+        height: 142px;
+        margin: 36px 0px;
         flex-direction: column;
-        row-gap-gap: 14px;
-        font-size: 1.4em;
         justify-content: center;
     }
 
-    .myPage-header-category div{
-        background-color: white;
-        padding: 6px;
-        border-radius: 4px 4px 0 0;
+    .myPage-left-imgDiv{
+        width: 75px;
+        /*margin-left: 15px;*/
+    }
+
+    .myPage-left-imgDiv img{
+        width: 100%;
+        overflow: hidden;
+        border-radius: 50%;
+    }
+
+    .myPage-left-imgDiv span{
+        margin-left: 10px;
+    }
+
+    .myPage-left-category{
+        display: flex;
+        flex-direction: column;
+        row-gap: 6px;
+        font-size: 1.4em;
+        justify-content: center;
+
+        align-items: center;
+    }
+
+    .myPage-left-category div{
+        /*background-color: white;*/
+        /*padding: 6px;*/
+        /*border-radius: 4px 4px 0 0;*/
+    }
+
+    .myPage-left-category div:hover {
+        color: #0dcaf0;
+        cursor: grab;
+
     }
 
     .myPage-content{
         flex: 70%;
+        display: flex;
+        flex-direction: column;
     }
 
     .data-box{
@@ -85,6 +99,37 @@
     .data-date{
         margin-right: 20px;
     }
+
+    .myPage-title{
+        align-self: center;
+    }
+
+    .userInfo{
+        display: flex;
+        width: 90%;
+        flex-direction: row;
+        align-items: center;
+
+    }
+    .userName{
+        flex: 85%;
+        display: flex;
+        justify-content: center;
+    }
+    .gear-img{
+        width: 100%;
+        flex: 15%;
+    }
+
+    .userInfo:hover{
+        cursor: grab;
+        color: #0dcaf0;
+    }
+
+    .content-wrapper{
+        padding: 0px 20px;
+    }
+
 </style>
 
 
@@ -92,48 +137,48 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
     <th:block th:fragment="content">
 
-    <div class="container">
+    <div class="myPage-wrapper">
 
-        <div class="myPage-wrapper">
-            <div class="myPage-header">
-
-                <div class="meyPage-header-myName">
-                    <div class="myPage-header-imgDiv">
-                        <img src="/icon/person-circle.svg">
-                    </div>
-                    <span>
-                        <h3>[[${dto.memberName}]]</h3>
-                    </span>
+        <div class="myPage-left-side">
+            <div class="meyPage-left-myName">
+                <div class="myPage-left-imgDiv">
+                    <img th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
+                    <img th:unless="${dto.profileImg != null}" src="/icon/person-circle.svg">
                 </div>
-                <div class="col-md-12 myPage-header-category">
-                    <div class="modify-myInfo-btn">내 정보 변경</div>
-                    <div class="my-writings-btn">작성한 게시글</div>
-                    <div class="my-replies-btn">작성한 댓글</div>
-                </div>
+                <span class="userInfo">
+                    <h3 class="userName">[[${dto.memberName}]]</h3>
+                </span>
             </div>
+            <div class="col-md-12 myPage-left-category">
+                <div class="modify-myInfo-btn">내 정보 변경</div>
+                <div class="my-writings-btn">작성한 게시글</div>
+                <div class="my-replies-btn">작성한 댓글</div>
+            </div>
+        </div>
 
-            <div class="myPage-content">
-                <h1>마이 페이지</h1>
+        <div class="myPage-content">
+            <h1 class="myPage-title">마이 페이지</h1>
 
-                <div class="content-wrapper">
-                    <div class="load-content">
+            <div class="content-wrapper">
+                <div class="load-content">
 
-                    </div>
                 </div>
             </div>
         </div>
-    </div> <!-- container end -->
+    </div>
 
  <script th:inline="javascript">
 
     $(document).ready(function (){
+        var profileImg = [[${dto}]];
+        console.info(profileImg)
 
         var email = [[${#authentication.principal.username}]];
         console.log(email);
 
         function formatTime(times){
 
-            var date = new Date();
+            var date = new Date(times);
 
             return date.getFullYear() + '/' +
                 (date.getMonth() +1) +  '/' +
@@ -147,11 +192,48 @@
         // 작성한 게시글 클릭시 리스트 불러오는 이벤트
         $(".my-writings-btn").on("click", function (e){
             getBoardList(email);
+            $(".myPage-title").html("작성한 게시글");
         })
 
         // 작성한 댓글 클릭시 리스트 불러오는 이벤트
         $(".my-replies-btn").on("click", function (e){
             getRepliesList(email);
+            $(".myPage-title").html("작성한 댓글");
+        })
+
+        $(".modify-myInfo-btn").click(function (){
+
+            $(".myPage-title").html("계정 정보 변경");
+
+            var str = "";
+
+            str += '<form action="/member/modify" method="post">';
+            str += '<div><img src="/icon/person-circle.svg" class="personIcon"></div>'
+            str += '<input type="text" class="form-control" name="name" placeholder="NAME">';
+            str += '<input type="hidden" name="email" value="'+email+'">';
+            str += '<div class="modifyBtn">';
+            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>'
+            str += '<div>';
+            str += '</form>';
+
+            loadContent.html(str);
+        })
+
+        $(".userInfo").click(function (e){
+
+            $(".myPage-title").html("이름 변경");
+
+            var str = "";
+
+            str += '<form action="/member/modify" method="post">';
+            str += '<input type="text" class="form-control" name="name" placeholder="NAME">';
+            str += '<input type="hidden" name="email" value="'+email+'">';
+            str += '<div class="modifyBtn">';
+            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>'
+            str += '<div>';
+            str += '</form>';
+
+            loadContent.html(str);
         })
 
         function getBoardList(email){
@@ -206,7 +288,9 @@
             })
         }
 
-
+        $(".modifyBtn").on("click", function (e){
+            e.preventDefault();
+        })
 
     }) // the end
 

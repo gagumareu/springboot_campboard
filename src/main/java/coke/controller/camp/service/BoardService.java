@@ -68,6 +68,7 @@ public interface BoardService {
                 .email(member.getEmail())
                 .category(board.getCategory())
                 .memberName(member.getMemberName())
+                .profileImg(member.getProfileImg())
                 .replyCount(replyCount.intValue())
                 .regDate(board.getRegDate())
                 .modDate(board.getModDate())

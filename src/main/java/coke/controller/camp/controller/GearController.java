@@ -44,7 +44,6 @@ public class GearController {
         log.info(email);
 
         return new ResponseEntity<>(gearService.getList(email), HttpStatus.OK);
-//        return new ResponseEntity<>(gearService.getListWithPagination(email, pageRequestDTO), HttpStatus.OK );
     }
 
     @GetMapping("/pagination/{email}/{page}")

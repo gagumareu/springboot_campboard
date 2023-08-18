@@ -45,6 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 member.getMemberName(),
                 false,
                 false,
+                member.getProfileImg(),
                 member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name()))
                         .collect(Collectors.toList())
         );

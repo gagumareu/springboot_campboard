@@ -35,162 +35,159 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:blocK th:fragment="content">
 
-      <div class="container">
-        <form th:action="@{/board/modify}" method="post">
+    <form th:action="@{/board/modify}" method="post">
 
-          <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
-          <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
-          <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
-          <th:block th:if="${pageRequestDTO.category != ''}">
-            <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
-          </th:block>
-          <th:block th:unless="${pageRequestDTO.category != ''}">
-          </th:block>
-          <input type="hidden" name="email" th:value="${dto.email}">
-          <input type="hidden" name="bno" th:value="${dto.bno}">
+      <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+      <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
+      <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
+      <th:block th:if="${pageRequestDTO.category != ''}">
+        <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
+      </th:block>
+      <th:block th:unless="${pageRequestDTO.category != ''}">
+      </th:block>
+      <input type="hidden" name="email" th:value="${dto.email}">
+      <input type="hidden" name="bno" th:value="${dto.bno}">
 
-          <div class="modify-title">
-            <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
-          </div>
-          <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
-          <script th:inline="javascript">
-            $(document).ready(function() {
+      <div class="modify-title">
+        <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
+      </div>
+      <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
+      <script th:inline="javascript">
+        $(document).ready(function() {
 
-              var bno = [[${dto.bno}]];
-              console.log("bno: " + bno);
+          var bno = [[${dto.bno}]];
+          console.log("bno: " + bno);
 
-              var targetImageList = [];
+          var targetImageList = [];
 
-              $('#summernote').summernote({
-                height: 600,
-                callbacks:{
-                  onImageUpload: function (files, editor, welEditable){
-                    for (var i = files.length -1; i >= 0; i--){
-                      console.info(files[i]);
-                      uploadImageFiles(files[i], this);
-                    } //for
-                  }, // onImageUpload
-                  onMediaDelete: function (target){
+          $('#summernote').summernote({
+            height: 600,
+            callbacks:{
+              onImageUpload: function (files, editor, welEditable){
+                for (var i = files.length -1; i >= 0; i--){
+                  console.info(files[i]);
+                  uploadImageFiles(files[i], this);
+                } //for
+              }, // onImageUpload
+              onMediaDelete: function (target){
 
-                    var fileName = target.attr('src');
+                var fileName = target.attr('src');
 
-                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+                fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
-                    console.log("fileName: " + fileName);
+                console.log("fileName: " + fileName);
 
-                    targetImageList.forEach(function (i){
+                targetImageList.forEach(function (i){
 
-                      var targetName = i;
-                      console.log("targetImage_fromList: " + targetName);
+                  var targetName = i;
+                  console.log("targetImage_fromList: " + targetName);
 
-                      if (i == fileName){
+                  if (i == fileName){
 
-                        var targetLI = $("li[name='"+fileName+"']");
+                    var targetLI = $("li[name='"+fileName+"']");
 
-                        targetLI.remove();
+                    targetLI.remove();
 
-                        $.ajax({
-                          url: '/deleteFile',
-                          data: {files: fileName},
-                          dataType: 'text',
-                          type: 'POST',
-                          success: function (result){
-                          }
-                        }); // ajax
+                    $.ajax({
+                      url: '/deleteFile',
+                      data: {files: fileName},
+                      dataType: 'text',
+                      type: 'POST',
+                      success: function (result){
+                      }
+                    }); // ajax
 
-                      } // first
-                     }); // targetImageList forEach
-                  } // onMediaDelete
-                } // callbacks
-              }); // summernote
+                  } // first
+                 }); // targetImageList forEach
+              } // onMediaDelete
+            } // callbacks
+          }); // summernote
 
-              function uploadImageFiles(files, el){
+          function uploadImageFiles(files, el){
 
-                var formData = new FormData();
+            var formData = new FormData();
 
-                formData.append("uploadFiles", files);
+            formData.append("uploadFiles", files);
 
-                $.ajax({
-                  url: '/uploadAjax',
-                  data: formData,
-                  dataType: 'json',
-                  contentType: false,
-                  processData: false,
-                  type: 'POST',
-                  success:function (result){
-                    console.info(result);
-                    uploadResultUL(result);
-                  },
-                  error: function (jqXHR, textStatus, errorThrown){
-                    console.info(textStatus);
-                  }
-                }); // ajax
-              } // function uploadImageFiles
+            $.ajax({
+              url: '/uploadAjax',
+              data: formData,
+              dataType: 'json',
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              success:function (result){
+                console.info(result);
+                uploadResultUL(result);
+              },
+              error: function (jqXHR, textStatus, errorThrown){
+                console.info(textStatus);
+              }
+            }); // ajax
+          } // function uploadImageFiles
 
-              function uploadResultUL(result){
+          function uploadResultUL(result){
 
-                var uploadResultUL = $(".uploadResultUL ul");
-                var str = "";
+            var uploadResultUL = $(".uploadResultUL ul");
+            var str = "";
 
-                $(result).each(function (i, dto){
+            $(result).each(function (i, dto){
 
-                  str += '<li data-path="'+dto.folderPath+'" ' +
-                          'data-uuid="'+dto.uuid+'" ' +
-                          'data-name="'+dto.fileName+'" ' +
-                          'name="display?files='+dto.imageURL+'" data-tell="newOnw"></li>';
+              str += '<li data-path="'+dto.folderPath+'" ' +
+                      'data-uuid="'+dto.uuid+'" ' +
+                      'data-name="'+dto.fileName+'" ' +
+                      'name="display?files='+dto.imageURL+'" data-tell="newOnw"></li>';
 
-                  var imageURL = dto.imageURL;
+              var imageURL = dto.imageURL;
 
-                  console.log("imageURL: " + imageURL);
+              console.log("imageURL: " + imageURL);
 
-                  $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+              $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
 
-                  targetImageList.push("display?files="+dto.imageURL);
-                  // targetImageMap.set(newOne, "display?files="+dto.imageURL);
+              targetImageList.push("display?files="+dto.imageURL);
+              // targetImageMap.set(newOne, "display?files="+dto.imageURL);
 
-                }); // result each
+            }); // result each
 
-                uploadResultUL.append(str);
+            uploadResultUL.append(str);
 
-              }; // function uploadResultUL
+          }; // function uploadResultUL
 
-              $.getJSON('/board/images/' + bno, function (images){
+          $.getJSON('/board/images/' + bno, function (images){
 
-                var uploadResultUL = $(".uploadResultUL ul");
-                var str = "";
+            var uploadResultUL = $(".uploadResultUL ul");
+            var str = "";
 
-                $(images).each(function (i,dto){
+            $(images).each(function (i,dto){
 
-                  str += '<li data-path="'+dto.folderPath+'" ' +
-                          'data-uuid="'+dto.uuid+'" ' +
-                          'data-name="'+dto.fileName+'" ' +
-                          'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
+              str += '<li data-path="'+dto.folderPath+'" ' +
+                      'data-uuid="'+dto.uuid+'" ' +
+                      'data-name="'+dto.fileName+'" ' +
+                      'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
 
-                  console.log("imageURL: " + dto.imageURL);
+              console.log("imageURL: " + dto.imageURL);
 
-                  targetImageList.push("display?files="+dto.imageURL);
+              targetImageList.push("display?files="+dto.imageURL);
 
-                }); // array
+            }); // array
 
-                uploadResultUL.append(str);
+            uploadResultUL.append(str);
 
-              }); // get imageList event
+          }); // get imageList event
 
 
-            }); // the end
+        }); // the end
 
-          </script>
+      </script>
 
-          <div class="hiddenBox">
+      <div class="hiddenBox">
 
-          </div>
-          <div class="modify-btn-box">
-            <button class="btn btn-outline-primary registBtn">수정</button>
-            <button class="btn btn-outline-success listBackBtn">리스트</button>
-          </div>
-        </form>
-
-      </div> <!-- container -->
+      </div>
+      <div class="modify-btn-box">
+        <button class="btn btn-outline-primary registBtn">수정</button>
+        <button class="btn btn-outline-success listBackBtn">리스트</button>
+      </div>
+    </form>
 
       <div class="uploadResultUL">
         <ul>

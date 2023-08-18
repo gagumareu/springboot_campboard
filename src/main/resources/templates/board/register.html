@@ -119,151 +119,148 @@
 
     <th:blcok th:fragment="content">
 
-        <div class="container">
+    <form th:action="@{/board/register}" method="post">
 
-            <form th:action="@{/board/register}" method="post">
-
-                <div class="gear-data-boxes">
-                </div>
-                <div class="col-md-12 list-pagination">
-                    <ul class="pagination justify-content-center align-items-center">
-                        <li class="page-item">
-
-                        </li>
-                    </ul>
-                </div>
-
-
-                <div class="titleAndSearchBox">
-                    <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
-                    <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
-                    <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
-                        <option value="잡담">잡담</option>
-                        <option value="모임">모임</option>
-                        <option value="캠핑장">캠핑장</option>
-                        <option value="중고거래">중고거래</option>
-                    </select>
-                </div>
-
-                <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
-                <script>
-                    $(document).ready(function() {
-
-                        var targetImageList = [];
-
-                        $('#summernote').summernote({
-                            height: 600,
-                            lang: "ko-KR",
-                            callbacks:{
-                                onImageUpload: function (files, editor, welEditable){
-                                    for (var i = files.length -1; i >= 0; i--){
-                                        console.info(files[i]);
-                                        uploadImageFiles(files[i], this);
-                                    } //for
-                                }, // onImageUpload
-                                onMediaDelete: function (target){
-
-                                    var fileName = target.attr('src');
-
-                                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
-
-                                    console.log("fileName: " + fileName);
-
-                                    targetImageList.forEach(function (i){
-
-                                        var targetName = i;
-
-                                        if (i == fileName){
-
-                                            var targetLI = $("li[name='"+fileName+"']");
-
-                                            targetLI.remove();
-
-                                            $.ajax({
-                                                url: '/deleteFile',
-                                                data: {files: fileName},
-                                                dataType: 'text',
-                                                type: 'POST',
-                                                success: function (result){
-                                                }
-                                            })
-                                        }
-
-                                    }); // targetImageList forEach
-
-                                } // onMediaDelete
-                            } // callbacks
-                        }); // summernote
-
-                        function uploadImageFiles(files, el){
-
-                            var formData = new FormData();
-
-                            formData.append("uploadFiles", files);
-
-                            $.ajax({
-                                url: '/uploadAjax',
-                                data: formData,
-                                dataType: 'json',
-                                contentType: false,
-                                processData: false,
-                                type: 'POST',
-                                success:function (result){
-                                    console.info(result);
-                                    uploadResultUL(result);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown){
-                                    console.info(textStatus);
-                                }
-                            }); // ajax
-                        } // function uploadImageFiles
-
-                        function uploadResultUL(result){
-
-                            var uploadResultUL = $(".uploadResultUL ul");
-                            var str = "";
-
-                            $(result).each(function (i, dto){
-
-                                str += '<li data-path="'+dto.folderPath+'" ' +
-                                    'data-uuid="'+dto.uuid+'" ' +
-                                    'data-name="'+dto.fileName+'" ' +
-                                    'name="display?files='+dto.imageURL+'"></li>';
-
-                                var imageURL = dto.imageURL;
-
-                                console.log("imageURL: " + imageURL);
-
-                                $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
-
-                                targetImageList.push("display?files="+dto.imageURL);
-
-                            }); // result each
-
-                            uploadResultUL.append(str);
-
-                        }; // function uploadResultUL
-
-                    }); // the end
-                </script>
-
-                <div class="col-md-12 col-sm-12">
-                    <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
-                </div>
-                <div class="hiddenBox">
-
-                </div>
-                <div class="hiddenGearBox">
-
-                </div>
-                <div class="hidden-gear-box">
-
-                </div>
-                <div class="col-md-12 col-sm-12 btnBox">
-                    <button class="btn btn-outline-light registerBtn">글작성</button>
-                </div>
-            </form>
+        <div class="gear-data-boxes">
         </div>
+        <div class="col-md-12 list-pagination">
+            <ul class="pagination justify-content-center align-items-center">
+                <li class="page-item">
+
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="titleAndSearchBox">
+            <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
+            <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
+            <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
+                <option value="잡담">잡담</option>
+                <option value="모임">모임</option>
+                <option value="캠핑장">캠핑장</option>
+                <option value="중고거래">중고거래</option>
+            </select>
+        </div>
+
+        <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
+        <script>
+            $(document).ready(function() {
+
+                var targetImageList = [];
+
+                $('#summernote').summernote({
+                    height: 600,
+                    lang: "ko-KR",
+                    callbacks:{
+                        onImageUpload: function (files, editor, welEditable){
+                            for (var i = files.length -1; i >= 0; i--){
+                                console.info(files[i]);
+                                uploadImageFiles(files[i], this);
+                            } //for
+                        }, // onImageUpload
+                        onMediaDelete: function (target){
+
+                            var fileName = target.attr('src');
+
+                            fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+
+                            console.log("fileName: " + fileName);
+
+                            targetImageList.forEach(function (i){
+
+                                var targetName = i;
+
+                                if (i == fileName){
+
+                                    var targetLI = $("li[name='"+fileName+"']");
+
+                                    targetLI.remove();
+
+                                    $.ajax({
+                                        url: '/deleteFile',
+                                        data: {files: fileName},
+                                        dataType: 'text',
+                                        type: 'POST',
+                                        success: function (result){
+                                        }
+                                    })
+                                }
+
+                            }); // targetImageList forEach
+
+                        } // onMediaDelete
+                    } // callbacks
+                }); // summernote
+
+                function uploadImageFiles(files, el){
+
+                    var formData = new FormData();
+
+                    formData.append("uploadFiles", files);
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success:function (result){
+                            console.info(result);
+                            uploadResultUL(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown){
+                            console.info(textStatus);
+                        }
+                    }); // ajax
+                } // function uploadImageFiles
+
+                function uploadResultUL(result){
+
+                    var uploadResultUL = $(".uploadResultUL ul");
+                    var str = "";
+
+                    $(result).each(function (i, dto){
+
+                        str += '<li data-path="'+dto.folderPath+'" ' +
+                            'data-uuid="'+dto.uuid+'" ' +
+                            'data-name="'+dto.fileName+'" ' +
+                            'name="display?files='+dto.imageURL+'"></li>';
+
+                        var imageURL = dto.imageURL;
+
+                        console.log("imageURL: " + imageURL);
+
+                        $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+
+                        targetImageList.push("display?files="+dto.imageURL);
+
+                    }); // result each
+
+                    uploadResultUL.append(str);
+
+                }; // function uploadResultUL
+
+            }); // the end
+        </script>
+
+        <div class="col-md-12 col-sm-12">
+            <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+        </div>
+        <div class="hiddenBox">
+
+        </div>
+        <div class="hiddenGearBox">
+
+        </div>
+        <div class="hidden-gear-box">
+
+        </div>
+        <div class="col-md-12 col-sm-12 btnBox">
+            <button class="btn btn-outline-light registerBtn">글작성</button>
+        </div>
+    </form>
         <div class="uploadResultUL" style="display: none">
             <ul>
 
@@ -288,7 +285,7 @@
 
         var checkCategory = [[${tellCategory}]];
         console.log(checkCategory);
-        
+
         // 기어리스트 박스 업로드 function
         if (checkCategory){
 
