@@ -163,7 +163,6 @@
               <div th:action="@{/replies/}" class="read-reply-form">
                   <input type="hidden" name="bno" th:value="${dto.bno}">
                   <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
-                  <input type="hidden" name="email" class="form-control" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
                   <div class="read-reply-btn">
                     <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
                   </div>
@@ -230,12 +229,11 @@
                   e.preventDefault();
 
                   var replyText = $("#reply-input").val();
-                  var replyWriter = $("input[name='email']").val();
 
                   var reply = {
                       bno: bno,
                       text: replyText,
-                      email: replyWriter
+                      email: currentUser
                   }
 
                   console.info(reply);
@@ -253,7 +251,7 @@
 
                           }
                           loadReplyList();
-                          self.location.reload();
+                          // self.location.reload();
                           $("input[name='text']").val("");
                           $("input[name='email']").val("");
                       }

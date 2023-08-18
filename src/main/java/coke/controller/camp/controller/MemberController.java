@@ -1,24 +1,24 @@
 package coke.controller.camp.controller;
 
-import coke.controller.camp.dto.GearDTO;
-import coke.controller.camp.dto.MemberJoinDTO;
-import coke.controller.camp.dto.PageRequestDTO;
-import coke.controller.camp.dto.PageResultDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.security.dto.MemberSecurityDTO;
+import coke.controller.camp.service.BoardService;
 import coke.controller.camp.service.GearService;
 import coke.controller.camp.service.MemberService;
+import coke.controller.camp.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @Log4j2
@@ -28,12 +28,21 @@ public class MemberController {
 
     private final MemberService memberService;
     private final GearService gearService;
+    private final BoardService boardService;
+    private final ReplyService replyService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
-    public void myPage(){
+    public void myPage(Model model, Principal principal){
 
         log.info("myPage...........");
+
+        String email = principal.getName();
+        log.info(email);
+
+        MemberDTO memberDTO = memberService.getMemberByEmail(email);
+
+        model.addAttribute("dto", memberDTO);
 
     }
 
@@ -104,5 +113,21 @@ public class MemberController {
         return "redirect:/member/myPage";
     }
 
+    @GetMapping(value = "/board/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BoardDTO>> getBoardListByEmail(@PathVariable("email") String email){
 
+        log.info("---------getting boardList By email-------------");
+        log.info(email);
+
+        return new ResponseEntity<>(boardService.getBoardByEmail(email), HttpStatus.OK  );
+    }
+
+    @GetMapping(value = "/replies/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ReplyDTO>> getRepliesByEmail(@PathVariable("email") String email){
+
+        log.info("------------getting replies by email----------");
+        log.info(email);
+
+        return new ResponseEntity<>(replyService.getListByEmail(email), HttpStatus.OK);
+    }
 }

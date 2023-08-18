@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -61,6 +62,15 @@ public class BoardServiceTests {
         boardService.remove(601L);
     }
 
+    @Test
+    public void getListBoardByEmail(){
 
+        List<BoardDTO> dtoList = boardService.getBoardByEmail("udekang2@naver.com");
+
+        for (BoardDTO dto : dtoList){
+            System.out.println(Arrays.asList(dto));
+        }
+
+    }
 
 }

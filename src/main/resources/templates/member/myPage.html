@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
 
 <head>
     <meta charset="UTF-8">
@@ -8,131 +10,207 @@
 
 <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmecoefot7"></script>
 
-<!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
-<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1WMXgldjOBUmTLlHX3PHI2xTeFyEABLM" defer></script>-->
 
 <style>
-    #gmp-map {
-        height: 100%;
+
+    .myPage-wrapper{
+        display: flex;
+
+    }
+
+
+    .myPage-header{
+        flex: 30%;
+        background-color: lightblue;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /*border-bottom: 2px solid;*/
+    }
+
+
+    .meyPage-header-myName{
+        background-color: #9ec0dc;
+        width: 78%;
+        display: flex;
+        align-self: center;
+        align-items: center;
+        height: 130px;
+        margin-bottom: 36px;
+    }
+
+    .myPage-header-imgDiv{
+        width: 75px;
+        margin-left: 15px;
+    }
+
+    .myPage-header-imgDiv img{
+        width: 100%;
+    }
+
+    .myPage-header-imgDiv span{
+        margin-left: 10px;
+    }
+
+    .myPage-header-category{
+        display: flex;
+        flex-direction: column;
+        row-gap-gap: 14px;
+        font-size: 1.4em;
+        justify-content: center;
+    }
+
+    .myPage-header-category div{
+        background-color: white;
+        padding: 6px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .myPage-content{
+        flex: 70%;
+    }
+
+    .data-box{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        border-bottom: 1px solid lightblue;
+    }
+
+    .data-title{
+        margin-left: 20px;
+    }
+
+    .data-date{
+        margin-right: 20px;
     }
 </style>
 
-<!--<script>-->
-<!--    "use strict";-->
-
-<!--    function initMap() {-->
-<!--        const myLatLng = {-->
-<!--            lat: 40.12150192260742,-->
-<!--            lng: -100.45039367675781-->
-<!--        };-->
-<!--        const map = new google.maps.Map(document.getElementById("gmp-map"), {-->
-<!--            zoom: 4,-->
-<!--            center: myLatLng,-->
-<!--            fullscreenControl: false,-->
-<!--            zoomControl: true,-->
-<!--            streetViewControl: false-->
-<!--        });-->
-<!--        new google.maps.Marker({-->
-<!--            position: myLatLng,-->
-<!--            map,-->
-<!--            title: "My location"-->
-<!--        });-->
-<!--    }-->
-<!--</script>-->
 
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
     <th:block th:fragment="content">
 
-        <div class="container">
+    <div class="container">
 
-            <h1>For Member...............</h1>
+        <div class="myPage-wrapper">
+            <div class="myPage-header">
 
-            <div sec:authorize="hasRole('USER')">Has USER ROLE</div>
-            <div sec:authorize="hasRole('MANAGER')">Has MANAGER ROLE</div>
-            <div sec:authorize="hasRole('ADMIN')">Has ADMIN ROLE</div>
-            <h5>--------------------------------------------------------</h5>
-            <div sec:authorize="isAuthenticated()">
-                Only Authenticated user can see this Text
+                <div class="meyPage-header-myName">
+                    <div class="myPage-header-imgDiv">
+                        <img src="/icon/person-circle.svg">
+                    </div>
+                    <span>
+                        <h3>[[${dto.memberName}]]</h3>
+                    </span>
+                </div>
+                <div class="col-md-12 myPage-header-category">
+                    <div class="modify-myInfo-btn">내 정보 변경</div>
+                    <div class="my-writings-btn">작성한 게시글</div>
+                    <div class="my-replies-btn">작성한 댓글</div>
+                </div>
             </div>
-            <h5>--------------------------------------------------------</h5>
-            Authenticated username:
-            <div sec:authentication="name"></div>
-            Authenticated user roles:
-            <div sec:authentication="principal.authorities"></div>
 
-            <div>
-                <div id="map" style="width:100%;height:400px;">
+            <div class="myPage-content">
+                <h1>마이 페이지</h1>
+
+                <div class="content-wrapper">
+                    <div class="load-content">
+
+                    </div>
+                </div>
             </div>
         </div>
+    </div> <!-- container end -->
 
-<!--        <div id="gmp-map"></div>-->
+ <script th:inline="javascript">
 
+    $(document).ready(function (){
 
+        var email = [[${#authentication.principal.username}]];
+        console.log(email);
 
+        function formatTime(times){
 
-<script>
-    var mapOptions = {
-        center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 10,
-        zoomControl: true
-    }
+            var date = new Date();
 
-    var map = new naver.maps.Map('map', mapOptions);
-
-    // var map = new naver.maps.Map('map', {
-    //     center: position,
-    //     zoom: 15
-    // });
-
-    var position = new naver.maps.LatLng(37.3595704, 127.105399);
-
-
-    var marker = new naver.maps.Marker({
-        position: position,
-        map: map
-    });
-
-    naver.maps.Event.addListener(map, 'click', function(e) {
-        marker.setPosition(e.coord);
-    });
-
-    // 내 위치 옵션 추가
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var myLocation = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            map.setCenter(myLocation); // 내 위치로 지도 중심 이동
-            var marker = new naver.maps.Marker({
-                position: myLocation,
-                map: map
-            });
-        });
-    }
-
-    // 특정 장소 검색하기
-    var searchQuery = "카페"; // 검색어 설정
-    var geocoder = new naver.maps.Service.Geocoder({
-        clientId: hmecoefot7,
-        clientSecret: VBa9hWeMuQqnRZtD6zw3qM1DVOhIZax8vXzZf6U
-    });
-
-    geocoder.addressSearch(searchQuery, function(status, response) {
-        if (status === naver.maps.Service.Status.OK) {
-            var location = new naver.maps.LatLng(response.v2.meta.totalCount > 0 ? response.v2.addresses[0].y : 37.5665, response.v2.meta.totalCount > 0 ? response.v2.addresses[0].x : 126.9780);
-            map.setCenter(location);
-
-            // 주변에 마커 추가하기
-            var marker = new naver.maps.Marker({
-                position: location,
-                map: map
-            });
+            return date.getFullYear() + '/' +
+                (date.getMonth() +1) +  '/' +
+                date.getDate() + ' ' +
+                date.getHours() + ":" +
+                date.getMinutes();
         }
-    });
+
+        var loadContent = $(".load-content");
+
+        // 작성한 게시글 클릭시 리스트 불러오는 이벤트
+        $(".my-writings-btn").on("click", function (e){
+            getBoardList(email);
+        })
+
+        // 작성한 댓글 클릭시 리스트 불러오는 이벤트
+        $(".my-replies-btn").on("click", function (e){
+            getRepliesList(email);
+        })
+
+        function getBoardList(email){
+
+            var str = "";
+
+            $.getJSON('/member/board/' + email, function (arr){
+
+                console.log(arr);
+
+                $(arr).each(function (i, dto){
+
+                    console.info(dto)
+                    console.info(dto.title)
+
+                    var regDate =
+
+                    str += '<div class="data-box">';
+                    str += '<div class="data-title" data-bno="'+dto.bno+'"><a href="/board/read?bno='+dto.bno+'" target="_blank">'+dto.title+'</a></div>';
+                    str += '<div class="data-date">'+formatTime(dto.regDate)+'</div>';
+                    str += '</div>';
+                })
+
+                loadContent.html(str);
+
+            })
+        }
+
+        function getRepliesList(email){
+
+            var str = "";
+
+            $.getJSON('/member/replies/' + email, function (arr){
+
+                console.log(arr);
+
+                $(arr).each(function (i, dto){
+
+                    console.info(dto)
+                    console.info(dto.title)
+
+                    var regDate =
+
+                        str += '<div class="data-box">';
+                    str += '<div class="data-title" data-rno="'+dto.rno+'"><a href="/board/read?bno='+dto.bno+'" target="_blank">'+dto.text+'</a></div>';
+                    str += '<div class="data-date">'+formatTime(dto.regDate)+'</div>';
+                    str += '</div>';
+                })
+
+                loadContent.html(str);
+
+            })
+        }
 
 
-<!--</script>-->
 
+    }) // the end
 
+ </script>
 
     </th:block>
 </th:block>

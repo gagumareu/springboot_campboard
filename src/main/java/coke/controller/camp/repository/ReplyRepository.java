@@ -1,6 +1,7 @@
 package coke.controller.camp.repository;
 
 import coke.controller.camp.entity.Board;
+import coke.controller.camp.entity.Member;
 import coke.controller.camp.entity.Reply;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,5 +17,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     void deleteByBno(@Param("bno") Long bno);
 
     List<Reply> getRepliesByBoardOrderByRnoDesc(Board board);
+
+    List<Reply> getRepliesByMemberOrderByRnoDesc(Member member);
 
 }

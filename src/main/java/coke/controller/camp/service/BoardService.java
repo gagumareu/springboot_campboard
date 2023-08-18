@@ -23,6 +23,7 @@ public interface BoardService {
     void remove(Long bno);
     void modify(BoardDTO boardDTO);
     List<BoardImageDTO> getBoardImageList(Long bno);
+    List<BoardDTO> getBoardByEmail(String email);
 
     default Map<String, Object> dtoToEntity(BoardDTO boardDTO){
 
@@ -124,6 +125,19 @@ public interface BoardService {
         }).collect(Collectors.toList());
         return boardImageDTOList;
 
+    }
+
+    default BoardDTO basicEntityToDTO(Board board){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(board.getBno())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .category(board.getCategory())
+                .regDate(board.getRegDate())
+                .modDate(board.getModDate())
+                .build();
+        return boardDTO;
     }
 
 

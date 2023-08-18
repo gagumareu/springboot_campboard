@@ -31,5 +31,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
             "GROUP BY bi")
     List<Object[]> getBoardWithAll(@Param("bno") Long bno);
 
+    @Query("SELECT b FROM Board b WHERE b.member.email = :email")
+    List<Board> getBoardByEmail(String email);
+
 
 }

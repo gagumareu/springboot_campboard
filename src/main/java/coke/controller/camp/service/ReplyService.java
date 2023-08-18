@@ -14,6 +14,7 @@ public interface ReplyService {
     ReplyDTO get(Long rno);
     void remove(Long rno);
     void modify(ReplyDTO replyDTO);
+    List<ReplyDTO> getListByEmail(String email);
 
     default Reply dtoToEntity(ReplyDTO replyDTO){
 

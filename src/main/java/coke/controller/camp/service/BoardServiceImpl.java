@@ -20,6 +20,7 @@ import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -155,6 +156,17 @@ public class BoardServiceImpl implements BoardService{
         List<BoardImage> result = boardImageRepository.getBoardImagesByBno(bno);
 
         return imageEntityToDTO(result);
+    }
+
+    @Override
+    public List<BoardDTO> getBoardByEmail(String email) {
+
+        log.info("-------getBoarListByEmail---------------------");
+        log.info(email);
+
+        List<Board> result = boardRepository.getBoardByEmail(email);
+
+        return result.stream().map(board -> basicEntityToDTO(board)).collect(Collectors.toList());
     }
 
 
