@@ -46,29 +46,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> paramMap = oAuth2User.getAttributes();
 
         paramMap.forEach((k,v) -> {
-            log.info("----------------------------------------");
+            log.info("-----------------paramMap-----------------------");
             log.info(k + ":" + v);
         });
 
         String email = null;
+        String picture = null;
 
         switch (clientName){
             case "kakao":
                 email = getKakaoEmail(paramMap);
                 break;
-//            case "Google":
-//                email = getGoolgleEmail(paramMap);
-//                break;
             case "Google":
                 email = oAuth2User.getAttribute("email");
+                picture = oAuth2User.getAttribute("picture");
                 break;
         }
 
-        log.info("=============================================");
+        log.info("=====================email========================");
         log.info(email);
+        log.info(picture);
         log.info("=============================================");
 
-        return generateDTO(email, paramMap);
+        return generateDTO(email, picture, paramMap);
     }
 
     private String getKakaoEmail(Map<String, Object> paraMap){
@@ -103,7 +103,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
 
-    private MemberSecurityDTO generateDTO(String email, Map<String, Object> param){
+    private MemberSecurityDTO generateDTO(String email, String picture, Map<String, Object> param){
 
         Optional<Member> result = memberRepository.findByEmail(email);
 

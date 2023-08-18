@@ -94,6 +94,11 @@
         .footer{
             border-top: 1px solid lightblue;
         }
+
+        .content{
+            flex: 1;
+            margin-bottom: 50px;
+        }
     </style>
 <body>
 <div class="wrapper">
@@ -139,16 +144,14 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="container content">
         <th:block th:replace="${content}">
 
         </th:block>
     </div>
 
-    <div class="container">
-        <div class="footer">
+    <div class="container footer">
             <h1>footer</h1>
-        </div>
     </div>
 
 </div>

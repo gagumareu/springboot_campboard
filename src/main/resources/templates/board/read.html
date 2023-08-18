@@ -112,73 +112,66 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
   <th:block th:fragment="content">
 
-      <div class="container">
-          <div class="read-title">
-              <strong th:text="${dto.title}" class="read-title"></strong>
+  <div class="read-title">
+      <strong th:text="${dto.title}" class="read-title"></strong>
+  </div>
+
+  <div class="writer-info">
+      <div class="writer-nameNDate">
+          <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">
+              <span>[[${dto.memberName}]]</span>
+          </a>
+          <div th:if="${dto.regDate == dto.modDate}">
+              [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
           </div>
-
-          <div class="writer-info">
-              <div class="writer-nameNDate">
-                  <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">
-                      <span>[[${dto.memberName}]]</span>
-                  </a>
-                  <div th:if="${dto.regDate == dto.modDate}">
-                      [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
-                  </div>
-                  <div th:unless="${dto.regDate == dto.modDate}">
-                      [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
-                  </div>
-              </div>
-              <div class="replyCounting">
-                  <label>댓글 수</label>[[${dto.replyCount}]]
-              </div>
-          </div>
-
-          <div class="ckEditor-content">
-              <div th:utext="${dto.content}"></div>
-          </div>
-          <form id="remove-form" th:action="@{/board/remove}" method="post">
-              <input type="hidden" name="bno" th:value="${dto.bno}">
-              <input type="hidden" name="email" th:value="${dto.email}">
-          </form>
-
-          <div class="readBoard-btn-box">
-              <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
-              <button class="btn btn-outline-info">리스트</button>
-              </a>
-              <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
-                  <button class="btn btn-outline-info">리스트</button>
-              </a>
-              <th:block th:with="user=${#authentication.principal}">
-                  <div th:if="${user.username != null && user.username == dto.email}">
-                      <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
-                          <button class="btn btn-outline-light modifyBtn">수정</button>
-                      </a>
-                      <button class="btn btn-outline-info removeBtn">삭제</button>
-                  </div>
-              </th:block>
-          </div>
-
-          <div th:with="user=${#authentication.principal}" class="read-reply-box">
-              <div th:action="@{/replies/}" class="read-reply-form">
-                  <input type="hidden" name="bno" th:value="${dto.bno}">
-                  <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
-                  <div class="read-reply-btn">
-                    <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
-                  </div>
-              </div>
-          </div> <!--read-reply-box-->
-
-<!--          <div>-->
-<!--              <dvi>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</dvi>-->
-<!--          </div>-->
-
-          <div class="container replyContainer">
-
+          <div th:unless="${dto.regDate == dto.modDate}">
+              [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
           </div>
       </div>
+      <div class="replyCounting">
+          <label>댓글 수</label>[[${dto.replyCount}]]
+      </div>
+  </div>
+
+  <div class="ckEditor-content">
+      <div th:utext="${dto.content}"></div>
+  </div>
+  <form id="remove-form" th:action="@{/board/remove}" method="post">
+      <input type="hidden" name="bno" th:value="${dto.bno}">
+      <input type="hidden" name="email" th:value="${dto.email}">
+  </form>
+
+  <div class="readBoard-btn-box">
+      <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
+      <button class="btn btn-outline-info">리스트</button>
+      </a>
+      <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
+          <button class="btn btn-outline-info">리스트</button>
+      </a>
+      <th:block th:with="user=${#authentication.principal}">
+          <div th:if="${user.username != null && user.username == dto.email}">
+              <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
+                  <button class="btn btn-outline-light modifyBtn">수정</button>
+              </a>
+              <button class="btn btn-outline-info removeBtn">삭제</button>
+          </div>
+      </th:block>
+  </div>
+
+  <div th:with="user=${#authentication.principal}" class="read-reply-box">
+      <div th:action="@{/replies/}" class="read-reply-form">
+          <input type="hidden" name="bno" th:value="${dto.bno}">
+          <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
+          <div class="read-reply-btn">
+            <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
+          </div>
+      </div>
+  </div> <!--read-reply-box-->
 
 
+  <div class="container replyContainer">
+
+  </div>
 
 
       <script th:inline="javascript">
@@ -252,8 +245,7 @@
                           }
                           loadReplyList();
                           // self.location.reload();
-                          $("input[name='text']").val("");
-                          $("input[name='email']").val("");
+                          $("textarea[name='text']").val("");
                       }
 
                   }); // ajax
@@ -309,21 +301,25 @@
                  var writerEmail = $(this).data("email");
                  console.info(writerEmail)
 
-                  if(currentUser != userEmail){
+                  if(currentUser != writerEmail){
                       alert("댓글 작성자만 삭제가 가능합니다.");
                       return;
                   }
 
-                 $.ajax({
-                     url: '/replies/' + rno,
-                     method: 'DELETE',
-                     success: function (result){
-                         if (result === "success"){
-                             console.info(rno + "번 댓글이 삭제되었습니다.");
-                             loadReplyList();
-                         }
-                     }
-                 }); // ajax
+                  if(confirm("삭제 하시겠습니까?")){
+                      $.ajax({
+                          url: '/replies/' + rno,
+                          method: 'DELETE',
+                          success: function (result){
+                              if (result === "success"){
+                                  console.info(rno + "번 댓글이 삭제되었습니다.");
+                                  loadReplyList();
+                              }
+                          }
+                      }); // ajax
+                  }
+
+
 
               }); // reply delete event
 
@@ -334,7 +330,7 @@
                   console.info("writerEmail: " + writerEmail);
 
                   // if(principalEmail == writerEmail){
-                  if(currentUser != userEmail){
+                  if(currentUser != writerEmail){
                       alert("댓글 작성자만 삭제가 가능합니다.");
                       return;
                   }
@@ -380,8 +376,6 @@
 
 
               }); // reply modifying event
-
-
 
 
               $(".replyContainer").on("click", ".cancelReplyModifying", function (){

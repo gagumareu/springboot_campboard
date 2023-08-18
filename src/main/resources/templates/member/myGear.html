@@ -136,32 +136,30 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
     <th:block th:fragment="content">
 
-        <div class="container">
 
-            <div class="myGear-list-header">
-                <h3>나의 캠핑 기어 리스트</h3>
+    <div class="myGear-list-header">
+        <h3>나의 캠핑 기어 리스트</h3>
 
-                <div class="readyForRegisterBtn">
-                    <button type="button" class="btn btn-outline-secondary">등록하기</button>
-                </div>
-            </div>
+        <div class="readyForRegisterBtn">
+            <button type="button" class="btn btn-outline-secondary">등록하기</button>
+        </div>
+    </div>
 
-            <div data-aos="fade-up"
-                 data-aos-duration="3000" class="gear-data-boxes">
-            </div>
-            <script>
-                AOS.init(); // 자바스크립트로 init()을 해야 동작한다.
-            </script>
+    <div data-aos="fade-up"
+         data-aos-duration="3000" class="gear-data-boxes">
+    </div>
+    <script>
+        AOS.init(); // 자바스크립트로 init()을 해야 동작한다.
+    </script>
 
-            <div class="col-md-12 list-pagination">
-                <ul class="pagination justify-content-center align-items-center">
-                   <li class="page-item">
+    <div class="col-md-12 list-pagination">
+        <ul class="pagination justify-content-center align-items-center">
+           <li class="page-item">
 
-                   </li>
-                </ul>
-            </div>
+           </li>
+        </ul>
+    </div>
 
-        </div> <!--container -->
 
         <div class="modal gear-register-modal" tabindex="-1">
             <div class="modal-dialog">
@@ -254,7 +252,6 @@
 
                 // 첨부파일 선택시 이미지파일 로컬서버로 업로드 이벤트
                 $("input[name='uploadFiles']").on("change", function (){
-                    console.info("changed....");
 
                     var inputFile = $(this);
                     var formData = new FormData();
@@ -369,7 +366,7 @@
                         success: function (result){
                             var replyNo = parseInt(result);
                             alert(replyNo + "번 기어가 저장됐습니다.");
-                            showGearBoxes();
+                            loadGearBoxes(1);
                             self.location.reload();
                         }
 
@@ -434,7 +431,7 @@
                     }) // dtoList each
 
                     gearList.html(str);
-                }
+                } // showGearBoxes
 
                 function makingPagination(data){
 
@@ -448,7 +445,6 @@
 
                         $.each(dto.pageList, function (i, page){
                             str += '<li class="page-link">';
-                            // str += '<a href='+page+'>'+page+'</a>';
                             str += '<a href="'+page+'">'+page+'</a>';
                             str += '</li>';
                         })
@@ -477,7 +473,7 @@
 
                 })
 
-
+                // 기서 삭제 이벤트
                 $(".gear-data-boxes").on("click", ".gear-remove-btn", function (e){
 
                     e.preventDefault();
@@ -492,20 +488,21 @@
                             success: function (result){
                                 if (result == "success"){
                                     console.info("removed");
+                                    loadGearBoxes(1);
                                 }
-                                showGearBoxes();
+
                             }
                         })
                     }
 
-                }) // gear-list-ul
+                }) // remove-btn event
 
 
 
                 var modalGearUL = $(".modal-gear-img ul");
-
                 var modalGearDataUl = $(".modal-gear-data ul");
 
+                // 기어 수정 클릭시 모달 이벤트
                 $(".gear-data-boxes").on("click", ".gear-modify-btn", function (){
 
                     var gno = $(this).data("gno");
@@ -602,6 +599,7 @@
 
                 } // uploadImageOnModal
 
+                // 기어 수정 완료 버튼 클릭 이벤트
                 $(".gear-modal-modify").on("click", function (){
 
                     var gno = $("#gear-modal-gno").val();
@@ -646,7 +644,7 @@
                             if (result === "success"){
                                 console.info(result);
                                 alert("기어 정보 수정 완료");
-                                showGearBoxes();
+                                loadGearBoxes(1);
                                 $(".gear-modal").modal('hide');
                                 self.location.reload();
                             }
@@ -656,7 +654,7 @@
 
                 }); //gear modify btn clicking event
 
-
+                // 모달 창에서 이미지 클릭시 삭제
                 $(".modal-gear-img").on("click", "li img", function (){
 
                     console.info("clicking");
@@ -694,6 +692,7 @@
                     $(".gear-modal").modal('hide');
                 });
 
+                // 중고거래 이동 이벤트
                 $(".gear-data-boxes").on("click", ".gear-market-btn", function (){
 
                     var gno = $(this).data("gno");
@@ -702,6 +701,7 @@
                     window.location.href = '/board/register?category=중고거래&gno=' + gno;
 
                 });
+
 
                 $(".gear-data-boxes").on("click", "#justifyBtn", function (e){
 

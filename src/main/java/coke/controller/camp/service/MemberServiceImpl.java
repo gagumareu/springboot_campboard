@@ -56,8 +56,12 @@ public class MemberServiceImpl implements MemberService{
 
         Member member = result.get();
 
-        member.changeName(memberJoinDTO.getName());
-        member.changePassword(passwordEncoder.encode(memberJoinDTO.getPassword()));
+        if (memberJoinDTO.getPassword() != null){
+            member.changeName(memberJoinDTO.getName());
+            member.changePassword(passwordEncoder.encode(memberJoinDTO.getPassword()));
+        }if(memberJoinDTO.getPassword() == null){
+            member.changeName(memberJoinDTO.getName());
+        }
 
         log.info("===================================");
         log.info(member);
