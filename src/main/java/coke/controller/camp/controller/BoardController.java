@@ -75,8 +75,8 @@ public class BoardController {
             }
 
             model.addAttribute("gearList", gearList);
-            model.addAttribute("category", category);
-            model.addAttribute("pricipalName", principal.getName());
+            model.addAttribute("tellCategory", category);
+            model.addAttribute("principalName", principal.getName());
 
             return "/board/register";
 

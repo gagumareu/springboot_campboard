@@ -10,6 +10,25 @@
       display: flex;
       flex-direction: column;
     }
+
+    .modify-title{
+      margin: 10px 0px 14px 0px;
+      padding: 0px;
+    }
+
+    .uploadResultUL{
+      display: none;
+    }
+
+    .modify-btn-box{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .modify-btn-box button{
+      margin: 0px 3px;
+    }
   </style>
 
 <body>
@@ -30,7 +49,7 @@
           <input type="hidden" name="email" th:value="${dto.email}">
           <input type="hidden" name="bno" th:value="${dto.bno}">
 
-          <div class="col-md-12 col-sm-12">
+          <div class="modify-title">
             <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
           </div>
           <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
@@ -165,9 +184,9 @@
           <div class="hiddenBox">
 
           </div>
-          <div class="col-md-12 col-sm-12">
-            <button class="registBtn">수정</button>
-            <button class="listBackBtn">리스트</button>
+          <div class="modify-btn-box">
+            <button class="btn btn-outline-primary registBtn">수정</button>
+            <button class="btn btn-outline-success listBackBtn">리스트</button>
           </div>
         </form>
 

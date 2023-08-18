@@ -67,6 +67,50 @@
         .gear-list-box{
             height: 180px;
         }
+
+        .my-gear-li{
+            /*display: flex;*/
+            /*flex-direction: row;*/
+            /*margin-bottom: 10px;*/
+            /*border: 1px solid black;*/
+            height: 290px;
+
+        }
+        .my-gear-li:hover{
+            background: #fafafa;
+        }
+
+        .loadGear-img-box{
+            /*flex: 20%;*/
+            display: flex;
+            width: 100%;
+            height: 100px;
+            justify-content: center;
+        }
+
+        .loadGear-img-box a{
+            width: 100%;
+        }
+
+        .gear-info{
+            /*flex: 60%;*/
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            height: 190px;
+            word-wrap: break-word;
+            align-items: center;
+        }
+        .gear-info span{
+            margin-bottom: 2px;
+        }
+
+        .list-pagination{
+            display: flex;
+            justify-content: center;
+        }
+
+
     </style>
 
 </head>
@@ -76,28 +120,19 @@
     <th:blcok th:fragment="content">
 
         <div class="container">
+
             <form th:action="@{/board/register}" method="post">
 
-                <div th:if="${gearList != null}" class="gear-div">
-                        <div class="col-md-2 gear-list-box" th:each="dto : ${gearList}" th:attrappend="data-gno=${dto.gno}">
-                            <div class="gear-div-img">
-                                <img class="avail-img" th:if="${dto.gearImageDTOList[0] != null}" th:src="|/display?files=${dto.gearImageDTOList[0].getThumbnailURL()}|"
-                                     th:attr="data-url=${dto.gearImageDTOList[0].getImageURL()}" th:attrappend="data-gno=${dto.gno}">
-                                <img class="none-img" th:unless="${dto.gearImageDTOList[0] != null}" th:src="@{/icon/noImage2.svg}">
-                            </div>
-                            <div class="gear-div-info">
-                                <span>이름: [[${dto.gname}]]</span>
-                                <span>브랜드: [[${dto.brand}]]</span>
-                                <span>소재: [[${dto.material}]]</span>
-                                <span>사이즈: [[${dto.size}]]</span>
-                                <span>분류: [[${dto.sort}]]</span>
-                            </div>
-                        </div>
+                <div class="gear-data-boxes">
+                </div>
+                <div class="col-md-12 list-pagination">
+                    <ul class="pagination justify-content-center align-items-center">
+                        <li class="page-item">
+
+                        </li>
+                    </ul>
                 </div>
 
-                <div class="resetBtn">
-
-                </div>
 
                 <div class="titleAndSearchBox">
                     <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
@@ -245,12 +280,113 @@
 
     $(document).ready(function (){
 
-        var memberEmail = [[${pricipalName}]];
-        console.info(memberEmail);
 
-        var username = [[${#authentication.principal.username}]];
-        console.info(username);
+        // var memberEmail = [[${pricipalName}]];
+        // console.info(memberEmail);
 
+        var email = [[${#authentication.principal.username}]];
+
+        var checkCategory = [[${tellCategory}]];
+        console.log(checkCategory);
+        
+        // 기어리스트 박스 업로드 function
+        if (checkCategory){
+
+            loadGearBoxes(1);
+
+            function loadGearBoxes(page){
+
+                console.log("page: " + page)
+
+                var testing = "junghwan";
+
+                $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
+
+                    console.log(data.dtoList);
+                    console.log(data);
+                    // 기어리스트 DTO 업로드
+                    showGearBoxes(data.dtoList);
+                    // pagination 업로드
+                    makingPagination(data);
+                })
+            }
+        }
+
+        function showGearBoxes(dtoList){
+
+            var gearList = $(".gear-data-boxes");
+            var str = "";
+
+            console.info(dtoList);
+
+            $.each(dtoList, function (i, dto){
+
+                str += '<div class="col-md-2 my-gear-li" data-gno="'+dto.gno+'">';
+
+                str += '<div class="loadGear-img-box">';
+                if (dto.gearImageDTOList[0] !== null){
+                    str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                }else {
+                    str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                }
+                str += '</div>';
+
+                str += '<div class="gear-info">';
+                str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                str += '</div>';
+
+                str += '</div>';
+
+
+            }) // dtoList each
+
+            gearList.html(str);
+        }
+
+        function makingPagination(data){
+
+            var gearPageUl = $(".pagination");
+
+            var str = "";
+
+            $(data).each(function (i, dto){
+
+                console.log(dto);
+
+                $.each(dto.pageList, function (i, page){
+                    str += '<li class="page-link">';
+                    // str += '<a href='+page+'>'+page+'</a>';
+                    str += '<a href="'+page+'">'+page+'</a>';
+                    str += '</li>';
+                })
+
+            }) // pageList each
+
+            gearPageUl.html(str);
+
+        } //makingPagination
+
+        var page = 1;
+        // pagination 클릭시 이베트
+        $(".list-pagination ul").on("click", "a", function (e){
+
+            e.preventDefault();
+
+            console.log("clicking");
+
+            var targetPage = $(this).attr("href");
+
+            page = targetPage;
+
+            console.log(page);
+
+            loadGearBoxes(page);
+
+        })
+
+
+        // 중고 거래글 작성 이벤트
         $(".registerBtn").on("click", function (e){
 
             e.preventDefault();
@@ -274,7 +410,8 @@
 
         }); // register btn clicking event
 
-        $(".gear-div").on("click", ".gear-list-box", function (){
+        // 기어선택 클릭 이벤트
+        $(".gear-data-boxes").on("click", ".my-gear-li", function (){
 
             $('#summernote').summernote('reset');
 
@@ -336,65 +473,15 @@
                     HTMLString
                 );
 
-
             }); // getJSON for gear info
 
+        }); // 기어선택 클릭 이벤트 종료
 
-            // $(".gear-div ul").html("");
-            //
-            // var resetBtn = $(".resetBtn");
-            //
-            // str = "<button type='button' id='reBackToGearList'>기어 등록 취소</button>"
-            //
-            // resetBtn.html(str);
-
-        }); // gear-div clicking event
-
-        // $(".resetBtn").on("click", "#reBackToGearList", function (){
-        //     console.info("reBackGearList clicking");
-        //     loadGearData();
-        //     // $('#summernote').summernote('code', "");
-        //     $('#summernote').summernote('reset');
-        //     $(".resetBtn").html("");
-        // });
-        //
-        // function loadGearData(){
-        //
-        //     console.info("---------loadGearData()----------");
-        //
-        //     var gearDivUl = $(".gear-div ul");
-        //
-        //
-        //     $.getJSON('/gear/' + username, function (arr){
-        //
-        //         var str = "";
-        //
-        //         console.info(arr);
-        //
-        //         $.each(arr, function (i, dto){
-        //
-        //             console.info(dto.gearImageDTOList);
-        //
-        //             str += '<li data-gno="'+dto.gno+'">';
-        //             if (dto.gearImageDTOList[0] !== null){
-        //                 str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"' data-gno='"+dto.gno+"'>";
-        //             }else {
-        //                 str += "<img src='/icon/noImage2.svg'>";
-        //             }
-        //             str += '<div class="gear-info">';
-        //             str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span><span>분류: '+dto.sort+'</span>';
-        //             str += '</div>';
-        //             str += '</li>';
-        //
-        //         }) // each
-        //         gearDivUl.html(str);
-        //     }); // getJson
-        //
-        // } // loadGearData
 
         var gearDTO = [[${gearDTO}]];
         console.log(gearDTO)
 
+        // 선택된 중고 상품 editor로 업로드 from myGear
         if(gearDTO !== null){
 
             var gno = gearDTO.gno;
@@ -455,7 +542,7 @@
 
             hiddenGearBox.html(str);
 
-        } // load gearDTO
+        } // load gearDTO from myGear
 
 
     }); // the end

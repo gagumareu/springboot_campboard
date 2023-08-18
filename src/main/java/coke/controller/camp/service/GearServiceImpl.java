@@ -169,7 +169,7 @@ public class GearServiceImpl implements GearService{
         log.info(pageRequestDTO.getPage());
 
         Pageable pageable = PageRequest.of(
-                pageRequestDTO.getPage() -1, 6, Sort.by("gno").descending()
+                pageRequestDTO.getPage() -1, 12, Sort.by("gno").descending()
         );
 
         log.info(pageable);
