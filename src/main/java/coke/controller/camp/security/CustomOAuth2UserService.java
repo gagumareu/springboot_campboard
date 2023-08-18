@@ -53,6 +53,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = null;
         String profileImg = null;
 
+
         switch (clientName){
             case "kakao":
                 email = getKakaoEmail(paramMap);
@@ -69,6 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("=============================================");
 
         return generateDTO(email, profileImg, paramMap);
+
     }
 
     private String getKakaoEmail(Map<String, Object> paraMap){
@@ -106,7 +108,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private MemberSecurityDTO generateDTO(String email, String profileImg, Map<String, Object> param){
 
         log.info("*********************************************************");
-
         Optional<Member> result = memberRepository.findByEmail(email);
 
         if (result.isEmpty()){
