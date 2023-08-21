@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString
+@ToString(exclude = "roleSet")
 public class Member {
 
     @Id
@@ -24,13 +24,45 @@ public class Member {
 
     private String password;
 
+    private boolean del;
+
     private boolean fromSocial;
 
-//    @ElementCollection
-//    @Builder.Default
-//    private Set<MemberRole> roleSet = new HashSet<>();
-//
-//    public void addMemberRole(MemberRole memberRole){
-//        roleSet.add(memberRole);
-//    }
+    private String profileImg;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<MemberRole> roleSet = new HashSet<>();
+
+    public void changePassword(String password){
+        this.password = password;
+    }
+
+    public void changeEmail(String email){
+        this.email = email;
+    }
+
+    public void changeName(String memberName){
+        this.memberName = memberName;
+    }
+
+    public void changeDel(boolean del){
+        this.del = del;
+    }
+
+    public void addRole(MemberRole memberRole){
+        this.roleSet.add(memberRole);
+    }
+
+    public void clearRoles(){
+        this.roleSet.clear();
+    }
+
+    public void changeSocial(boolean fromSocial){
+        this.fromSocial = fromSocial;
+    }
+
+    public void changeProfileImg(String profileImg){
+        this.profileImg = profileImg;
+    }
 }

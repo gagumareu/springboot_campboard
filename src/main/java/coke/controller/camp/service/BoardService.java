@@ -6,6 +6,7 @@ import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.entity.Board;
 import coke.controller.camp.entity.BoardImage;
+import coke.controller.camp.entity.Gear;
 import coke.controller.camp.entity.Member;
 import org.springframework.data.domain.Page;
 
@@ -22,18 +23,21 @@ public interface BoardService {
     void remove(Long bno);
     void modify(BoardDTO boardDTO);
     List<BoardImageDTO> getBoardImageList(Long bno);
+    List<BoardDTO> getBoardByEmail(String email);
 
     default Map<String, Object> dtoToEntity(BoardDTO boardDTO){
 
         Map<String, Object> map = new HashMap<>();
 
         Member member = Member.builder().email(boardDTO.getEmail()).build();
+//        Gear gear = Gear.builder().gno(boardDTO.getGno()).build();
 
         Board board = Board.builder()
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
                 .category(boardDTO.getCategory())
                 .member(member)
+//                .gear(gear)
                 .build();
         map.put("board", board);
 
@@ -64,6 +68,7 @@ public interface BoardService {
                 .email(member.getEmail())
                 .category(board.getCategory())
                 .memberName(member.getMemberName())
+                .profileImg(member.getProfileImg())
                 .replyCount(replyCount.intValue())
                 .regDate(board.getRegDate())
                 .modDate(board.getModDate())
@@ -121,6 +126,19 @@ public interface BoardService {
         }).collect(Collectors.toList());
         return boardImageDTOList;
 
+    }
+
+    default BoardDTO basicEntityToDTO(Board board){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(board.getBno())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .category(board.getCategory())
+                .regDate(board.getRegDate())
+                .modDate(board.getModDate())
+                .build();
+        return boardDTO;
     }
 
 

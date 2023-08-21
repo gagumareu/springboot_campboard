@@ -2,6 +2,8 @@ package coke.controller.camp.controller;
 
 import coke.controller.camp.dto.GearDTO;
 import coke.controller.camp.dto.GearImageDTO;
+import coke.controller.camp.dto.PageRequestDTO;
+import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.service.GearService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,12 +38,29 @@ public class GearController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<List<GearDTO>> getList(@PathVariable("email") String email){
+    public ResponseEntity<List<GearDTO>> getList(@PathVariable("email") String email, PageRequestDTO pageRequestDTO){
 
         log.info("----------gear getList------------");
         log.info(email);
 
         return new ResponseEntity<>(gearService.getList(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/pagination/{email}/{page}")
+    public ResponseEntity<PageResultDTO<GearDTO, Object[]>> getListWithPagination(
+            @PathVariable("email") String email,
+            @PathVariable("page") int page,
+            PageRequestDTO pageRequestDTO){
+
+        log.info("------------gear getList With pagination---------------");
+        log.info(email);
+        log.info(page);
+
+        pageRequestDTO.setPage(page);
+
+        PageResultDTO<GearDTO, Object[]> resultDTO = gearService.getListWithPagination(email, pageRequestDTO);
+
+        return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{gno}")
@@ -93,7 +112,22 @@ public class GearController {
             thumbnail.delete();
 
         });
+    }
 
+    @GetMapping("/myGear/{gno}")
+    public ResponseEntity<GearDTO> getGearByGno(@PathVariable Long gno){
+
+        log.info("-------get gear...--------");
+
+        return new ResponseEntity<>(gearService.getByGno(gno), HttpStatus.OK);
+    }
+
+    @GetMapping("/images/{gno}")
+    public ResponseEntity<List<GearImageDTO>> getImagesByGno(@PathVariable("gno") Long gno){
+
+        log.info("get gear image list ....");
+
+        return new ResponseEntity<>(gearService.getImagesList(gno), HttpStatus.OK);
     }
 
 

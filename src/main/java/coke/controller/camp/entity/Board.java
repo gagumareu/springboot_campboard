@@ -9,7 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString(exclude = "member")
+@ToString(exclude = {"member"})
 public class Board extends BaseEntity{
 
     @Id
@@ -18,12 +18,16 @@ public class Board extends BaseEntity{
 
     private String title;
 
+    @Column(length = 10000)
     private String content;
 
     private String category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Gear gear;
 
     public void changeTitle(String title){
         this.title = title;

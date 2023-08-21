@@ -1,8 +1,6 @@
 package coke.controller.camp.service;
 
-import coke.controller.camp.dto.BoardImageDTO;
-import coke.controller.camp.dto.GearDTO;
-import coke.controller.camp.dto.GearImageDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.entity.BoardImage;
 import coke.controller.camp.entity.Gear;
 import coke.controller.camp.entity.GearImage;
@@ -21,6 +19,9 @@ public interface GearService {
     void remove(Long gno);
     void modify(GearDTO gearDTO);
     List<GearImageDTO> getImagesList(Long gno);
+    GearDTO getByGno(Long gno);
+    void updateState(GearDTO gearDTO);
+    PageResultDTO<GearDTO, Object[]> getListWithPagination(String email, PageRequestDTO pageRequestDTO);
 
 
     default Map<String, Object> dtoToEntity(GearDTO gearDTO){
@@ -28,12 +29,14 @@ public interface GearService {
         Map<String, Object> map = new HashMap<>();
 
         Gear gear = Gear.builder()
+                .gno(gearDTO.getGno())
                 .gname(gearDTO.getGname())
                 .brand(gearDTO.getBrand())
                 .size(gearDTO.getSize())
                 .material(gearDTO.getMaterial())
                 .script(gearDTO.getScript())
                 .sort(gearDTO.getSort())
+                .state(gearDTO.getState())
                 .member(Member.builder().email(gearDTO.getEmail()).build())
                 .build();
 
@@ -68,6 +71,7 @@ public interface GearService {
                 .material(gear.getMaterial())
                 .script(gear.getScript())
                 .sort(gear.getSort())
+                .state(gear.getState())
                 .regDate(gear.getRegDate())
                 .modDate(gear.getModDate())
                 .memberName(member.getMemberName())

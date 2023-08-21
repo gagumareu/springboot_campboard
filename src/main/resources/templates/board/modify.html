@@ -10,167 +10,184 @@
       display: flex;
       flex-direction: column;
     }
+
+    .modify-title{
+      margin: 10px 0px 14px 0px;
+      padding: 0px;
+    }
+
+    .uploadResultUL{
+      display: none;
+    }
+
+    .modify-btn-box{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .modify-btn-box button{
+      margin: 0px 3px;
+    }
   </style>
 
 <body>
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:blocK th:fragment="content">
 
-      <div class="container">
-        <form th:action="@{/board/modify}" method="post">
+    <form th:action="@{/board/modify}" method="post">
 
-          <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
-          <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
-          <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
-          <th:block th:if="${pageRequestDTO.category != ''}">
-            <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
-          </th:block>
-          <th:block th:unless="${pageRequestDTO.category != ''}">
-          </th:block>
-          <input type="hidden" name="email" th:value="${dto.email}">
-          <input type="hidden" name="bno" th:value="${dto.bno}">
+      <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+      <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
+      <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
+      <th:block th:if="${pageRequestDTO.category != ''}">
+        <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
+      </th:block>
+      <th:block th:unless="${pageRequestDTO.category != ''}">
+      </th:block>
+      <input type="hidden" name="email" th:value="${dto.email}">
+      <input type="hidden" name="bno" th:value="${dto.bno}">
 
-          <div class="col-md-12 col-sm-12">
-            <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
-          </div>
-          <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
-          <script th:inline="javascript">
-            $(document).ready(function() {
+      <div class="modify-title">
+        <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
+      </div>
+      <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
+      <script th:inline="javascript">
+        $(document).ready(function() {
 
-              var bno = [[${dto.bno}]];
-              console.log("bno: " + bno);
-              var targetImageList = [];
+          var bno = [[${dto.bno}]];
+          console.log("bno: " + bno);
 
-              $('#summernote').summernote({
-                height: 600,
-                callbacks:{
-                  onImageUpload: function (files, editor, welEditable){
-                    for (var i = files.length -1; i >= 0; i--){
-                      console.info(files[i]);
-                      uploadImageFiles(files[i], this);
-                    } //for
-                  }, // onImageUpload
-                  onMediaDelete: function (target){
+          var targetImageList = [];
 
-                    var fileName = target.attr('src');
+          $('#summernote').summernote({
+            height: 600,
+            callbacks:{
+              onImageUpload: function (files, editor, welEditable){
+                for (var i = files.length -1; i >= 0; i--){
+                  console.info(files[i]);
+                  uploadImageFiles(files[i], this);
+                } //for
+              }, // onImageUpload
+              onMediaDelete: function (target){
 
-                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+                var fileName = target.attr('src');
 
-                    console.log("fileName: " + fileName);
+                fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
-                    targetImageList.forEach(function (i){
+                console.log("fileName: " + fileName);
 
-                      var targetName = i;
-                      console.log("targetImage_fromList: " + targetName);
+                targetImageList.forEach(function (i){
 
-                      if (i == fileName){
+                  var targetName = i;
+                  console.log("targetImage_fromList: " + targetName);
 
-                        var targetLI = $("li[name='"+fileName+"']");
+                  if (i == fileName){
 
-                        targetLI.remove();
+                    var targetLI = $("li[name='"+fileName+"']");
 
-                        $.ajax({
-                          url: '/deleteFile',
-                          data: {files: fileName},
-                          dataType: 'text',
-                          type: 'POST',
-                          success: function (result){
-                          }
-                        }); // ajax
+                    targetLI.remove();
 
-                      } // first
-                     }); // targetImageList forEach
-                  } // onMediaDelete
-                } // callbacks
-              }); // summernote
+                    $.ajax({
+                      url: '/deleteFile',
+                      data: {files: fileName},
+                      dataType: 'text',
+                      type: 'POST',
+                      success: function (result){
+                      }
+                    }); // ajax
 
-              function uploadImageFiles(files, el){
+                  } // first
+                 }); // targetImageList forEach
+              } // onMediaDelete
+            } // callbacks
+          }); // summernote
 
-                var formData = new FormData();
+          function uploadImageFiles(files, el){
 
-                formData.append("uploadFiles", files);
+            var formData = new FormData();
 
-                $.ajax({
-                  url: '/uploadAjax',
-                  data: formData,
-                  dataType: 'json',
-                  contentType: false,
-                  processData: false,
-                  type: 'POST',
-                  success:function (result){
-                    console.info(result);
-                    uploadResultUL(result);
-                  },
-                  error: function (jqXHR, textStatus, errorThrown){
-                    console.info(textStatus);
-                  }
-                }); // ajax
-              } // function uploadImageFiles
+            formData.append("uploadFiles", files);
 
-              function uploadResultUL(result){
+            $.ajax({
+              url: '/uploadAjax',
+              data: formData,
+              dataType: 'json',
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              success:function (result){
+                console.info(result);
+                uploadResultUL(result);
+              },
+              error: function (jqXHR, textStatus, errorThrown){
+                console.info(textStatus);
+              }
+            }); // ajax
+          } // function uploadImageFiles
 
-                var uploadResultUL = $(".uploadResultUL ul");
-                var str = "";
+          function uploadResultUL(result){
 
-                $(result).each(function (i, dto){
+            var uploadResultUL = $(".uploadResultUL ul");
+            var str = "";
 
-                  str += '<li data-path="'+dto.folderPath+'" ' +
-                          'data-uuid="'+dto.uuid+'" ' +
-                          'data-name="'+dto.fileName+'" ' +
-                          'name="display?files='+dto.imageURL+'" data-tell="newOnw"></li>';
+            $(result).each(function (i, dto){
 
-                  var imageURL = dto.imageURL;
+              str += '<li data-path="'+dto.folderPath+'" ' +
+                      'data-uuid="'+dto.uuid+'" ' +
+                      'data-name="'+dto.fileName+'" ' +
+                      'name="display?files='+dto.imageURL+'" data-tell="newOnw"></li>';
 
-                  console.log("imageURL: " + imageURL);
+              var imageURL = dto.imageURL;
 
-                  $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+              console.log("imageURL: " + imageURL);
 
-                  targetImageList.push("display?files="+dto.imageURL);
-                  // targetImageMap.set(newOne, "display?files="+dto.imageURL);
+              $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
 
-                }); // result each
+              targetImageList.push("display?files="+dto.imageURL);
+              // targetImageMap.set(newOne, "display?files="+dto.imageURL);
 
-                uploadResultUL.append(str);
+            }); // result each
 
-              }; // function uploadResultUL
+            uploadResultUL.append(str);
 
-              $.getJSON('/board/images/' + bno, function (images){
+          }; // function uploadResultUL
 
-                var uploadResultUL = $(".uploadResultUL ul");
-                var str = "";
+          $.getJSON('/board/images/' + bno, function (images){
 
-                $(images).each(function (i,dto){
+            var uploadResultUL = $(".uploadResultUL ul");
+            var str = "";
 
-                  str += '<li data-path="'+dto.folderPath+'" ' +
-                          'data-uuid="'+dto.uuid+'" ' +
-                          'data-name="'+dto.fileName+'" ' +
-                          'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
+            $(images).each(function (i,dto){
 
-                  console.log("imageURL: " + dto.imageURL);
+              str += '<li data-path="'+dto.folderPath+'" ' +
+                      'data-uuid="'+dto.uuid+'" ' +
+                      'data-name="'+dto.fileName+'" ' +
+                      'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
 
-                  targetImageList.push("display?files="+dto.imageURL);
+              console.log("imageURL: " + dto.imageURL);
 
-                }); // array
+              targetImageList.push("display?files="+dto.imageURL);
 
-                uploadResultUL.append(str);
+            }); // array
 
-              }); // get imageList event
+            uploadResultUL.append(str);
+
+          }); // get imageList event
 
 
-            }); // the end
+        }); // the end
 
-          </script>
+      </script>
 
-          <div class="hiddenBox">
+      <div class="hiddenBox">
 
-          </div>
-          <div class="col-md-12 col-sm-12">
-            <button class="registBtn">수정</button>
-            <button class="listBackBtn">리스트</button>
-          </div>
-        </form>
-
-      </div> <!-- container -->
+      </div>
+      <div class="modify-btn-box">
+        <button class="btn btn-outline-primary registBtn">수정</button>
+        <button class="btn btn-outline-success listBackBtn">리스트</button>
+      </div>
+    </form>
 
       <div class="uploadResultUL">
         <ul>

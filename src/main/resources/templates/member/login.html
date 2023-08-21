@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<style>
+    .login-form-wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 85px;
+    }
+    }
+
+    .social-login{
+        font-size: 1.5em;
+        height: 32px;
+        margin-bottom: 6px;
+    }
+
+    .social-login a img{
+        height: 100%;
+    }
+
+    .input-group{
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    #registerForm{
+        width: 300px;
+        margin-bottom: 14px;
+    }
+
+</style>
+
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
+  <th:blocK th:fragment="content">
+
+      <div class="login-form-wrapper">
+
+          <th:block th:if="${param.logout != null}">
+              <h1>Logout.......</h1>
+          </th:block>
+          <form id="registerForm" action="/member/login" method="post">
+              <div class="input-group ">
+                  <input type="text" name="username" class="form-control" placeholder="USER ID">
+              </div>
+
+              <div class="input-group ">
+                  <input type="text" name="password" class="form-control" placeholder="PASSWORD">
+              </div>
+              <div class="my-4">
+                  <div class="">
+                      <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
+                  </div>
+              </div>
+          </form>
+
+          <div class="social-login-box">
+              <div class="social-login">
+                  <a href="/oauth2/authorization/kakao">KAKAO</a>
+              </div>
+
+              <div class="social-login">
+                  <a href="/oauth2/authorization/google">
+                      <img src="/icon/google.svg">
+                      GOOGLE
+                  </a>
+              </div>
+
+              <div class="sign-up-box">
+                <a href="/member/join">
+                    <div class="btn-secondary">회원 가입</div>
+                </a>
+              </div>
+          </div>
+      </div>
+
+
+
+
+  </th:blocK>
+</th:block>
+
+</body>
+</html>

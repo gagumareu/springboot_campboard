@@ -1,5 +1,6 @@
 package coke.controller.camp.dto;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,9 +21,12 @@ public class GearDTO {
     private String size;
     private String script;
     private String sort;
+    private int state;
 
     private String email;
     private String memberName;
+
+    private Long bno;
 
     private LocalDateTime regDate, modDate;
 

@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString(exclude = "member")
+@ToString(exclude = {"member", "board"})
 public class Gear extends BaseEntity{
 
     @Id
@@ -28,7 +28,15 @@ public class Gear extends BaseEntity{
 
     private String script;
 
+    private int state;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Board board;
+
+    public void changeState(int state){
+        this.state = state;
+    }
 }

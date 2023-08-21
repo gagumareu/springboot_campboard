@@ -2,6 +2,7 @@ package coke.controller.camp.service;
 
 import coke.controller.camp.dto.ReplyDTO;
 import coke.controller.camp.entity.Board;
+import coke.controller.camp.entity.Member;
 import coke.controller.camp.entity.Reply;
 import coke.controller.camp.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +66,15 @@ public class ReplyServiceImpl implements ReplyService{
 
         replyRepository.save(reply);
 
+    }
+
+    @Override
+    public List<ReplyDTO> getListByEmail(String email) {
+
+        Member member = Member.builder().email(email).build();
+
+        List<Reply> result = replyRepository.getRepliesByMemberOrderByRnoDesc(member);
+
+        return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
     }
 }

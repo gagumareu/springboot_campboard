@@ -1,14 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
     <meta charset="UTF-8">
     <title>Title</title>
 
     <style>
+
         form{
             display: flex;
             flex-direction: column;
         }
+
+        ul {
+            list-style: none;
+        }
+
+        .titleAndSearchBox{
+            display: flex;
+            flex-direction: row;
+            margin: 10px 0px 14px 0px;
+            padding: 0px;
+        }
+
+        .inputTitle{
+            margin-right: 10px;
+            flex: 70%;
+        }
+
+        .categorySelector{
+            flex: 20%;
+        }
+
+        .inputEmail{
+            padding: 0px;
+        }
+
+        .btnBox{
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /*.gear-div ul li {*/
+        /*    display: flex;*/
+        /*    flex-direction: row;*/
+        /*    align-items: center;*/
+        /*    margin-bottom: 5px;*/
+        /*}*/
+
+        .gear-div-info{
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .gear-div-img{
+            height: 80px;
+        }
+
+        .gear-div-img img{
+            height: 93%;
+        }
+
+        .gear-list-box{
+            height: 180px;
+        }
+
+        .my-gear-li{
+            /*display: flex;*/
+            /*flex-direction: row;*/
+            /*margin-bottom: 10px;*/
+            /*border: 1px solid black;*/
+            height: 290px;
+
+        }
+        .my-gear-li:hover{
+            background: #fafafa;
+        }
+
+        .loadGear-img-box{
+            /*flex: 20%;*/
+            display: flex;
+            width: 100%;
+            height: 100px;
+            justify-content: center;
+        }
+
+        .loadGear-img-box a{
+            width: 100%;
+        }
+
+        .gear-info{
+            /*flex: 60%;*/
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            height: 190px;
+            word-wrap: break-word;
+            align-items: center;
+        }
+        .gear-info span{
+            margin-bottom: 2px;
+        }
+
+        .list-pagination{
+            display: flex;
+            justify-content: center;
+        }
+
+
     </style>
 
 </head>
@@ -17,164 +119,433 @@
 
     <th:blcok th:fragment="content">
 
-        <div class="container">
-            <form th:action="@{/board/register}" method="post">
-                <div class="col-md-12 col-sm-12">
-                    <input name="title" type="text" class="form-control" placeholder="TITLE">
-                    <select class="form-select" aria-label="Default select example" name="category">
-                        <option value="잡담">잡담</option>
-                        <option value="모임">모임</option>
-                        <option value="캠핑장">캠핑장</option>
-                        <option value="중고거래">중고거래</option>
-                    </select>
-                </div>
+    <form th:action="@{/board/register}" method="post">
 
-                <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
-                <script>
-                    $(document).ready(function() {
-
-                        var targetImageList = [];
-
-                        $('#summernote').summernote({
-                            height: 600,
-                            lang: "ko-KR",
-                            callbacks:{
-                                onImageUpload: function (files, editor, welEditable){
-                                    for (var i = files.length -1; i >= 0; i--){
-                                        console.info(files[i]);
-                                        uploadImageFiles(files[i], this);
-                                    } //for
-                                }, // onImageUpload
-                                onMediaDelete: function (target){
-
-                                    var fileName = target.attr('src');
-
-                                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
-
-                                    console.log("fileName: " + fileName);
-
-                                    targetImageList.forEach(function (i){
-
-                                        var targetName = i;
-
-                                        if (i == fileName){
-
-                                            var targetLI = $("li[name='"+fileName+"']");
-
-                                            targetLI.remove();
-
-                                            $.ajax({
-                                                url: '/deleteFile',
-                                                data: {files: fileName},
-                                                dataType: 'text',
-                                                type: 'POST',
-                                                success: function (result){
-                                                }
-                                            })
-                                        }
-
-                                    }); // targetImageList forEach
-
-                                } // onMediaDelete
-                            } // callbacks
-                        }); // summernote
-
-                        function uploadImageFiles(files, el){
-
-                            var formData = new FormData();
-
-                            formData.append("uploadFiles", files);
-
-                            $.ajax({
-                                url: '/uploadAjax',
-                                data: formData,
-                                dataType: 'json',
-                                contentType: false,
-                                processData: false,
-                                type: 'POST',
-                                success:function (result){
-                                    console.info(result);
-                                    uploadResultUL(result);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown){
-                                    console.info(textStatus);
-                                }
-                            }); // ajax
-                        } // function uploadImageFiles
-
-                        function uploadResultUL(result){
-
-                            var uploadResultUL = $(".uploadResultUL ul");
-                            var str = "";
-
-                            $(result).each(function (i, dto){
-
-                                str += '<li data-path="'+dto.folderPath+'" ' +
-                                    'data-uuid="'+dto.uuid+'" ' +
-                                    'data-name="'+dto.fileName+'" ' +
-                                    'name="display?files='+dto.imageURL+'"></li>';
-
-                                var imageURL = dto.imageURL;
-
-                                console.log("imageURL: " + imageURL);
-
-                                $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
-
-                                targetImageList.push("display?files="+dto.imageURL);
-
-                            }); // result each
-
-                            uploadResultUL.append(str);
-
-                        }; // function uploadResultUL
-
-                    }); // the end
-                </script>
-                <div class="col-md-12 col-sm-12">
-                    <input name="email" type="text" class="form-control" placeholder="EMAIL">
-                </div>
-                <div class="hiddenBox">
-
-                </div>
-                <div class="col-md-12 col-sm-12">
-                    <button class="registBtn">register</button>
-                </div>
-            </form>
+        <div class="gear-data-boxes">
         </div>
-        <div class="uploadResultUL">
+        <div class="col-md-12 list-pagination">
+            <ul class="pagination justify-content-center align-items-center">
+                <li class="page-item">
+
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="titleAndSearchBox">
+            <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
+            <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
+            <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
+                <option value="잡담">잡담</option>
+                <option value="모임">모임</option>
+                <option value="캠핑장">캠핑장</option>
+                <option value="중고거래">중고거래</option>
+            </select>
+        </div>
+
+        <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
+        <script>
+            $(document).ready(function() {
+
+                var targetImageList = [];
+
+                $('#summernote').summernote({
+                    height: 600,
+                    lang: "ko-KR",
+                    callbacks:{
+                        onImageUpload: function (files, editor, welEditable){
+                            for (var i = files.length -1; i >= 0; i--){
+                                console.info(files[i]);
+                                uploadImageFiles(files[i], this);
+                            } //for
+                        }, // onImageUpload
+                        onMediaDelete: function (target){
+
+                            var fileName = target.attr('src');
+
+                            fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+
+                            console.log("fileName: " + fileName);
+
+                            targetImageList.forEach(function (i){
+
+                                var targetName = i;
+
+                                if (i == fileName){
+
+                                    var targetLI = $("li[name='"+fileName+"']");
+
+                                    targetLI.remove();
+
+                                    $.ajax({
+                                        url: '/deleteFile',
+                                        data: {files: fileName},
+                                        dataType: 'text',
+                                        type: 'POST',
+                                        success: function (result){
+                                        }
+                                    })
+                                }
+
+                            }); // targetImageList forEach
+
+                        } // onMediaDelete
+                    } // callbacks
+                }); // summernote
+
+                function uploadImageFiles(files, el){
+
+                    var formData = new FormData();
+
+                    formData.append("uploadFiles", files);
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success:function (result){
+                            console.info(result);
+                            uploadResultUL(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown){
+                            console.info(textStatus);
+                        }
+                    }); // ajax
+                } // function uploadImageFiles
+
+                function uploadResultUL(result){
+
+                    var uploadResultUL = $(".uploadResultUL ul");
+                    var str = "";
+
+                    $(result).each(function (i, dto){
+
+                        str += '<li data-path="'+dto.folderPath+'" ' +
+                            'data-uuid="'+dto.uuid+'" ' +
+                            'data-name="'+dto.fileName+'" ' +
+                            'name="display?files='+dto.imageURL+'"></li>';
+
+                        var imageURL = dto.imageURL;
+
+                        console.log("imageURL: " + imageURL);
+
+                        $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+
+                        targetImageList.push("display?files="+dto.imageURL);
+
+                    }); // result each
+
+                    uploadResultUL.append(str);
+
+                }; // function uploadResultUL
+
+            }); // the end
+        </script>
+
+        <div class="col-md-12 col-sm-12">
+            <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+        </div>
+        <div class="hiddenBox">
+
+        </div>
+        <div class="hiddenGearBox">
+
+        </div>
+        <div class="hidden-gear-box">
+
+        </div>
+        <div class="col-md-12 col-sm-12 btnBox">
+            <button class="btn btn-outline-light registerBtn">글작성</button>
+        </div>
+    </form>
+        <div class="uploadResultUL" style="display: none">
             <ul>
 
             </ul>
         </div>
 
-        <script th:inline="javascript">
+<script layout:frgment="script" th:inline="javascript">
 
-            $(document).ready(function (){
+    const auth = [[${#authentication.principal}]]
+    console.info(auth);
 
-                $(".registBtn").on("click", function (e){
+    const errors = [[${errors}]]
+    console.info(errors)
 
-                    e.preventDefault();
+    $(document).ready(function (){
 
-                    var str = "";
 
-                    $(".uploadResultUL li").each(function (i, dto){
+        // var memberEmail = [[${pricipalName}]];
+        // console.info(memberEmail);
 
-                        var target = $(dto);
+        var email = [[${#authentication.principal.username}]];
 
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
-                        str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+        var checkCategory = [[${tellCategory}]];
+        console.log(checkCategory);
 
-                    });
+        // 기어리스트 박스 업로드 function
+        if (checkCategory){
 
-                    $(".hiddenBox").html(str);
-                    $("form").submit();
+            loadGearBoxes(1);
+
+            function loadGearBoxes(page){
+
+                console.log("page: " + page)
+
+                var testing = "junghwan";
+
+                $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
+
+                    console.log(data.dtoList);
+                    console.log(data);
+                    // 기어리스트 DTO 업로드
+                    showGearBoxes(data.dtoList);
+                    // pagination 업로드
+                    makingPagination(data);
+                })
+            }
+        }
+
+        function showGearBoxes(dtoList){
+
+            var gearList = $(".gear-data-boxes");
+            var str = "";
+
+            console.info(dtoList);
+
+            $.each(dtoList, function (i, dto){
+
+                str += '<div class="col-md-2 my-gear-li" data-gno="'+dto.gno+'">';
+
+                str += '<div class="loadGear-img-box">';
+                if (dto.gearImageDTOList[0] !== null){
+                    str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                }else {
+                    str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                }
+                str += '</div>';
+
+                str += '<div class="gear-info">';
+                str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                str += '</div>';
+
+                str += '</div>';
+
+
+            }) // dtoList each
+
+            gearList.html(str);
+        }
+
+        function makingPagination(data){
+
+            var gearPageUl = $(".pagination");
+
+            var str = "";
+
+            $(data).each(function (i, dto){
+
+                console.log(dto);
+
+                $.each(dto.pageList, function (i, page){
+                    str += '<li class="page-link">';
+                    // str += '<a href='+page+'>'+page+'</a>';
+                    str += '<a href="'+page+'">'+page+'</a>';
+                    str += '</li>';
+                })
+
+            }) // pageList each
+
+            gearPageUl.html(str);
+
+        } //makingPagination
+
+        var page = 1;
+        // pagination 클릭시 이베트
+        $(".list-pagination ul").on("click", "a", function (e){
+
+            e.preventDefault();
+
+            console.log("clicking");
+
+            var targetPage = $(this).attr("href");
+
+            page = targetPage;
+
+            console.log(page);
+
+            loadGearBoxes(page);
+
+        })
+
+
+        // 중고 거래글 작성 이벤트
+        $(".registerBtn").on("click", function (e){
+
+            e.preventDefault();
+
+            console.log("clicking");
+
+            var str = "";
+
+            $(".uploadResultUL li").each(function (i, dto){
+
+                var target = $(dto);
+
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+
+            });
+
+            $(".hiddenBox").html(str);
+            $("form").submit();
+
+        }); // register btn clicking event
+
+        // 기어선택 클릭 이벤트
+        $(".gear-data-boxes").on("click", ".my-gear-li", function (){
+
+            $('#summernote').summernote('reset');
+
+            var gno = $(this).data("gno");
+
+            console.info(gno);
+
+            var str =""
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
+
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                    }else {
+                        // str += "<img src='/icon/noImage2.svg'>";
+                        console.info("there are no avalable images");
+                    }
                 });
 
-            }); // the end
+            }); // getJSON for images
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML',
+                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
+                    HTMLString
+                );
+
+            }); // getJSON for gear info
+
+        }); // 기어선택 클릭 이벤트 종료
 
 
-        </script>
+        var gearDTO = [[${gearDTO}]];
+        console.log(gearDTO)
+
+        // 선택된 중고 상품 editor로 업로드 from myGear
+        if(gearDTO !== null){
+
+            var gno = gearDTO.gno;
+            console.log(gno);
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML',
+                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
+                    HTMLString
+                );
+
+            }); // getJSON
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                    }else {
+                        // str += "<img src='/icon/noImage2.svg'>";
+                        console.info("there are no avalable images");
+                    }
+                });
+
+            }); // getJSON for images
+
+            var str = "";
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
+
+        } // load gearDTO from myGear
+
+
+    }); // the end
+
+
+</script>
 
     </th:blcok>
 

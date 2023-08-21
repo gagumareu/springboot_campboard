@@ -21,6 +21,9 @@ public class BoardDTO {
 
     private String email;
     private String memberName;
+    private String profileImg;
+
+//    private Long gno;
 
     private int replyCount;
 

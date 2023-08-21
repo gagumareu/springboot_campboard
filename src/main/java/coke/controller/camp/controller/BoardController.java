@@ -1,35 +1,42 @@
 package coke.controller.camp.controller;
 
-import coke.controller.camp.dto.BoardDTO;
-import coke.controller.camp.dto.BoardImageDTO;
-import coke.controller.camp.dto.PageRequestDTO;
-import coke.controller.camp.dto.PageResultDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
+import coke.controller.camp.service.GearService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.transaction.Transactional;
 import java.io.File;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 @RequestMapping("/board")
 @Log4j2
 @RequiredArgsConstructor
+@Transactional
 public class BoardController {
 
     private final BoardService boardService;
 
     private final BoardImageService boardImageService;
 
+    private final GearService gearService;
+
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/list")
     public void getList(PageRequestDTO pageRequestDTO, Model model){
 
@@ -37,28 +44,71 @@ public class BoardController {
 
         PageResultDTO<BoardDTO, Object[]> result =  boardService.getListWithImageMemberAndReplyCnt(pageRequestDTO);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info(authentication);
+
         model.addAttribute("boardList", result);
+        model.addAttribute("authenticated", authentication);
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/register")
-    public void register(){
+    public String register(String category, Model model, Principal principal, Long gno){
+
+        log.info("----------secondHands deal..........");
+
+        if(category.equals("중고거래")){
+
+            log.info("------------register for secondHands------------");
+
+            log.info(principal.getName());
+
+            List<GearDTO> gearList = gearService.getList(principal.getName());
+
+            log.info(gearList);
+
+            if (gno != null){
+                GearDTO gearDTO = gearService.getByGno(gno);
+                model.addAttribute("gearDTO", gearDTO);
+            }
+
+            model.addAttribute("gearList", gearList);
+            model.addAttribute("tellCategory", category);
+            model.addAttribute("principalName", principal.getName());
+
+            return "/board/register";
+
+        }else {
+
+            return "/board/register";
+        }
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/register")
-    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes, Model model){
+    public String register(BoardDTO boardDTO, RedirectAttributes redirectAttributes, GearDTO gearDTO){
 
         log.info("---------register-------");
+        log.info(boardDTO);
+        log.info(gearDTO);
 
         Long bno = boardService.register(boardDTO);
+        if (gearDTO.getGno() != null && gearDTO.getState() == 1){
+            log.info("----update gear to register second deal------ ");
+            gearService.updateState(gearDTO);
+        }
 
         redirectAttributes.addFlashAttribute("msg", bno);
         redirectAttributes.addAttribute("bno", bno);
+        redirectAttributes.addAttribute("category", boardDTO.getCategory());
 
         return "redirect:/board/read";
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping({"/read", "modify"})
     public void readOrModify(Model model, @RequestParam("bno") Long bno, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO){
 
@@ -74,20 +124,21 @@ public class BoardController {
         model.addAttribute("dto", boardDTO);
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/remove")
-    public String remove(Long bno){
+    public String remove(BoardDTO boardDTO){
 
         log.info("---------remove-------");
-        log.info("bno: " + bno);
+        log.info("boardDTO: " + boardDTO);
 
-        List<BoardImageDTO> boardImageList = boardImageService.getImageList(bno);
+        List<BoardImageDTO> boardImageList = boardImageService.getImageList(boardDTO.getBno());
         log.info("boardImageList: " + boardImageList);
 
         if (boardImageList != null && boardImageList.size() > 0){
             deleteFiles(boardImageList);
         }
 
-        boardService.remove(bno);
+        boardService.remove(boardDTO.getBno());
 
         return "redirect:/board/list";
 
@@ -114,6 +165,7 @@ public class BoardController {
         });
     }
 
+    @PreAuthorize("principal.username == #boardDTO.email")
     @PostMapping("/modify")
     public String modify(BoardDTO boardDTO, @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO,
                          RedirectAttributes redirectAttributes){
@@ -125,6 +177,7 @@ public class BoardController {
 
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
         redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("category", pageRequestDTO.getCategory());
 
         return "redirect:/board/read";
     }
