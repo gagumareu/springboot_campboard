@@ -36,5 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
+.env
+
 application-aws.properties
-**/application.properties
+#**/application.properties
