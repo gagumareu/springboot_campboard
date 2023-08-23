@@ -75,31 +75,52 @@
 
                 fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
+                var targetS3 = target.attr('src');
+
                 console.log("fileName: " + fileName);
+                console.log("targetS3: " + targetS3);
 
-                targetImageList.forEach(function (i){
+                // targetImageList.forEach(function (i){
+                 $(".uploadResultUL li").each(function (i, dto){
 
-                  var targetName = i;
-                  console.log("targetImage_fromList: " + targetName);
+                   var s3URL = $(this).data('s3url');
+                   var telling = $(this).data('tell');
 
-                  if (i == fileName){
+                   console.log(s3URL);
+                   console.log(telling);
+
+                  // var targetName = i;
+                  // console.log("targetImage_fromList: " + targetName);
+
+                  if (s3URL == targetS3){
 
                     var targetLI = $("li[name='"+fileName+"']");
 
-                    targetLI.remove();
+                    if (telling == 'newOne'){
 
-                    $.ajax({
-                      url: '/deleteFile',
-                      data: {files: fileName},
-                      dataType: 'text',
-                      type: 'POST',
-                      success: function (result){
-                      }
-                    }); // ajax
+                      console.log("remove for newOne");
 
-                  } // first
+                      targetLI.remove();
+
+                      $.ajax({
+                        url: '/removeS3',
+                        data: {files: fileName},
+                        dataType: 'text',
+                        type: 'delete',
+                        success: function (result){
+                        }
+                      }); // ajax
+
+                    }else {
+                      console.log("remove for oldOne");
+                      targetLI.remove();
+                    }
+
+                  } // if
                  }); // targetImageList forEach
+
               } // onMediaDelete
+
             } // callbacks
           }); // summernote
 
@@ -136,16 +157,19 @@
               str += '<li data-path="'+dto.folderPath+'" ' +
                       'data-uuid="'+dto.uuid+'" ' +
                       'data-name="'+dto.fileName+'" ' +
-                      'name="display?files='+dto.imageURL+'" data-tell="newOnw"></li>';
+                      'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'" data-tell="newOne"></li>';
+                      // 'name="display?files='+dto.imageURL+'" data-tell="newOne"></li>';
 
-              var imageURL = dto.imageURL;
+              // var imageURL = dto.imageURL;
+              //
+              // console.log("imageURL: " + imageURL);
 
-              console.log("imageURL: " + imageURL);
+              $('#summernote').summernote('insertImage', dto.s3Url);
 
-              $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+              var s3Url = dto.s3Url;
+              console.log(s3Url)
 
-              targetImageList.push("display?files="+dto.imageURL);
-              // targetImageMap.set(newOne, "display?files="+dto.imageURL);
+              targetImageList.push(s3Url);
 
             }); // result each
 
@@ -163,11 +187,12 @@
               str += '<li data-path="'+dto.folderPath+'" ' +
                       'data-uuid="'+dto.uuid+'" ' +
                       'data-name="'+dto.fileName+'" ' +
-                      'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
+                      'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'" data-tell="oldOne"></li>';
+                      // 'name="display?files='+dto.imageURL+'" data-tell="oldOne"></li>';
 
               console.log("imageURL: " + dto.imageURL);
 
-              targetImageList.push("display?files="+dto.imageURL);
+              targetImageList.push(dto.s3Url);
 
             }); // array
 
@@ -212,6 +237,7 @@
               str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
               str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
               str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+              str += '<input type="hidden" name="boardImageDTOList['+i+'].s3Url" value="'+target.data("s3url")+'">';
 
             });
 
