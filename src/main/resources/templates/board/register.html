@@ -262,9 +262,6 @@
         <div class="hiddenBox">
 
         </div>
-        <div class="hiddenGearBox">
-
-        </div>
         <div class="hidden-gear-box">
 
         </div>
@@ -346,6 +343,7 @@
             }
         }
 
+        // 기어리스트 DTO 업로드
         function showGearBoxes(dtoList){
 
             var gearList = $(".gear-data-boxes");
@@ -359,7 +357,7 @@
 
                 str += '<div class="loadGear-img-box">';
                 if (dto.gearImageDTOList[0] !== null){
-                    str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                    str += "<img src='"+dto.gearImageDTOList[0]?.thumbnailS3URL+"'>";
                 }else {
                     str += "<img src='/icon/img3.svg' style='height: 100%'>";
                 }
@@ -378,6 +376,7 @@
             gearList.html(str);
         }
 
+        // pagination 업로드
         function makingPagination(data){
 
             var gearPageUl = $(".pagination");
@@ -390,7 +389,6 @@
 
                 $.each(dto.pageList, function (i, page){
                     str += '<li class="page-link">';
-                    // str += '<a href='+page+'>'+page+'</a>';
                     str += '<a href="'+page+'">'+page+'</a>';
                     str += '</li>';
                 })
@@ -449,9 +447,8 @@
                 $.each(arr, function (i, dto){
 
                     if (dto !== null){
-                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                        $('#summernote').summernote('insertImage', dto.s3Url);
                     }else {
-                        // str += "<img src='/icon/noImage2.svg'>";
                         console.info("there are no avalable images");
                     }
                 });
@@ -479,10 +476,7 @@
                 var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
                     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
 
-                $('#summernote').summernote('pasteHTML',
-                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
-                    HTMLString
-                );
+                $('#summernote').summernote('pasteHTML', HTMLString);
 
             }); // getJSON for gear info
 
@@ -519,10 +513,7 @@
                 var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
                     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
 
-                $('#summernote').summernote('pasteHTML',
-                    // <p>'이름: ' + name</p> + <p>'브랜드: ' + brand</p> + '\n' + "size: " + size
-                    HTMLString
-                );
+                $('#summernote').summernote('pasteHTML', HTMLString);
 
             }); // getJSON
 
@@ -535,9 +526,8 @@
                 $.each(arr, function (i, dto){
 
                     if (dto !== null){
-                        $('#summernote').summernote('insertImage', '/display?files=' + dto.imageURL);
+                        $('#summernote').summernote('insertImage', dto.s3Url);
                     }else {
-                        // str += "<img src='/icon/noImage2.svg'>";
                         console.info("there are no avalable images");
                     }
                 });

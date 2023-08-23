@@ -50,6 +50,7 @@ public interface GearService {
                         .folderPath(gearImageDTO.getFolderPath())
                         .uuid(gearImageDTO.getUuid())
                         .fileName(gearImageDTO.getFileName())
+                        .s3Url(gearImageDTO.getS3Url())
                         .gear(gear)
                         .build();
                 return gearImage;
@@ -85,6 +86,7 @@ public interface GearService {
                             .folderPath(gearImage.getFolderPath())
                             .uuid(gearImage.getUuid())
                             .fileName(gearImage.getFileName())
+                            .s3Url(gearImage.getS3Url())
                             .build();
                 }else {
                     return null;
@@ -106,6 +108,7 @@ public interface GearService {
                             .folderPath(gearImage.getFolderPath())
                             .uuid(gearImage.getUuid())
                             .fileName(gearImage.getFileName())
+                            .s3Url(gearImage.getS3Url())
                             .build();
                 } else {
                     return null;

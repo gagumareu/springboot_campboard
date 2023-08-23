@@ -33,16 +33,17 @@ public class S3Uploader {
     // s3로 파일 업로드하기
     public String upload(String filePath)throws RuntimeException{
 
-        log.info(filePath);
+        log.info("---------------s3 upload----------------");
+        log.info("filePath: " + filePath);
 
         File targetFile = new File(filePath);
 
-        log.info(targetFile);
+        log.info("targetFile: " + targetFile);
 
         String uploadImageUrl = putS3(targetFile, targetFile.getName()); // s3로 업로드
 
         removeOriginalFile(targetFile);
-        log.info(uploadImageUrl);
+        log.info("uploadImageUrl: " + uploadImageUrl);
 
         return uploadImageUrl;
     }

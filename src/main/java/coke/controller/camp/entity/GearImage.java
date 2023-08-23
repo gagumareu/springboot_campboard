@@ -22,6 +22,8 @@ public class GearImage {
 
     private String fileName;
 
+    private String s3Url;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Gear gear;
 }

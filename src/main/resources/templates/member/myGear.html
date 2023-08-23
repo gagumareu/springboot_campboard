@@ -246,6 +246,7 @@
                 var email = [[${#authentication.principal.username}]];
                 console.info(email);
 
+                // 기어 등록 모달 오픈 버튼 이벤트
                 $(".readyForRegisterBtn").click(function (){
                     $(".gear-register-modal").modal('show');
                 })
@@ -281,7 +282,7 @@
 
                 }); // register
 
-                // 로컬 서버로 업로드 후 썸네일 이미지 웹에 업로드
+                // 로컬 서버로 업로드 후 썸네일 이미지 웹에 보여주기
                 function showUploadImage(arr){
 
                     var resultUL = $(".uploadResultDVI ul");
@@ -290,9 +291,9 @@
 
                     $(arr).each(function (i, dto){
 
-                        str += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'">';
-                        str += '<div class="img-thumbnail" data-file="'+dto.imageURL+'">';
-                        str += '<img src="/display?files='+dto.thumbnailURL+'">';
+                        str += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'" data-s3URL="'+dto.s3Url+'">';
+                        str += '<div class="img-thumbnail" data-file="'+dto.uuid+'_'+dto.fileName+'">';
+                        str += '<img src="'+dto.thumbnailS3URL+'">';
                         str += '</div>';
                         str += '</li>';
 
@@ -310,7 +311,7 @@
                     var targetLI = $(this).closest("li");
 
                     $.ajax({
-                        url: '/removeFile',
+                        url: '/removeS3',
                         data: { files: file},
                         type: 'DELETE',
                         dataType: 'text',
@@ -321,7 +322,7 @@
                     })
                 }); // uploadUl clicking
 
-                // 기어 등록 버튼 클릭시 기어 업데이트 이벤트
+                // 기어 등록 버튼 클릭시 등록 이벤트
                 $(".gear-submit-btn").on("click", function (e){
 
                     e.preventDefault();
@@ -335,7 +336,8 @@
                         var gearImageDTOList = {
                             folderPath: target.data("path"),
                             uuid: target.data("uuid"),
-                            fileName: target.data("name")
+                            fileName: target.data("name"),
+                            s3Url: target.data("s3url")
                         }
                         console.info(gearImageDTOList)
                         imageList.push(gearImageDTOList);
@@ -367,7 +369,16 @@
                             var replyNo = parseInt(result);
                             alert(replyNo + "번 기어가 저장됐습니다.");
                             loadGearBoxes(1);
-                            self.location.reload();
+                            // self.location.reload();
+                            $(".gear-register-modal").modal('hide');
+                            gname : $("input[name='gname']").val("");
+                            brand : $("input[name='brand']").val("");
+                            size : $("input[name='size']").val("");
+                            material: $("input[name='material']").val("");
+                            script: $("input[name='script']").val("");
+                            sort: $("input[name='sort']").val("");
+                            email: $("input[name='uploadFiles']").val("");
+                            $(".uploadUL").html("");
                         }
 
                     }); // ajax
@@ -395,6 +406,7 @@
 
                 }
 
+                // 기어리스트 DTO 업로드
                 function showGearBoxes(dtoList){
 
                     var gearList = $(".gear-data-boxes");
@@ -407,7 +419,7 @@
                         str += '<div class="col-md-2 my-gear-li">';
                         str += '<div class="loadGear-img-box">';
                         if (dto.gearImageDTOList[0] !== null){
-                            str += "<img src='/display?files="+dto.gearImageDTOList[0]?.thumbnailURL+"'>";
+                            str += "<img src='"+dto.gearImageDTOList[0]?.thumbnailS3URL+"'>";
                         }else {
                             str += "<img src='/icon/img3.svg' style='height: 100%'>";
                         }
@@ -415,7 +427,7 @@
                         str += '<img id="justifyBtn" src="/icon/justify.svg">';
                         str += '<div class="gear-btn-box">';
                         str += '<button type="button" class="btn-outline-primary gear-modify-btn" data-gno="'+dto.gno+'">수정</button>';
-                        str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >삭제</button>';
+                        str += '<button type="button" class="btn-outline-danger gear-remove-btn" data-gno="'+dto.gno+'" >삭제</button>';
                         str += '<button type="button" class="btn-outline-info gear-market-btn" data-gno="'+dto.gno+'" data-email="'+dto.email+'" >중고</button>';
                         str += '</div>';
                         str += '</div>';
@@ -433,6 +445,7 @@
                     gearList.html(str);
                 } // showGearBoxes
 
+                // pagination 업로드
                 function makingPagination(data){
 
                     var gearPageUl = $(".pagination");
@@ -473,7 +486,7 @@
 
                 })
 
-                // 기서 삭제 이벤트
+                // 기어 삭제 이벤트
                 $(".gear-data-boxes").on("click", ".gear-remove-btn", function (e){
 
                     e.preventDefault();
@@ -517,7 +530,6 @@
                         var sort = dto.sort;
 
                         var str = "";
-                        var str2 = "";
 
                         $("#gear-modal-name").val(name);
                         $("#gear-modal-brand").val(brand);
@@ -529,12 +541,16 @@
 
                         $.each(dto.gearImageDTOList, function (i, imgs){
 
+                            var s3URL = imgs.s3Url;
+                            console.log(s3URL);
+                            var fileName = imgs.fileName;
+                            console.log(fileName);
+
                             if (imgs !== null ){
 
-                                str += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old">';
-                                str += '<img src="/display?files='+imgs.thumbnailURL+'" data-name="'+imgs.imageURL+'" data-tell="old">';
+                                str += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old" data-s3="'+imgs.s3Url+'">';
+                                str += '<img src="'+imgs.thumbnailS3URL+'" data-name="'+imgs.uuid+'_'+imgs.fileName+'" data-tell="old">';
                                 str += '</li>';
-                                str2 += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old"></li>';
                                 console.info("adding liList for images");
 
                             }else {
@@ -543,7 +559,6 @@
                         }); // each for dto.gearImageDTOList
 
                         modalGearUL.html(str);
-                        modalGearDataUl.html(str2);
 
                     }); // getJSON
 
@@ -551,7 +566,7 @@
 
                 });  // gear modify modal open btn clicking event
 
-
+                // 기어 수정 모달에서 이미지 첨부 이벤트
                 $("input[name='modalFiles']").change(function (){
 
                     var formData = new FormData;
@@ -581,21 +596,16 @@
                 function uploadImageOnModal(result){
 
                     var str = "";
-                    var str2 = "";
 
                     $(result).each(function (i, dto){
 
-                        console.info(dto);
-
-                        str += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'" data-url="'+dto.imageURL+'" data-tell="new">';
-                        str += '<img src="/display?files='+dto.thumbnailURL+'" data-name="'+dto.imageURL+'" data-tell="new">';
+                        str += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'" data-url="'+dto.imageURL+'" data-tell="new" data-s3="'+dto.s3Url+'">';
+                        str += '<img src="'+dto.thumbnailS3URL+'" data-name="'+dto.uuid+'_'+dto.fileName+'" data-tell="new">';
                         str += '</li>';
-                        str2 += '<li data-path="'+dto.folderPath+'" data-uuid="'+dto.uuid+'" data-name="'+dto.fileName+'" data-url="'+dto.imageURL+'" data-tell="new"></li>';
 
                     });
 
                     modalGearUL.append(str);
-                    modalGearDataUl.append(str2);
 
                 } // uploadImageOnModal
 
@@ -606,19 +616,20 @@
 
                     console.info(gno);
 
-                    var list = [];
+                    var imageList = [];
 
-                    $(".modal-gear-img li").each(function (i, arr){
+                    $(".modal-gear-img-ul li").each(function (i, arr){
 
                         var folderPath = $(this).data("path");
                         var uuid = $(this).data("uuid");
                         var fileName = $(this).data("name");
-                        var fileList = {folderPath, uuid, fileName};
+                        var s3Url = $(this).data("s3");
+                        var fileList = {folderPath, uuid, fileName, s3Url};
 
-                        list.push(fileList);
+                        imageList.push(fileList);
                     });
 
-                    console.info(list);
+                    console.info(imageList);
 
                     var gearModifyData = {
                         gno: gno,
@@ -629,7 +640,7 @@
                         script: $("#gear-modal-script").val(),
                         sort: $("#gear-modal-sort").val(),
                         email: email,
-                        gearImageDTOList: list
+                        gearImageDTOList: imageList
                     }
 
                     console.info(gearModifyData);
@@ -646,7 +657,7 @@
                                 alert("기어 정보 수정 완료");
                                 loadGearBoxes(1);
                                 $(".gear-modal").modal('hide');
-                                self.location.reload();
+                                // self.location.reload();
                             }
 
                         }
@@ -657,10 +668,10 @@
                 // 모달 창에서 이미지 클릭시 삭제
                 $(".modal-gear-img").on("click", "li img", function (){
 
-                    console.info("clicking");
                     var targetLi = $(this).closest("li");
                     var targetName = $(this).data("name");
                     var telling = $(this).data("tell");
+
                     console.info(targetName);
                     console.info(telling);
 
@@ -671,7 +682,7 @@
                         targetLi.remove();
 
                         $.ajax({
-                            url:'/removeFile',
+                            url:'/removeS3',
                             data: {files: targetName},
                             dataType: 'text',
                             type: 'DELETE',

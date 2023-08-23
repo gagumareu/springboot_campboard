@@ -60,33 +60,30 @@ public class BoardController {
     @GetMapping("/register")
     public String register(String category, Model model, Principal principal, Long gno){
 
-        log.info("----------secondHands deal..........");
+        log.info("----------register method getMapping..........");
 
         if(category.equals("secondHands")){
 
             log.info("------------register for secondHands------------");
 
-            log.info(principal.getName());
+//            log.info(principal.getName());
 
-            List<GearDTO> gearList = gearService.getList(principal.getName());
+//            List<GearDTO> gearList = gearService.getList(principal.getName());
 
-            log.info(gearList);
+//            log.info(gearList);
 
             if (gno != null){
                 GearDTO gearDTO = gearService.getByGno(gno);
                 model.addAttribute("gearDTO", gearDTO);
             }
 
-            model.addAttribute("gearList", gearList);
+//            model.addAttribute("gearList", gearList);
             model.addAttribute("tellCategory", category);
-            model.addAttribute("principalName", principal.getName());
+//            model.addAttribute("principalName", principal.getName());
 
-            return "/board/register";
-
-        }else {
-
-            return "/board/register";
         }
+
+        return "/board/register";
     }
 
     @PreAuthorize("principal.username == #boardDTO.email")

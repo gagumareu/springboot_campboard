@@ -165,7 +165,7 @@
         <div class="img-box">
             <div class="img-thumbnail-div">
                 <img class="board_thumbnail_img availImg" th:if="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null && dto.boardImageDTOList[0]?.fileName != null  }"
-                     th:src="${dto.boardImageDTOList[0].s3Url}">
+                     th:src="${dto.boardImageDTOList[0].thumbnailS3URL}">
                 <img class="board_thumbnail_img" th:unless="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
             dto.boardImageDTOList[0]?.fileName != null  }" th:src="@{/icon/img3.svg}">
             </div>

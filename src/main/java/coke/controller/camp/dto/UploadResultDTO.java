@@ -32,4 +32,11 @@ public class UploadResultDTO {
         }
         return "";
     }
+
+      public String getThumbnailS3URL() {
+
+          return "https://camp-s3-bucket.s3.ap-northeast-2.amazonaws.com/s_" + uuid + "_" + fileName;
+
+      }
+
 }

@@ -5,6 +5,7 @@ import coke.controller.camp.dto.GearImageDTO;
 import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
 import coke.controller.camp.service.GearService;
+import coke.controller.camp.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,8 @@ import java.util.List;
 public class GearController {
 
     private final GearService gearService;
+
+    private final S3Uploader s3Uploader;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -72,7 +75,11 @@ public class GearController {
         List<GearImageDTO> gearImageDTOList = gearService.getImagesList(gno);
 
         if (gearImageDTOList != null){
-            deleteFiles(gearImageDTOList);
+//            deleteFiles(gearImageDTOList);
+            gearImageDTOList.forEach(gearImageDTO -> {
+                String targetName = gearImageDTO.getUuid() + "_" + gearImageDTO.getFileName();
+                s3Uploader.removeS3File(targetName);
+            });
         }
 
         gearService.remove(gno);

@@ -17,7 +17,6 @@ public class BoardImageDTO {
     private String folderPath;
     private String uuid;
     private String fileName;
-
     private String s3Url;
 
     public String getImageURL(){
@@ -36,5 +35,9 @@ public class BoardImageDTO {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public String getThumbnailS3URL(){
+        return "https://camp-s3-bucket.s3.ap-northeast-2.amazonaws.com/s_" + uuid + "_" + fileName;
     }
 }
