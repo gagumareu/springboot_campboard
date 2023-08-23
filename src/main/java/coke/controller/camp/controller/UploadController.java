@@ -4,6 +4,7 @@ import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.UploadResultDTO;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
+import coke.controller.camp.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -28,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
@@ -37,6 +39,11 @@ public class UploadController {
     private final BoardService boardService;
 
     private final BoardImageService boardImageService;
+
+    private final S3Uploader s3Uploader;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
@@ -60,6 +67,7 @@ public class UploadController {
     public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles){
 
         log.info("---------------------uploadAjax--------------------");
+        log.info("bucket: " + bucket);
 
         List<UploadResultDTO> uploadResultDTOList = new ArrayList<>();
 
@@ -89,9 +97,15 @@ public class UploadController {
 
                 File thumbnailFile = new File(thumbnailName);
 
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 200, 200);
 
-                uploadResultDTOList.add(new UploadResultDTO(folderPath, uuid , fileName));
+                String s3Url = s3Uploader.upload(saveName);
+                s3Uploader.upload(thumbnailName);
+
+                uploadResultDTOList.add(new UploadResultDTO(folderPath, uuid , fileName, s3Url));
+
+
+                log.info("---------------------end for uploadAjax--------------------");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -194,6 +208,25 @@ public class UploadController {
 
         return new ResponseEntity<>(boardService.getBoardImageList(bno), HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/removeS3")
+    public ResponseEntity<String> removeS3(String files){
+
+        log.info("-----------removeS3-----------------");
+
+        String result = files;
+
+        log.info(files);
+
+        try {
+            s3Uploader.removeS3File(files);
+            result = "success";
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

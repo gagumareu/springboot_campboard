@@ -22,6 +22,7 @@ public interface BoardImageService {
                             .folderPath(boardImage.getFolderPath())
                             .uuid(boardImage.getUuid())
                             .fileName(boardImage.getFileName())
+                            .s3Url(boardImage.getS3Url())
                             .build();
                 } else {
                     return null;

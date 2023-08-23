@@ -22,6 +22,8 @@ public class BoardImage {
 
     private String fileName;
 
+    private String s3Url;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 }

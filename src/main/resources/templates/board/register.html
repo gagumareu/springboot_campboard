@@ -134,12 +134,12 @@
 
         <div class="titleAndSearchBox">
             <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
-            <input th:if="${category == '중고거래'}" class="form-control" type="text" name="category" value="중고거래" readonly>
-            <select th:unless="${category == '중고거래'}" class="form-control categorySelector" aria-label="Default select example" name="category">
-                <option value="잡담">잡담</option>
-                <option value="모임">모임</option>
-                <option value="캠핑장">캠핑장</option>
-                <option value="중고거래">중고거래</option>
+            <input th:if="${tellCategory == 'secondHands' && tellCategory != null}" class="form-control" type="text" name="category" value="secondHands" readonly>
+            <select th:unless="${tellCategory == 'secondHands' && tellCategory != null}" class="form-control categorySelector" aria-label="Default select example" name="category">
+                <option value="talk">잡담</option>
+                <option value="party">모임</option>
+                <option value="place">캠핑장</option>
+                <option value="secondHands">중고거래</option>
             </select>
         </div>
 
@@ -165,23 +165,29 @@
 
                             fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
+                            var targetS3 = target.attr('src');
+
                             console.log("fileName: " + fileName);
+                            console.log("targetS3: " + targetS3);
 
                             targetImageList.forEach(function (i){
 
+                                console.log(targetImageList);
+                                console.log(i);
+
                                 var targetName = i;
 
-                                if (i == fileName){
+                                if (i == targetS3){
 
                                     var targetLI = $("li[name='"+fileName+"']");
 
                                     targetLI.remove();
 
                                     $.ajax({
-                                        url: '/deleteFile',
+                                        url: '/removeS3',
                                         data: {files: fileName},
                                         dataType: 'text',
-                                        type: 'POST',
+                                        type: 'delete',
                                         success: function (result){
                                         }
                                     })
@@ -226,15 +232,20 @@
                         str += '<li data-path="'+dto.folderPath+'" ' +
                             'data-uuid="'+dto.uuid+'" ' +
                             'data-name="'+dto.fileName+'" ' +
-                            'name="display?files='+dto.imageURL+'"></li>';
+                            'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'"></li>';
 
-                        var imageURL = dto.imageURL;
+                        // var imageURL = dto.imageURL;
+                        //
+                        // console.log("imageURL: " + imageURL);
 
-                        console.log("imageURL: " + imageURL);
+                        $('#summernote').summernote('insertImage', dto.s3Url);
+                        // $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
 
-                        $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+                        var s3Url = dto.s3Url;
+                        console.log(s3Url)
 
-                        targetImageList.push("display?files="+dto.imageURL);
+                        targetImageList.push(s3Url);
+                        console.log(targetImageList);
 
                     }); // result each
 
@@ -269,11 +280,11 @@
 
 <script layout:frgment="script" th:inline="javascript">
 
-    const auth = [[${#authentication.principal}]]
-    console.info(auth);
-
-    const errors = [[${errors}]]
-    console.info(errors)
+    // const auth = [[${#authentication.principal}]]
+    // console.info(auth);
+    //
+    // const errors = [[${errors}]]
+    // console.info(errors)
 
     $(document).ready(function (){
 
@@ -285,6 +296,32 @@
 
         var checkCategory = [[${tellCategory}]];
         console.log(checkCategory);
+
+        // 게시판 작성 버튼 이벤트
+        $(".registerBtn").on("click", function (e){
+
+            e.preventDefault();
+
+            console.log("clicking");
+
+            var str = "";
+
+            $(".uploadResultUL li").each(function (i, dto){
+
+                var target = $(dto);
+
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+                str += '<input type="hidden" name="boardImageDTOList['+i+'].s3Url" value="'+target.data("s3url")+'">';
+
+            });
+
+            $(".hiddenBox").html(str);
+            $("form").submit();
+
+        }); // register btn clicking event
+
 
         // 기어리스트 박스 업로드 function
         if (checkCategory){
@@ -365,6 +402,7 @@
         } //makingPagination
 
         var page = 1;
+
         // pagination 클릭시 이베트
         $(".list-pagination ul").on("click", "a", function (e){
 
@@ -382,30 +420,6 @@
 
         })
 
-
-        // 중고 거래글 작성 이벤트
-        $(".registerBtn").on("click", function (e){
-
-            e.preventDefault();
-
-            console.log("clicking");
-
-            var str = "";
-
-            $(".uploadResultUL li").each(function (i, dto){
-
-                var target = $(dto);
-
-                str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
-                str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
-                str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
-
-            });
-
-            $(".hiddenBox").html(str);
-            $("form").submit();
-
-        }); // register btn clicking event
 
         // 기어선택 클릭 이벤트
         $(".gear-data-boxes").on("click", ".my-gear-li", function (){

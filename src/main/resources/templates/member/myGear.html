@@ -685,12 +685,12 @@
 
 
                 $(".gear-modal-close").click(function (){
-                    $(".gear-modal").modal('hide');
+                    $(".modal").modal('hide');
                 })
 
-                $(".gear-image-close-btn").click(function (){
-                    $(".gear-modal").modal('hide');
-                });
+                // $(".gear-image-close-btn").click(function (){
+                //     $(".gear-modal").modal('hide');
+                // });
 
                 // 중고거래 이동 이벤트
                 $(".gear-data-boxes").on("click", ".gear-market-btn", function (){
@@ -698,7 +698,7 @@
                     var gno = $(this).data("gno");
                     console.log(gno)
 
-                    window.location.href = '/board/register?category=중고거래&gno=' + gno;
+                    window.location.href = '/board/register?category=secondHands&gno=' + gno;
 
                 });
 

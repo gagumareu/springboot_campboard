@@ -49,6 +49,7 @@ public interface BoardService {
                         .folderPath(boardImageDTO.getFolderPath())
                         .uuid(boardImageDTO.getUuid())
                         .fileName(boardImageDTO.getFileName())
+                        .s3Url(boardImageDTO.getS3Url())
                         .board(board)
                         .build();
                 return boardImage;
@@ -81,6 +82,7 @@ public interface BoardService {
                             .folderPath(boardImage.getFolderPath())
                             .uuid(boardImage.getUuid())
                             .fileName(boardImage.getFileName())
+                            .s3Url(boardImage.getS3Url())
                             .build();
                 }else {
                     return null;
@@ -103,6 +105,7 @@ public interface BoardService {
                     .folderPath(boardImageDTO.getFolderPath())
                     .uuid(boardImageDTO.getUuid())
                     .fileName(boardImageDTO.getFileName())
+                    .s3Url(boardImageDTO.getS3Url())
                     .board(board)
                     .build();
             return boardImage;
@@ -119,6 +122,7 @@ public interface BoardService {
                         .folderPath(boardImage.getFolderPath())
                         .uuid(boardImage.getUuid())
                         .fileName(boardImage.getFileName())
+                        .s3Url(boardImage.getS3Url())
                         .build();
             }else {
                 return null;

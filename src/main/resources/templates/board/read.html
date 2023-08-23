@@ -136,6 +136,7 @@
   <div class="ckEditor-content">
       <div th:utext="${dto.content}"></div>
   </div>
+
   <form id="remove-form" th:action="@{/board/remove}" method="post">
       <input type="hidden" name="bno" th:value="${dto.bno}">
       <input type="hidden" name="email" th:value="${dto.email}">
@@ -203,7 +204,7 @@
 
               }  // formatTime
 
-
+              // 게시물 삭제 이벤트
               $(".removeBtn").on("click", function (){
 
                   if (!confirm("삭제 하시겠습니까?")){
@@ -217,6 +218,7 @@
 
               loadReplyList();
 
+              // 댓글 등록 이벤트
               $(".insertReplyBtn").on("click", function (e){
 
                   e.preventDefault();
@@ -254,6 +256,7 @@
 
               var repliesContainer = $(".replyContainer");
 
+              // 댓글 리스트 로드 이벤트
               function loadReplyList(){
 
                   $.getJSON('/replies/board/' + bno, function (arr){
@@ -293,6 +296,7 @@
 
               } // loadReplyList
 
+              // 댓글 삭제 이벤트
               $(".replyContainer").on("click", ".replyDeleteBtn", function (){
 
                  var rno = $(this).data("rno");
@@ -318,12 +322,10 @@
                           }
                       }); // ajax
                   }
-
-
-
               }); // reply delete event
 
 
+              // 댓글 수정 이벤트
               $(".replyContainer").on("click", ".reply-modify-btn", function (){
 
                   var writerEmail = $(this).data("email");
@@ -374,10 +376,9 @@
 
                   }) // doReplyModifying event
 
-
               }); // reply modifying event
 
-
+              // 댓글 수정 창 닫기 이벤트
               $(".replyContainer").on("click", ".cancelReplyModifying", function (){
 
                   $(".replyModifyingForm").css("display", "none");

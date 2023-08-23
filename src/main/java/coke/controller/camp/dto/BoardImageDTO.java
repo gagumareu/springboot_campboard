@@ -18,6 +18,8 @@ public class BoardImageDTO {
     private String uuid;
     private String fileName;
 
+    private String s3Url;
+
     public String getImageURL(){
         try {
             return URLEncoder.encode(folderPath + "/" + uuid + "_" + fileName, "UTF-8");

@@ -4,6 +4,7 @@ import coke.controller.camp.dto.*;
 import coke.controller.camp.service.BoardImageService;
 import coke.controller.camp.service.BoardService;
 import coke.controller.camp.service.GearService;
+import coke.controller.camp.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,8 @@ public class BoardController {
 
     private final GearService gearService;
 
+    private final S3Uploader s3Uploader;
+
     @Value("${coke.controller.upload.path}")
     private String uploadPath;
 
@@ -59,7 +62,7 @@ public class BoardController {
 
         log.info("----------secondHands deal..........");
 
-        if(category.equals("중고거래")){
+        if(category.equals("secondHands")){
 
             log.info("------------register for secondHands------------");
 
@@ -135,7 +138,11 @@ public class BoardController {
         log.info("boardImageList: " + boardImageList);
 
         if (boardImageList != null && boardImageList.size() > 0){
-            deleteFiles(boardImageList);
+//            deleteFiles(boardImageList);
+            boardImageList.forEach(boardImageDTO -> {
+                String fileName = boardImageDTO.getUuid() + "_" + boardImageDTO.getFileName();
+                s3Uploader.removeS3File(fileName);
+            });
         }
 
         boardService.remove(boardDTO.getBno());

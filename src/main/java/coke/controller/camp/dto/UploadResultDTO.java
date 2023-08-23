@@ -13,6 +13,7 @@ public class UploadResultDTO {
     private String folderPath;
     private String uuid;
     private String fileName;
+    private String s3Url;
 
     public String getImageURL(){
         try {
