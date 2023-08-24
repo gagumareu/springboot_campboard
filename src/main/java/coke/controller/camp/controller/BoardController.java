@@ -62,7 +62,7 @@ public class BoardController {
 
         log.info("----------register method getMapping..........");
 
-        if(category.equals("secondHands")){
+        if(category.equals("secondHands") && gno != null){
 
             log.info("------------register for secondHands------------");
 
@@ -72,16 +72,20 @@ public class BoardController {
 
 //            log.info(gearList);
 
-            if (gno != null){
-                GearDTO gearDTO = gearService.getByGno(gno);
-                model.addAttribute("gearDTO", gearDTO);
-            }
-
+//            if (gno != null){
+//                GearDTO gearDTO = gearService.getByGno(gno);
+//                model.addAttribute("gearDTO", gearDTO);
+//            }
+            GearDTO gearDTO = gearService.getByGno(gno);
+            model.addAttribute("gearDTO", gearDTO);
+//
 //            model.addAttribute("gearList", gearList);
             model.addAttribute("tellCategory", category);
 //            model.addAttribute("principalName", principal.getName());
 
         }
+
+        model.addAttribute("tellCategory", category);
 
         return "/board/register";
     }

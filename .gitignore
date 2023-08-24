@@ -38,5 +38,5 @@ out/
 
 .env
 
-#application-aws.properties
-#**/application.properties
+application-aws.properties
+**/application.properties

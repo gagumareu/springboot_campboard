@@ -134,12 +134,12 @@
 
         <div class="titleAndSearchBox">
             <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
-            <input th:if="${tellCategory == 'secondHands' && tellCategory != null}" class="form-control" type="text" name="category" value="secondHands" readonly>
-            <select th:unless="${tellCategory == 'secondHands' && tellCategory != null}" class="form-control categorySelector" aria-label="Default select example" name="category">
-                <option value="talk">잡담</option>
-                <option value="party">모임</option>
-                <option value="place">캠핑장</option>
-                <option value="secondHands">중고거래</option>
+            <input th:if="${tellCategory == 'secondHands'}" class="form-control categorySelector" type="text" name="category" value="secondHands" readonly>
+            <select th:unless="${tellCategory == 'secondHands'}" class="form-control categorySelector" aria-label="Default select example" name="category">
+                <option th:selected="${tellCategory == 'talk'}" value="talk">잡담</option>
+                <option th:selected="${tellCategory == 'party'}" value="party">모임</option>
+                <option th:selected="${tellCategory == 'place'}" value="place">캠핑장</option>
+<!--                <option th:selected="${tellCategory == 'secondHands'}" value="secondHands">중고거래</option>-->
             </select>
         </div>
 
@@ -319,7 +319,7 @@
 
 
         // 기어리스트 박스 업로드 function
-        if (checkCategory){
+        if (checkCategory == 'secondHands'){
 
             loadGearBoxes(1);
 
@@ -482,6 +482,7 @@
 
 
         var gearDTO = [[${gearDTO}]];
+        var secondHandsDeal = [[${tellCategory}]];
         console.log(gearDTO)
 
         // 선택된 중고 상품 editor로 업로드 from myGear
