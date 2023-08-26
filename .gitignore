@@ -39,6 +39,6 @@ out/
 .env
 
 application-aws.properties
-**/application.properties
+#**/application.properties
 **/application-oauth.yml
 
