@@ -131,4 +131,13 @@ public class MemberController {
 
         return new ResponseEntity<>(replyService.getListByEmail(email), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/checkingId/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> checkIdForSignIn(@PathVariable ("email") String email){
+
+        log.info("checking email for sign in : " + email);
+
+        return new ResponseEntity<>(memberService.checkIdForDuplication(email), HttpStatus.OK);
+    }
+
 }

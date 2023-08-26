@@ -17,6 +17,7 @@ public interface MemberService {
     void join(MemberJoinDTO memberJoinDTO)throws MidExistException;
     void update(MemberJoinDTO memberJoinDTO);
     MemberDTO getMemberByEmail(String email);
+    int checkIdForDuplication(String email);
 
     default Member dtoToEntity(MemberJoinDTO memberJoinDTO){
 

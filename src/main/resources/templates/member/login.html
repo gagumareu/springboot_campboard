@@ -12,10 +12,10 @@
         align-items: center;
         margin-top: 85px;
     }
-    }
+
 
     .social-login{
-        font-size: 1.5em;
+        /*font-size: 1.5em;*/
         height: 32px;
         margin-bottom: 6px;
     }
@@ -32,6 +32,18 @@
     #registerForm{
         width: 300px;
         margin-bottom: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .social-login-box{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* row-gap: 5px; */
+        /* font-size: 13px; */
+        font-size: 1.2em;
     }
 
 </style>
@@ -45,18 +57,19 @@
           <th:block th:if="${param.logout != null}">
               <h1>Logout.......</h1>
           </th:block>
+          <div class="signUp-header">
+              <h2>로그인</h2>
+          </div>
           <form id="registerForm" action="/member/login" method="post">
               <div class="input-group ">
-                  <input type="text" name="username" class="form-control" placeholder="USER ID">
+                  <input type="text" name="username" class="form-control" placeholder="USER EMAIL">
               </div>
 
               <div class="input-group ">
-                  <input type="text" name="password" class="form-control" placeholder="PASSWORD">
+                  <input type="password" name="password" class="form-control" placeholder="PASSWORD">
               </div>
               <div class="my-4">
-                  <div class="">
-                      <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
-                  </div>
+                  <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
               </div>
           </form>
 

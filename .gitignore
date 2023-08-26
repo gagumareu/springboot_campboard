@@ -40,3 +40,5 @@ out/
 
 application-aws.properties
 **/application.properties
+**/application-oauth.yml
+

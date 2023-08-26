@@ -80,4 +80,10 @@ public class MemberServiceImpl implements MemberService{
         return entityToDTO(member);
     }
 
+    @Override
+    public int checkIdForDuplication(String email) {
+
+        return  memberRepository.checkID(email);
+    }
+
 }

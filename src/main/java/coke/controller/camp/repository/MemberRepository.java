@@ -28,4 +28,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Query("UPDATE Member m SET m.memberName = :name, m.password = :pw WHERE m.email = :email")
     void updateMemberNameAndPasswordByEmail(@Param("name") String name, @Param("pw") String pw, @Param("email") String email);
 
+    @Query("SELECT count(m.email) FROM Member m WHERE m.email = :email")
+    int checkID(String email);
 }

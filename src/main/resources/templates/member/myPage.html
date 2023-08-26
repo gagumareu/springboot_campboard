@@ -130,6 +130,41 @@
         padding: 0px 20px;
     }
 
+    .memberInfo-box{
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.3em;
+        /* justify-content: center; */
+        row-gap: 11px;
+        height: 100%;
+        margin-top: 95px;
+
+    }
+
+    .profileImage{
+        height: 54px;
+    }
+
+    .profileImage:hover{
+        cursor: grab;
+    }
+
+    .profileImage img{
+        height: 100%;
+    }
+
+    .modify-info{
+        margin-top: 95px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+        align-items: center;
+    }
+
+    .inputEmail{
+        width: 35%;
+    }
 </style>
 
 
@@ -161,7 +196,14 @@
 
             <div class="content-wrapper">
                 <div class="load-content">
-
+                    <div class="memberInfo-box">
+                        <div class="member-name">
+                            user name: [[${dto.memberName}]]
+                        </div>
+                        <div class="member-email">
+                            email: [[${dto.email}]]
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -190,53 +232,14 @@
 
         var loadContent = $(".load-content");
 
+
         // 작성한 게시글 클릭시 리스트 불러오는 이벤트
         $(".my-writings-btn").on("click", function (e){
             getBoardList(email);
             $(".myPage-title").html("작성한 게시글");
         })
 
-        // 작성한 댓글 클릭시 리스트 불러오는 이벤트
-        $(".my-replies-btn").on("click", function (e){
-            getRepliesList(email);
-            $(".myPage-title").html("작성한 댓글");
-        })
-
-        $(".modify-myInfo-btn").click(function (){
-
-            $(".myPage-title").html("계정 정보 변경");
-
-            var str = "";
-
-            str += '<form action="/member/modify" method="post">';
-            str += '<div><img src="/icon/person-circle.svg" class="personIcon"></div>'
-            str += '<input type="text" class="form-control" name="name" placeholder="NAME">';
-            str += '<input type="hidden" name="email" value="'+email+'">';
-            str += '<div class="modifyBtn">';
-            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>'
-            str += '<div>';
-            str += '</form>';
-
-            loadContent.html(str);
-        })
-
-        $(".userInfo").click(function (e){
-
-            $(".myPage-title").html("이름 변경");
-
-            var str = "";
-
-            str += '<form action="/member/modify" method="post">';
-            str += '<input type="text" class="form-control" name="name" placeholder="NAME">';
-            str += '<input type="hidden" name="email" value="'+email+'">';
-            str += '<div class="modifyBtn">';
-            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>'
-            str += '<div>';
-            str += '</form>';
-
-            loadContent.html(str);
-        })
-
+        // 내가 작성한 게시물 리스트 ajax
         function getBoardList(email){
 
             var str = "";
@@ -252,7 +255,7 @@
 
                     var regDate =
 
-                    str += '<div class="data-box">';
+                        str += '<div class="data-box">';
                     str += '<div class="data-title" data-bno="'+dto.bno+'"><a href="/board/read?bno='+dto.bno+'" target="_blank">'+dto.title+'</a></div>';
                     str += '<div class="data-date">'+formatTime(dto.regDate)+'</div>';
                     str += '</div>';
@@ -263,6 +266,13 @@
             })
         }
 
+        // 작성한 댓글 클릭시 리스트 불러오는 이벤트
+        $(".my-replies-btn").on("click", function (e){
+            getRepliesList(email);
+            $(".myPage-title").html("작성한 댓글");
+        })
+
+        // 내가 쓴 댓글 리스트 ajax
         function getRepliesList(email){
 
             var str = "";
@@ -289,8 +299,47 @@
             })
         }
 
+        // 내 정보 변경 클릭 이벤트
+        $(".modify-myInfo-btn").click(function (){
+
+            $(".myPage-title").html("계정 정보 변경");
+
+            var str = "";
+
+            str += '<form class="modify-info" action="/member/modify" method="post">';
+            str += '<input type="text" class="form-control inputEmail" name="name" placeholder="NAME">';
+            str += '<input type="hidden" name="email" value="'+email+'">';
+            str += '<div class="profileImage"><img src="/icon/person-circle.svg" class="personIcon"></div>';
+            str += '<div class="modifyBtn">';
+            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>';
+            str += '<div>';
+            str += '</form>';
+
+            loadContent.html(str);
+        })
+
+        // 왼쪽 사이드 이름 클릭시 이름 변경 이벤트
+        $(".userInfo").click(function (e){
+
+            $(".myPage-title").html("이름 변경");
+
+            var str = "";
+
+            str += '<form action="/member/modify" method="post">';
+            str += '<input type="text" class="form-control" name="name" placeholder="NAME">';
+            str += '<input type="hidden" name="email" value="'+email+'">';
+            str += '<div class="modifyBtn">';
+            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>'
+            str += '<div>';
+            str += '</form>';
+
+            loadContent.html(str);
+        })
+
+
         $(".modifyBtn").on("click", function (e){
             e.preventDefault();
+            console.log("clicking");
         })
 
     }) // the end
