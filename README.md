@@ -31,113 +31,113 @@
 
 
 <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
-        <script>
-            $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
-                var targetImageList = [];
+        var targetImageList = [];
 
-                $('#summernote').summernote({
-                    height: 600,
-                    lang: "ko-KR",
-                    callbacks:{
-                        onImageUpload: function (files, editor, welEditable){
-                            for (var i = files.length -1; i >= 0; i--){
-                                console.info(files[i]);
-                                uploadImageFiles(files[i], this);
-                            } //for
-                        }, // onImageUpload
-                        onMediaDelete: function (target){
+        $('#summernote').summernote({
+            height: 600,
+            lang: "ko-KR",
+            callbacks:{
+                onImageUpload: function (files, editor, welEditable){
+                    for (var i = files.length -1; i >= 0; i--){
+                        console.info(files[i]);
+                        uploadImageFiles(files[i], this);
+                    } //for
+                }, // onImageUpload
+                onMediaDelete: function (target){
 
-                            var fileName = target.attr('src');
+                    var fileName = target.attr('src');
 
-                            fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+                    fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
-                            var targetS3 = target.attr('src');
+                    var targetS3 = target.attr('src');
 
-                            console.log("fileName: " + fileName);
-                            console.log("targetS3: " + targetS3);
+                    console.log("fileName: " + fileName);
+                    console.log("targetS3: " + targetS3);
 
-                            targetImageList.forEach(function (i){
+                    targetImageList.forEach(function (i){
 
-                                console.log(targetImageList);
-                                console.log(i);
-
-                                var targetName = i;
-
-                                if (i == targetS3){
-
-                                    var targetLI = $("li[name='"+fileName+"']");
-
-                                    targetLI.remove();
-
-                                    $.ajax({
-                                        url: '/removeS3',
-                                        data: {files: fileName},
-                                        dataType: 'text',
-                                        type: 'delete',
-                                        success: function (result){
-                                        }
-                                    })
-                                }
-                            }); // targetImageList forEach
-                        } // onMediaDelete
-                    } // callbacks
-                }); // summernote
-
-                function uploadImageFiles(files, el){
-
-                    var formData = new FormData();
-
-                    formData.append("uploadFiles", files);
-
-                    $.ajax({
-                        url: '/uploadAjax',
-                        data: formData,
-                        dataType: 'json',
-                        contentType: false,
-                        processData: false,
-                        type: 'POST',
-                        success:function (result){
-                            console.info(result);
-                            uploadResultUL(result);
-                        },
-                        error: function (jqXHR, textStatus, errorThrown){
-                            console.info(textStatus);
-                        }
-                    }); // ajax
-                } // function uploadImageFiles
-
-                function uploadResultUL(result){
-
-                    var uploadResultUL = $(".uploadResultUL ul");
-                    var str = "";
-
-                    $(result).each(function (i, dto){
-
-                        str += '<li data-path="'+dto.folderPath+'" ' +
-                            'data-uuid="'+dto.uuid+'" ' +
-                            'data-name="'+dto.fileName+'" ' +
-                            'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'"></li>';
-
-                        // var imageURL = dto.imageURL;
-                        //
-                        // console.log("imageURL: " + imageURL);
-
-                        $('#summernote').summernote('insertImage', dto.s3Url);
-                        // $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
-
-                        var s3Url = dto.s3Url;
-                        console.log(s3Url)
-
-                        targetImageList.push(s3Url);
                         console.log(targetImageList);
+                        console.log(i);
 
-                    }); // result each
+                        var targetName = i;
 
-                    uploadResultUL.append(str);
+                        if (i == targetS3){
 
-                }; // function uploadResultUL
+                            var targetLI = $("li[name='"+fileName+"']");
 
-            }); // the end
-        </script>
+                            targetLI.remove();
+
+                            $.ajax({
+                                url: '/removeS3',
+                                data: {files: fileName},
+                                dataType: 'text',
+                                type: 'delete',
+                                success: function (result){
+                                }
+                            })
+                        }
+                    }); // targetImageList forEach
+                } // onMediaDelete
+            } // callbacks
+        }); // summernote
+
+        function uploadImageFiles(files, el){
+
+            var formData = new FormData();
+
+            formData.append("uploadFiles", files);
+
+            $.ajax({
+                url: '/uploadAjax',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success:function (result){
+                    console.info(result);
+                    uploadResultUL(result);
+                },
+                error: function (jqXHR, textStatus, errorThrown){
+                    console.info(textStatus);
+                }
+            }); // ajax
+        } // function uploadImageFiles
+
+        function uploadResultUL(result){
+
+            var uploadResultUL = $(".uploadResultUL ul");
+            var str = "";
+
+            $(result).each(function (i, dto){
+
+                str += '<li data-path="'+dto.folderPath+'" ' +
+                    'data-uuid="'+dto.uuid+'" ' +
+                    'data-name="'+dto.fileName+'" ' +
+                    'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'"></li>';
+
+                // var imageURL = dto.imageURL;
+                //
+                // console.log("imageURL: " + imageURL);
+
+                $('#summernote').summernote('insertImage', dto.s3Url);
+                // $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+
+                var s3Url = dto.s3Url;
+                console.log(s3Url)
+
+                targetImageList.push(s3Url);
+                console.log(targetImageList);
+
+            }); // result each
+
+            uploadResultUL.append(str);
+
+        }; // function uploadResultUL
+
+    }); // the end
+</script>
 
