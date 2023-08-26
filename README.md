@@ -29,6 +29,7 @@
 
 ------
 
+### summernote editor ###
     <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
     <script>
         $(document).ready(function() {
@@ -139,4 +140,33 @@
     
         }); // the end
     </script>
+
+- 게시물 등록 클릭 이벤트 Jquery
+- 
+   $(".registerBtn").on("click", function (e){
+
+        e.preventDefault();
+
+        console.log("clicking");
+
+        var str = "";
+
+        $(".uploadResultUL li").each(function (i, dto){
+
+            var target = $(dto);
+
+            str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+            str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+            str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+            str += '<input type="hidden" name="boardImageDTOList['+i+'].s3Url" value="'+target.data("s3url")+'">';
+
+        });
+
+        $(".hiddenBox").html(str);
+        $("form").submit();
+
+    }); // register btn clicking event
+
+  --
+    
 
