@@ -29,7 +29,7 @@
 
 ------
 
-
+<textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
 <script>
     $(document).ready(function() {
 
