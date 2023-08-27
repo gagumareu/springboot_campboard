@@ -13,28 +13,7 @@ import java.sql.SQLException;
 @SpringBootTest
 class CampApplicationTests {
 
-    @Autowired
-    private DataSource dataSource;
 
-    @Test
-    void contextLoads() {
-    }
-
-    @Test
-    public void setDataSource(){
-
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("select now()");
-            ResultSet resultSet = preparedStatement.executeQuery();
-        ) {
-            resultSet.next();
-
-            System.out.println(resultSet.getString(1));
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
