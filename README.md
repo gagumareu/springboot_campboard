@@ -368,7 +368,7 @@
         }); // the end
     </script>
 
-### 게시물 등록 클릭 이벤트 Jquery ###
+###### 게시물 등록 클릭 이벤트 Jquery ######
   
     $(".registerBtn").on("click", function (e){
     
