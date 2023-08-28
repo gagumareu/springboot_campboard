@@ -126,8 +126,6 @@
 
             e.preventDefault();
 
-            console.log("clicking");
-
             var targetPage = $(this).attr("href");
 
             page = targetPage;
@@ -185,14 +183,6 @@
                 var sort = dto.sort;
                 var state = dto.state;
 
-                console.info(name);
-                console.info(brand);
-                console.info(size);
-                console.info(material);
-                console.info(script);
-                console.info(sort);
-                console.info(state);
-
                 // var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
                 //     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
 
@@ -225,14 +215,6 @@
                 var script = dto.script;
                 var sort = dto.sort;
                 var state = dto.state;
-
-                console.info(name);
-                console.info(brand);
-                console.info(size);
-                console.info(material);
-                console.info(script);
-                console.info(sort);
-                console.info(state);
 
                 var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
                     '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
@@ -367,12 +349,7 @@
                         'data-name="'+dto.fileName+'" ' +
                         'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'"></li>';
     
-                    // var imageURL = dto.imageURL;
-                    //
-                    // console.log("imageURL: " + imageURL);
-    
                     $('#summernote').summernote('insertImage', dto.s3Url);
-                    // $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
     
                     var s3Url = dto.s3Url;
                     console.log(s3Url)
@@ -394,9 +371,7 @@
     $(".registerBtn").on("click", function (e){
     
         e.preventDefault();
-    
-        console.log("clicking");
-    
+        
         var str = "";
     
         $(".uploadResultUL li").each(function (i, dto){
@@ -415,6 +390,6 @@
     
     }); // register btn clicking event
 
-##
+
     
 
