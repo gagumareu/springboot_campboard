@@ -34,9 +34,9 @@
 
 ### summernote editor ###
 
-![게실물등록-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/3e6ceb36-2144-4806-8c78-244be9701cbd)
-
 ##### summernotEditor에서 이미지 선택 -> [ajax] 로컬 서버 파일 저장 -> AWS S3 bucket 저장 및 로컬 서버 파일 삭제 -> summernoteEditor 이미지 보여주기 -> 게시물 등록 버튼 클릭 -> 게시물 DTO 및 다중 이미지 파일 List와 함께 controller -> service -> repository -> AWS RDS DB 저장 #####
+
+![게실물등록-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/3e6ceb36-2144-4806-8c78-244be9701cbd)
 
     <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
     <script>
