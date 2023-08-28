@@ -28,7 +28,7 @@
 - 회원 이름 클릭시 회원 정보 보이기
 
 ------
-
+[![중고거래선택](https://github.com/gagumareu/springboot_campboard/assets/98436199/67a9896c-ca1e-4a4a-a2a9-3c7c1886d4f4)](https://camp-s3-bucket.s3.ap-northeast-2.amazonaws.com/21d086d9-de69-40fa-a50c-6c855269f19c_CK_WASH_TENT_2MAN-1_1800x1800.jpg)
 ### summernote editor ###
     <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
     <script>
