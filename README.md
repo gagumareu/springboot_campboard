@@ -33,6 +33,10 @@
 ![마이기어리스트 중고거래-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/a2bbd943-460e-4f9a-ab7d-0b5fdab6f762)
 
 ### summernote editor ###
+
+![게실물등록-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/3e6ceb36-2144-4806-8c78-244be9701cbd)
+
+
     <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
     <script>
         $(document).ready(function() {
