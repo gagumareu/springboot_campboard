@@ -28,6 +28,7 @@
 - 회원 이름 클릭시 회원 정보 보이기
 
 ------
+### 로그인 유저가 등록한 캠핑 리스트 및 중고거래 게시판 작성 ###
 ![마이기어리스트 중고거래-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/a2bbd943-460e-4f9a-ab7d-0b5fdab6f762)
 
 ### summernote editor ###
