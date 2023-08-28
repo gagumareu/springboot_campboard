@@ -30,7 +30,246 @@
 
 ------
 ### 로그인 유저가 등록한 캠핑 리스트 및 중고거래 게시판 작성 ###
+
+##### 로그인 유저[spring security authentication 권한을 가진 사용자] 본인의 캠핑 장비 목록을 리스트업 할 수 있음 #####
+##### 캠핑 장비 등록 DTO와 이미지 List를 함께 등록 -> 등록된 장비들은 getJSON을 통해 리스트업 [페이징] -> 등록된 장비들을 수정 및 삭제 가능 #####
+##### 원하는 장비를 중고거래로 등록하기 클릭시 -> 해당 장비의 id값을 전달 -> 게시물 등록 페이지에서 spring security authentication 권한을 이용하여 사용자의 foregin key를 참고하여 등록한 장비 리스트업 (ajax) 또한 전달 받은 id값을 통해 summernoteEditor에 해당 장비 값 및 이미지 자동 업로드 #####
+
 ![마이기어리스트 중고거래-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/a2bbd943-460e-4f9a-ab7d-0b5fdab6f762)
+
+
+
+// 기어리스트 박스 업로드 function
+        if (checkCategory == 'secondHands'){
+
+            loadGearBoxes(1);
+
+            function loadGearBoxes(page){
+
+                console.log("page: " + page)
+
+                var testing = "junghwan";
+
+                $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
+
+                    console.log(data.dtoList);
+                    console.log(data);
+                    // 기어리스트 DTO 업로드
+                    showGearBoxes(data.dtoList);
+                    // pagination 업로드
+                    makingPagination(data);
+                })
+            }
+        }
+
+        // 기어리스트 DTO 업로드
+        function showGearBoxes(dtoList){
+
+            var gearList = $(".gear-data-boxes");
+            var str = "";
+
+            console.info(dtoList);
+
+            $.each(dtoList, function (i, dto){
+
+                str += '<div class="col-md-2 my-gear-li" data-gno="'+dto.gno+'">';
+
+                str += '<div class="loadGear-img-box">';
+                if (dto.gearImageDTOList[0] !== null){
+                    str += "<img src='"+dto.gearImageDTOList[0]?.thumbnailS3URL+"'>";
+                }else {
+                    str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                }
+                str += '</div>';
+
+                str += '<div class="gear-info">';
+                str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
+                str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                str += '</div>';
+
+                str += '</div>';
+
+
+            }) // dtoList each
+
+            gearList.html(str);
+        }
+
+        // pagination 업로드
+        function makingPagination(data){
+
+            var gearPageUl = $(".pagination");
+
+            var str = "";
+
+            $(data).each(function (i, dto){
+
+                console.log(dto);
+
+                $.each(dto.pageList, function (i, page){
+                    str += '<li class="page-link">';
+                    str += '<a href="'+page+'">'+page+'</a>';
+                    str += '</li>';
+                })
+
+            }) // pageList each
+
+            gearPageUl.html(str);
+
+        } //makingPagination
+
+        var page = 1;
+
+        // pagination 클릭시 이베트
+        $(".list-pagination ul").on("click", "a", function (e){
+
+            e.preventDefault();
+
+            console.log("clicking");
+
+            var targetPage = $(this).attr("href");
+
+            page = targetPage;
+
+            console.log(page);
+
+            loadGearBoxes(page);
+
+        })
+
+
+        // 기어선택 클릭 이벤트
+        $(".gear-data-boxes").on("click", ".my-gear-li", function (){
+
+            $('#summernote').summernote('reset');
+
+            var gno = $(this).data("gno");
+
+            console.info(gno);
+
+            var str =""
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
+
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', dto.s3Url);
+                    }else {
+                        console.info("there are no avalable images");
+                    }
+                });
+
+            }); // getJSON for images
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                // var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                //     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
+                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML', HTMLString);
+
+            }); // getJSON for gear info
+
+        }); // 기어선택 클릭 이벤트 종료
+
+
+        var gearDTO = [[${gearDTO}]];
+        var secondHandsDeal = [[${tellCategory}]];
+        console.log(gearDTO)
+
+        // 선택된 중고 상품 editor로 업로드 from myGear
+        if(gearDTO !== null){
+
+            var gno = gearDTO.gno;
+            console.log(gno);
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                console.info(name);
+                console.info(brand);
+                console.info(size);
+                console.info(material);
+                console.info(script);
+                console.info(sort);
+                console.info(state);
+
+                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
+                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML', HTMLString);
+
+            }); // getJSON
+
+            $.getJSON('/gear/images/' + gno, function (arr){
+
+                console.info("---------/gear/images/'----------");
+
+                console.info(arr);
+
+                $.each(arr, function (i, dto){
+
+                    if (dto !== null){
+                        $('#summernote').summernote('insertImage', dto.s3Url);
+                    }else {
+                        console.info("there are no avalable images");
+                    }
+                });
+
+            }); // getJSON for images
+
+            var str = "";
+
+            var hiddenGearBox = $(".hidden-gear-box");
+
+            str += '<input type="hidden" name="gno" value="'+gno+'">';
+            str += '<input type="hidden" name="state" value="1">';
+
+            hiddenGearBox.html(str);
+
+        } // load gearDTO from myGear
+
+
+
 
 ### summernote editor ###
 
