@@ -40,7 +40,6 @@ out/
 
 application-aws.properties
 #**/application.properties
-**/application-oauth.yml
 **/application-oauth.properties
 **/application-db.properties
 **/application-s3.properties
