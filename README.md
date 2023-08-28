@@ -15,6 +15,7 @@
 - thymeleaf
 - Ajax 
 - summernote editor
+- Google OAuth2
 - AWS RDS
 - AWS S3 Bucket
 
