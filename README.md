@@ -34,6 +34,7 @@
 ##### 로그인 유저[spring security authentication 권한을 가진 사용자] 본인의 캠핑 장비 목록을 리스트업 할 수 있음 #####
 ##### 캠핑 장비 등록 DTO와 이미지 List를 함께 등록 -> 등록된 장비들은 getJSON을 통해 리스트업 [페이징] -> 등록된 장비들을 수정 및 삭제 가능 #####
 ##### 원하는 장비를 중고거래로 등록하기 클릭시 -> 해당 장비의 id값을 전달 -> 게시물 등록 페이지에서 spring security authentication 권한을 이용하여 사용자의 foregin key를 참고하여 등록한 장비 리스트업 (ajax) 또한 전달 받은 id값을 통해 summernoteEditor에 해당 장비 값 및 이미지 자동 업로드 #####
+##### 원하는 장비를 바꾸고 싶으면 캠핑 장비 리스트에서 원하는 장비를 클릭시 자동으로 summernoteEditor로 해당 자료 업데이트 #####
 
 ![마이기어리스트 중고거래-min](https://github.com/gagumareu/springboot_campboard/assets/98436199/a2bbd943-460e-4f9a-ab7d-0b5fdab6f762)
 
