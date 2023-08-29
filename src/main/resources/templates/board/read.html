@@ -40,6 +40,14 @@
         .writer-nameNDate{
             display: flex;
             flex-direction: row;
+            align-items: center;
+
+        }
+        .writer-nameNDate a{
+            margin-right: 13px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
         }
         .readBoard-btn-box{
             display: flex;
@@ -106,6 +114,22 @@
         .ckEditor-content{
             margin-bottom: 25px;
         }
+
+        .profile-img-div{
+            height: 46px;
+            width: 46px;
+            margin-right: 15px;
+        }
+
+        .profile-img{
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .read-ragDate{
+            margin-left: 20px;
+        }
     </style>
 <body>
 
@@ -118,13 +142,18 @@
 
   <div class="writer-info">
       <div class="writer-nameNDate">
-          <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">
+<!--          <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">-->
+          <a th:href="@{#}" style="margin-right: 13px">
+              <div class="profile-img-div">
+                  <img class="profile-img" th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
+                  <img class="profile-img" th:unless="${dto.profileImg != null}" src="/icon/person2.svg">
+              </div>
               <span>[[${dto.memberName}]]</span>
           </a>
-          <div th:if="${dto.regDate == dto.modDate}">
+          <div th:if="${dto.regDate == dto.modDate}" class="read-ragDate">
               [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
           </div>
-          <div th:unless="${dto.regDate == dto.modDate}">
+          <div th:unless="${dto.regDate == dto.modDate}" class="read-ragDate">
               [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
           </div>
       </div>

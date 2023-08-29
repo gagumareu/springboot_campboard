@@ -146,11 +146,13 @@
     </div>
 
     <div data-aos="fade-up"
-         data-aos-duration="3000" class="gear-data-boxes">
+         data-aos-duration="3000" class="gear-data-boxes" >
     </div>
     <script>
         AOS.init(); // 자바스크립트로 init()을 해야 동작한다.
     </script>
+
+
 
     <div class="col-md-12 list-pagination">
         <ul class="pagination justify-content-center align-items-center">
@@ -175,6 +177,13 @@
                             <input type="text" name="material" placeholder="MATERIAL" class="form-control">
                             <input type="text" name="script" placeholder="SCRIPT" class="form-control">
                             <input type="text" name="sort" class="form-control" placeholder="SORT">
+<!--                            <select name="sort" class="form-control">-->
+<!--                                <option value="tents">tents</option>-->
+<!--                                <option value="accessories">accessories</option>-->
+<!--                                <option value="fabric">fabric</option>-->
+<!--                                <option value="furniture">furniture</option>-->
+<!--                                <option value="cokeware">cokeware</option>-->
+<!--                            </select>-->
                             <input type="hidden" name="email" placeholder="EMAIL" class="form-control" th:value="${#authentication.principal.username}">
                             <input type="file" name="uploadFiles" multiple class="form-control">
                             <div class="hidden-box">
@@ -211,6 +220,8 @@
                         <input id="gear-modal-material" type="text" name="material" class="form-control" placeholder="MATERIAL">
                         <input id="gear-modal-script" type="text" name="script" class="form-control" placeholder="SCRIPT">
                         <input id="gear-modal-sort" type="text" name="sort" class="form-control" placeholder="SORT">
+                            <!--                <option th:selected="${tellCategory == 'secondHands'}" value="secondHands">중고거래</option>-->
+                        </select>
                         <input id="gear-modal-gno" type="hidden" name="gno" >
                         <input type="file" name="modalFiles" multiple class="form-control">
                     </div>
@@ -434,8 +445,8 @@
                         str += '</div>';
 
                         str += '<div class="gear-info">';
-                        str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
-                        str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
+                        str += '<span><b>이름:</b> '+dto.gname+'</span><span><b>브랜드:</b> '+dto.brand+'</span><span><b>사이즈:</b> '+dto.size+'</span><span><b>소재:</b> '+dto.material+'</span>';
+                        str += '<span class="gear-script"><b>설명:</b> '+dto.script+'</span><span><b>카테고리:</b> '+dto.sort+'</span>';
                         str += '</div>';
                         str += '</div>';
                         str += '</div>';
@@ -512,7 +523,7 @@
 
 
 
-                var modalGearUL = $(".modal-gear-img ul");
+                var modalGearUL = $(".modal-gear-img-ul");
                 var modalGearDataUl = $(".modal-gear-data ul");
 
                 // 기어 수정 클릭시 모달 이벤트
@@ -541,12 +552,15 @@
 
                         $.each(dto.gearImageDTOList, function (i, imgs){
 
-                            var s3URL = imgs.s3Url;
-                            console.log(s3URL);
-                            var fileName = imgs.fileName;
-                            console.log(fileName);
+                            console.log(imgs);
 
                             if (imgs !== null ){
+
+                                var s3URL = imgs.s3Url;
+                                console.log(s3URL);
+
+                                var fileName = imgs.fileName;
+                                console.log(fileName);
 
                                 str += '<li data-path="'+imgs.folderPath+'" data-uuid="'+imgs.uuid+'" data-name="'+imgs.fileName+'" data-url="'+imgs.imageURL+'" data-tell="old" data-s3="'+imgs.s3Url+'">';
                                 str += '<img src="'+imgs.thumbnailS3URL+'" data-name="'+imgs.uuid+'_'+imgs.fileName+'" data-tell="old">';
@@ -658,6 +672,13 @@
                                 loadGearBoxes(1);
                                 $(".gear-modal").modal('hide');
                                 // self.location.reload();
+                                // $("#gear-modal-name").val("")
+                                // $("#gear-modal-brand").val("");
+                                // $("#gear-modal-size").val("");
+                                // $("#gear-modal-material").val("");
+                                // $("#gear-modal-script").val("");
+                                // $("#gear-modal-sort").val("");
+                                $(".modal-gear-img-ul").html("");
                             }
 
                         }
@@ -697,6 +718,7 @@
 
                 $(".gear-modal-close").click(function (){
                     $(".modal").modal('hide');
+                    $(".modal-gear-img-ul").html("");
                 })
 
                 // $(".gear-image-close-btn").click(function (){

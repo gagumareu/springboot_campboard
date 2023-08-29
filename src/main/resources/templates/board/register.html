@@ -471,8 +471,11 @@
                 console.info(sort);
                 console.info(state);
 
-                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
-                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+                // var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                //     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
+                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
 
                 $('#summernote').summernote('pasteHTML', HTMLString);
 
@@ -509,8 +512,8 @@
                 console.info(sort);
                 console.info(state);
 
-                var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
-                    '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
+                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
 
                 $('#summernote').summernote('pasteHTML', HTMLString);
 

@@ -29,6 +29,22 @@
     .modify-btn-box button{
       margin: 0px 3px;
     }
+
+    .titleAndSearchBox{
+      display: flex;
+      flex-direction: row;
+      margin: 10px 0px 14px 0px;
+      padding: 0px;
+    }
+
+    .inputTitle{
+      margin-right: 10px;
+      flex: 70%;
+    }
+
+    .categorySelector{
+      flex: 20%;
+    }
   </style>
 
 <body>
@@ -40,17 +56,30 @@
       <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
       <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
       <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
-      <th:block th:if="${pageRequestDTO.category != ''}">
-        <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
-      </th:block>
+<!--      <th:block th:if="${pageRequestDTO.category != ''}">-->
+<!--        <input type="hidden" name="category" th:value="${pageRequestDTO.category}">-->
+<!--      </th:block>-->
       <th:block th:unless="${pageRequestDTO.category != ''}">
       </th:block>
       <input type="hidden" name="email" th:value="${dto.email}">
       <input type="hidden" name="bno" th:value="${dto.bno}">
 
-      <div class="modify-title">
-        <input name="title" type="text" class="form-control" th:value="${dto.title}" required>
+<!--      <div class="modify-title">-->
+<!--        <input name="title" type="text" class="form-control" th:value="${dto.title}" required>-->
+<!--      </div>-->
+
+      <div class="titleAndSearchBox">
+        <input name="title" type="text" class="form-control inputTitle" th:value="${dto.title}" required placeholder="TITLE">
+        <input th:if="${pageRequestDTO.category == 'secondHands'}" class="form-control categorySelector" type="text" name="category" value="secondHands" readonly>
+        <select th:unless="${pageRequestDTO.category == 'secondHands'}" class="form-control categorySelector" aria-label="Default select example" name="category">
+          <option th:selected="${pageRequestDTO.category == 'talk'}" value="talk">잡담</option>
+          <option th:selected="${pageRequestDTO.category == 'party'}" value="party">모임</option>
+          <option th:selected="${pageRequestDTO.category == 'place'}" value="place">캠핑장</option>
+          <!--                <option th:selected="${tellCategory == 'secondHands'}" value="secondHands">중고거래</option>-->
+        </select>
       </div>
+
+
       <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
       <script th:inline="javascript">
         $(document).ready(function() {
