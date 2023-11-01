@@ -1,8 +1,11 @@
 package coke.controller.camp.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Builder
@@ -16,19 +19,17 @@ public class Board extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bno;
 
+    @Column(length = 500, nullable = false)
     private String title;
 
-    @Column(length = 10000)
+    @Column(length = 10000, nullable = false)
     private String content;
 
     private String category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Gear gear;
-
+    
     public void changeTitle(String title){
         this.title = title;
     }

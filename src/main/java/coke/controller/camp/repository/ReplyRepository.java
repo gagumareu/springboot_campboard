@@ -20,4 +20,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     List<Reply> getRepliesByMemberOrderByRnoDesc(Member member);
 
+    @Query("SELECT r, m FROM Reply r LEFT JOIN r.member m WHERE r.board.bno = :bno")
+    List<Object[]> getRepliesByBno(Long bno);
+
 }

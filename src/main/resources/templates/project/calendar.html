@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+
+<!--    <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script>-->
+
+
+    <script>
+
+        $(document).ready(function (){
+            $( "#datepicker" ).datepicker({
+                numberOfMonths: 2,
+                showButtonPanel: true,
+                language: 'kor',
+                onSelect: function (data){
+                    console.log(data);
+                }
+            });
+        });
+
+
+    </script>
+
+
+</head>
+<body>
+
+
+<button type="button" class="btn">btn</button>
+<input id="datepicker" type="text" name="date" data-timepicker="true" data-language='en'>
+
+
+</body>
+</html>

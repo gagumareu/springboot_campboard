@@ -1,15 +1,13 @@
 package coke.controller.camp.service;
 
-import coke.controller.camp.dto.BoardDTO;
-import coke.controller.camp.dto.BoardImageDTO;
-import coke.controller.camp.dto.PageRequestDTO;
-import coke.controller.camp.dto.PageResultDTO;
+import coke.controller.camp.dto.*;
 import coke.controller.camp.entity.Board;
 import coke.controller.camp.entity.BoardImage;
-import coke.controller.camp.entity.Gear;
+import coke.controller.camp.entity.GearImage;
 import coke.controller.camp.entity.Member;
-import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,20 +22,20 @@ public interface BoardService {
     void modify(BoardDTO boardDTO);
     List<BoardImageDTO> getBoardImageList(Long bno);
     List<BoardDTO> getBoardByEmail(String email);
+    List<BoardDTO> getBoardByTalkCategoryLimit();
+    List<BoardDTO> getBoardBySecondHandsCategoryLimit();
 
     default Map<String, Object> dtoToEntity(BoardDTO boardDTO){
 
         Map<String, Object> map = new HashMap<>();
 
         Member member = Member.builder().email(boardDTO.getEmail()).build();
-//        Gear gear = Gear.builder().gno(boardDTO.getGno()).build();
 
         Board board = Board.builder()
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
                 .category(boardDTO.getCategory())
                 .member(member)
-//                .gear(gear)
                 .build();
         map.put("board", board);
 
@@ -60,7 +58,7 @@ public interface BoardService {
 
     } // dtoToEntity
 
-    default BoardDTO entityToDTO(Board board, List<BoardImage> boardImageList, Member member, Long replyCount){
+    default BoardDTO entityToDTO(Board board, List<BoardImage> boardImageList, Member member, Long replyCount, List<GearImage> gearImages){
 
         BoardDTO boardDTO = BoardDTO.builder()
                 .bno(board.getBno())
@@ -90,6 +88,23 @@ public interface BoardService {
             }).collect(Collectors.toList());
             boardDTO.setBoardImageDTOList(boardImageDTOList);
         }
+
+        if (gearImages != null && gearImages.size() > 0){
+            List<GearImageDTO> gearImageDTOList = gearImages.stream().map(gearImage -> {
+                if (gearImage != null){
+                    return GearImageDTO.builder()
+                            .folderPath(gearImage.getFolderPath())
+                            .uuid(gearImage.getUuid())
+                            .fileName(gearImage.getFileName())
+                            .s3Url(gearImage.getS3Url())
+                            .build();
+                }else {
+                    return null;
+                }
+            }).collect(Collectors.toList());
+            boardDTO.setGearImageDTOList(gearImageDTOList);
+        }
+
         return boardDTO;
 
     } // entityToDTO
@@ -144,6 +159,64 @@ public interface BoardService {
                 .build();
         return boardDTO;
     }
+
+    default BoardDTO entityBoardNBoardImgToDTO(Board board, BoardImage boardImage){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(board.getBno())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .category(board.getCategory())
+                .regDate(board.getRegDate())
+                .modDate(board.getModDate())
+                .build();
+
+        List<BoardImageDTO> boardImageDTOList = new ArrayList<>();
+
+        if (boardImage != null){
+            BoardImageDTO boardImageDTO = BoardImageDTO.builder()
+                    .uuid(boardImage.getUuid())
+                    .folderPath(boardImage.getFolderPath())
+                    .fileName(boardImage.getFileName())
+                    .s3Url(boardImage.getS3Url())
+                    .build();
+            boardImageDTOList.add(boardImageDTO);
+        }
+
+        boardDTO.setBoardImageDTOList(boardImageDTOList);
+
+        return boardDTO;
+    }
+
+
+    default BoardDTO entityBoardNGearImgToDTO(Board board, GearImage gearImage){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(board.getBno())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .category(board.getCategory())
+                .regDate(board.getRegDate())
+                .modDate(board.getModDate())
+                .build();
+
+        List<GearImageDTO> gearImageDTOList = new ArrayList<>();
+
+        if (gearImage != null){
+            GearImageDTO gearImageDTO = GearImageDTO.builder()
+                    .s3Url(gearImage.getS3Url())
+                    .folderPath(gearImage.getFolderPath())
+                    .fileName(gearImage.getFileName())
+                    .uuid(gearImage.getUuid())
+                    .build();
+            gearImageDTOList.add(gearImageDTO);
+        }
+
+        boardDTO.setGearImageDTOList(gearImageDTOList);
+
+        return boardDTO;
+    }
+
 
 
 }

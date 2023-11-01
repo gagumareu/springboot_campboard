@@ -1,10 +1,6 @@
 package coke.controller.camp.repository.Search;
 
 import coke.controller.camp.entity.*;
-import coke.controller.camp.entity.QBoard;
-import coke.controller.camp.entity.QBoardImage;
-import coke.controller.camp.entity.QMember;
-import coke.controller.camp.entity.QReply;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -31,34 +27,39 @@ public class BoardSearchRepositoryImpl extends QuerydslRepositorySupport impleme
         super(Board.class);
     }
 
-    @Override
-    public Board search() {
-
-        log.info("search.....!");
-
-        return null;
-    }
 
     @Override
     public Page<Object[]> getSearchList(String type, String keyword, Pageable pageable, String category) {
+
+        log.info(type);
+        log.info(keyword);
+        log.info(pageable);
+        log.info(category);
+
 
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
         QMember member = QMember.member;
         QBoardImage boardImage = QBoardImage.boardImage;
         QGear gear = QGear.gear;
+        QGearImage gearImage = QGearImage.gearImage;
 
         JPQLQuery<Board> jpqlQuery = from(board);
         jpqlQuery.leftJoin(member).on(board.member.eq(member));
         jpqlQuery.leftJoin(reply).on(reply.board.eq(board));
         jpqlQuery.leftJoin(boardImage).on(boardImage.board.eq(board));
         jpqlQuery.leftJoin(gear).on(gear.board.eq(board));
+        jpqlQuery.leftJoin(gearImage).on(gearImage.gear.eq(gear));
 
-        JPQLQuery<Tuple> tuple = jpqlQuery.select(board, boardImage, member, reply.countDistinct());
+        JPQLQuery<Tuple> tuple = jpqlQuery.select(board, boardImage, member, reply.countDistinct(), gearImage);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression expression = board.bno.gt(0L);
         booleanBuilder.and(expression);
+
+        if(category == ""){
+            category = null;
+        }
 
         if (category != null){
             BooleanExpression expression1 = board.category.eq(category);

@@ -18,12 +18,20 @@ public class PageRequestDTO {
     private String keyword;
     private String category;
 
+    private String sort;
+    private String direction;
+
     public PageRequestDTO(){
         this.page = 1;
         this.size = 20;
     }
 
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
     public Pageable getPageable(Sort sort){
         return PageRequest.of(page -1, size, sort);
     }
+
 }

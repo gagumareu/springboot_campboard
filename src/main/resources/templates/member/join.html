@@ -5,66 +5,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+
+        .input-group-text{
+            /*width: 30%;*/
+        }
+
+        .signIn-Btn{
+            margin-top: 21px;
+            display: flex;
+            flex-direction: row;
+            column-gap: 10px;
+            justify-content: center;
+
+        }
+
+        .signIn-page-wrapper{
+            display: flex;
+            flex-direction: column;
+            /* justify-content: center; */
+            align-items: center;
+        }
+
+        .content{
+            margin-top: 25px;
+        }
+
+        .signIn-body{
+            margin-top: 15px;
+
+        }
+    </style>
 </head>
 
-<style>
-
-    .input-group-text{
-        /*width: 30%;*/
-    }
-
-    .signIn-Btn{
-        margin-top: 21px;
-
-    }
-
-    .signIn-page-wrapper{
-        display: flex;
-        flex-direction: column;
-        /* justify-content: center; */
-        align-items: center;
-    }
-
-
-    .float-end{
-        display: flex;
-        flex-direction: column;
-        row-gap: 11px;
-    }
-
-</style>
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-<th:block th:fragment="content">
-
-    <div class="signIn-page-wrapper">
-        <div class="signIn-header">
-            <h2>회원 가입</h2>
-        </div>
-        <div class="signIn-body">
-            <form id="registerForm" action="/member/join" method="post">
-                <div class="input-group-text">
-                    <span class="input-group-text">EMAIL</span>
-                    <input id="inputEmailVal" type="email" name="email" class="form-control" autofocus oninput="checkingId()">
-                </div>
-                <div class="input-group-text">
-                    <span class="input-group-text">PASSWORD</span>
-                    <input type="password" name="password" class="form-control">
-                </div>
-                <div class="input-group-text">
-                    <span class="input-group-text">NAME</span>
-                    <input type="text" name="name" class="form-control">
-                </div>
-                <div class="my-4 signIn-Btn">
-                    <div class="float-end">
+    <div class="container-lg content" layout:fragment="content">
+        <div class="signIn-page-wrapper">
+            <div class="signIn-header">
+                <h2>회원 가입</h2>
+            </div>
+            <div class="signIn-body">
+                <form id="registerForm" action="/member/join" method="post">
+                    <div class="input-group-text">
+                        <span class="input-group-text">EMAIL</span>
+                        <input id="inputEmailVal" type="email" name="email" class="form-control" autofocus oninput="checkingId()">
+                    </div>
+                    <div class="input-group-text">
+                        <span class="input-group-text">PASSWORD</span>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                    <div class="input-group-text">
+                        <span class="input-group-text">NAME</span>
+                        <input type="text" name="name" class="form-control">
+                    </div>
+                    <div class="signIn-Btn">
                         <button type="submit" class="btn btn-primary">JOIN</button>
                         <button type="reset" class="btn btn-secondary">RESET</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-
     <script layout:fragment="script" th:inline="javascript">
 
         const error = [[${error}]]
@@ -73,11 +74,6 @@
             alert("동일한 email를 가진 계정이 존재합니다.")
         }
 
-
-
-
     </script>
-</th:block>
-</th:block>
-</body>
+
 </html>

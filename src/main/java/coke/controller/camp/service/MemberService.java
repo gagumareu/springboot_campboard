@@ -1,12 +1,8 @@
 package coke.controller.camp.service;
 
-import coke.controller.camp.dto.BoardDTO;
 import coke.controller.camp.dto.MemberDTO;
 import coke.controller.camp.dto.MemberJoinDTO;
 import coke.controller.camp.entity.Member;
-import coke.controller.camp.security.dto.MemberSecurityDTO;
-
-import java.util.List;
 
 public interface MemberService {
 

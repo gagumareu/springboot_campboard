@@ -1,22 +1,17 @@
 package coke.controller.camp.util;
 
-import coke.controller.camp.dto.UploadResultDTO;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -80,8 +75,6 @@ public class S3Uploader {
 
        deleteObjectRequestList.add(new DeleteObjectRequest(bucket, fileName));
        deleteObjectRequestList.add(new DeleteObjectRequest(bucket, thumbnail));
-
-       log.info(deleteObjectRequestList);
 
        deleteObjectRequestList.forEach(deleteObjectRequest -> {
            amazonS3Client.deleteObject(deleteObjectRequest);

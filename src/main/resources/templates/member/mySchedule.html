@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        .toast-calendar{
+            display: flex;
+            flex-direction: row;
+            /* justify-content: space-between; */
+            width: 100%;
+        }
+
+        #calendar{
+            flex: 65%;
+            max-width: 65%;
+            height: 665px;
+        }
+
+        .party-range-board-list{
+            flex: 35%;
+            max-width: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .party-range-div{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+
+        }
+
+        .party-range-list-a{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            border-bottom: 1px solid #00000069;
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        .party-range-box{
+            display: flex;
+            /*flex-direction: row;*/
+            /*justify-content: space-around;*/
+            flex: 70%;
+            max-width: 70%;
+            justify-content: start;
+            align-items: center;
+        }
+
+        .party-info-box{
+            flex: 30%;
+            max-width: 30%;
+            justify-content: end;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toast-calendar-changeBtn{
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            margin-top: 52px;
+            align-items: center;
+        }
+
+        .getToday{
+            margin: 0px 16px;
+        }
+
+        .schedule-date{
+            margin-left: 21px;
+        }
+    </style>
+
+    <!-- toast editor   -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+    <!-- toast calendar   -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+
+</head>
+
+<div layout:fragment="content" class="container-lg content">
+
+    <div class="wrapper">
+        <div class="toast-calendar-changeBtn">
+            <button class="btn btn-light prev">prev</button>
+            <button class="btn btn-light getToday">today</button>
+            <button class="btn btn-light next">next</button>
+            <div class="schedule-date">
+
+            </div>
+        </div>
+
+        <div class="toast-calendar">
+            <div id="calendar" ></div>
+            <div class="party-range-board-list">
+
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+
+        var Calendar = window.tui.Calendar;
+
+        const calendar = new Calendar('#calendar', {
+            defaultView: 'month',
+            useDetailPopup: true,
+            isReadOnly: true,
+            month:{
+                // visibleEventCount: 6,
+            },
+            template: {
+
+            },
+        });
+
+        var $todayValue = "";
+        var $firstDayValue = "";
+        var $lastDayValue = "";
+        var $num = 0;
+        var $thisYear = "";
+        var $thisMonth = "";
+        var scheduleDateDiv = $(".schedule-date");
+
+        console.log("$num: " + $num);
+
+
+        setDate($num);
+
+        function setDate($num){
+
+            var str = "";
+
+            var now = new Date(), y = now.getFullYear(), m = now.getMonth() + $num;
+
+            console.log("*****get function****")
+
+            var today = now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
+            console.log("today1: " + today);
+            $todayValue = today;
+
+            var first = new Date(y, m, 1);
+            var firstDay = first.getFullYear() + "-" + ("0" + (first.getMonth() +1).toString()).slice(-2) + "-" + ("0" + first.getDate().toString()).slice(-2);
+            console.log("firstDay1: " + firstDay);
+            $firstDayValue = firstDay;
+
+            var last = new Date(y, m+1, 0);
+            var lastDay = last.getFullYear() + "-" + ("0" + (last.getMonth() +1).toString()).slice(-2) + "-" + ("0" + last.getDate().toString()).slice(-2)
+            console.log("lastDay1: " + lastDay);
+            $lastDayValue = lastDay;
+
+            $thisYear = first.getFullYear();
+            $thisMonth = ("0" + (first.getMonth() +1).toString()).slice(-2);
+
+            scheduleDateDiv.html($thisYear + "-" + $thisMonth);
+
+        }
+
+        console.log("---------------------")
+        console.log("$todayValue: " + $todayValue);
+        console.log("$firstDayValue: " + $firstDayValue);
+        console.log("$lastDayValue: " + $lastDayValue);
+
+        getEveyPartiesEvent($firstDayValue, $lastDayValue);
+
+        // 이번달 리스트 불러오기
+        $(".getToday").click(function (){
+
+            calendar.clear();
+            calendar.today();
+
+            console.log("===============================");
+
+            $num = 0;
+            console.log($num);
+
+            setDate($num);
+
+            // getEveyPartiesEvent(firstDay, lastDay);
+            getEveyPartiesEvent($firstDayValue, $lastDayValue);
+
+            $num =0;
+        })
+
+        // 이전 달로 기간 불러오기
+        $(".prev").click(function (){
+
+            calendar.clear();
+            calendar.prev();
+
+            console.log("===============================");
+
+            $num -= 1;
+            console.log("$num: " + $num);
+
+            setDate($num);
+            getEveyPartiesEvent($firstDayValue, $lastDayValue);
+        })
+
+        // 다음달 기간 불러오기
+        $(".next").click(function (){
+
+            calendar.clear();
+            calendar.next();
+
+            console.log("===============================");
+
+            $num += 1;
+            console.log("$num: " + $num);
+
+            setDate($num);
+            getEveyPartiesEvent($firstDayValue, $lastDayValue);
+        })
+
+
+        function getEveyPartiesEvent(firstDay, lastDay){
+
+            // 전체 기간 리스트
+            $.getJSON('/party/board/range/email', {start: firstDay, end: lastDay},  function (arr){
+
+                console.log(arr)
+
+                var str = "";
+                var partiesNBoardDiv = $(".party-range-board-list");
+
+                $.each(arr, function (i, dto){
+
+                    console.log(dto);
+
+                    var title = dto.title;
+                    var appointment = dto.appointment;
+
+                    console.log(appointment);
+
+                    calendar.createEvents([
+                        {
+                            id: i,
+                            calendarId: '1',
+                            title:  title,
+                            category: 'time',
+                            dueDateClass: '',
+                            start: appointment,
+                            end: appointment,
+                        }
+                    ]);
+
+                    str += '<div class="party-range-div">';
+                    str += '    <a class="party-range-list-a" href="/board/read?bno='+dto.bno+'&category='+dto.category+'">';
+                    str += '        <div class="party-range-box">';
+                    str += '            <div>'+dto.title+'</div>';
+                    str += '        </div>';
+                    str += '        <div class="party-info-box">';
+                    str += '            <div><span>참가인원: </span>'+dto.person+'</div>';
+                    str += '            <div>'+dto.appointment+'</div>';
+                    str += '        </div>';
+                    str += '    </a>';
+                    str += '</div>';
+                })
+
+                partiesNBoardDiv.html(str);
+
+            })
+        }
+
+    </script>
+
+
+</div>
+<script th:inline="javascript" layout:fragment="script">
+
+
+
+</script>
+</html>

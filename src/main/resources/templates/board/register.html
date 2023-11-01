@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
     <meta charset="UTF-8">
     <title>Title</title>
 
@@ -21,281 +25,618 @@
             padding: 0px;
         }
 
-        .inputTitle{
-            margin-right: 10px;
-            flex: 70%;
-        }
 
-        .categorySelector{
-            flex: 20%;
-        }
 
-        .inputEmail{
-            padding: 0px;
-        }
-
-        .btnBox{
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        /*.gear-div ul li {*/
-        /*    display: flex;*/
-        /*    flex-direction: row;*/
-        /*    align-items: center;*/
-        /*    margin-bottom: 5px;*/
-        /*}*/
-
-        .gear-div-info{
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
-        }
-
-        .gear-div-img{
-            height: 80px;
-        }
 
         .gear-div-img img{
             height: 93%;
         }
 
-        .gear-list-box{
-            height: 180px;
-        }
 
-        .my-gear-li{
-            /*display: flex;*/
-            /*flex-direction: row;*/
-            /*margin-bottom: 10px;*/
-            /*border: 1px solid black;*/
-            height: 290px;
 
-        }
-        .my-gear-li:hover{
-            background: #fafafa;
-        }
-
-        .loadGear-img-box{
-            /*flex: 20%;*/
-            display: flex;
-            width: 100%;
-            height: 100px;
-            justify-content: center;
-        }
 
         .loadGear-img-box a{
             width: 100%;
         }
 
-        .gear-info{
-            /*flex: 60%;*/
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
-            height: 190px;
-            word-wrap: break-word;
-            align-items: center;
-        }
+
         .gear-info span{
             margin-bottom: 2px;
         }
 
-        .list-pagination{
+
+        .telling-box div{
             display: flex;
+            flex-direction: row;
+
+        }
+
+        .gear-boxes{
+            width: 100%;
+            height: 85px;
+            border-bottom: 1px solid;
+        }
+        .gear-info{
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            cursor: grab;
+        }
+        .gear-info img{
+            width: 70px;
+            height: 100%;
+        }
+
+        .content{
+            margin-top: 25px;
+        }
+
+        .pagination{
+            margin-top: 18px;
+        }
+
+        .btnBox{
+            display: flex;
+            margin-top: 25px;
             justify-content: center;
         }
+
+        .inputTitle{
+            margin-right: 30px;
+        }
+
+        .categorySelector{
+            width: 20em;
+        }
+
+        .page-info-div{
+            display: flex;
+            justify-content: end;
+            margin-bottom: 20px;
+
+        }
+
+        .myGear-search{
+            margin-bottom: 25px;
+        }
+
+        .card-body{
+            display: flex;
+            align-items: center;
+            margin-left: 13px;
+
+        }
+
+        .changingAGear{
+            margin-right: 20px;
+        }
+
+        .party-info-wrapper{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /*height: 47px;*/
+
+            flex: 20%;
+            max-width: 20%;
+            /* padding: 20px; */
+            margin-top: 76px;
+            height: 100%;
+        }
+
+        .searchAddress{
+            display: flex;
+            flex-direction: row;
+            /*align-self: center;*/
+            width: 100%;
+            padding: 20px;
+        }
+
+        /*#address{*/
+        /*    width: 312px;*/
+        /*    margin-right: 16px;*/
+        /*}*/
+
+        .searchLocationBtn{
+            width: 68px;
+        }
+
+        .howManyPerson{
+            display: flex;
+            /*flex-direction: row;*/
+            /*align-self: center;*/
+            padding: 20px;
+        }
+
+        .howManyPersonLabel{
+            /*width: 127px;*/
+            flex: 70%;
+            max-width: 70%;
+            /* background: bisque; */
+            border-radius: 10px;
+            align-self: center;
+            /* height: 100%; */
+            justify-content: center;
+            display: flex;
+        }
+
+        .howManyPersonSelect{
+            flex: 30%;
+            max-width: 30%;
+            cursor: pointer;
+        }
+
+        .party-get-info-wrapper{
+            display: flex;
+            margin-top: 30px;
+        }
+
+        .party-map-wrapper{
+            flex: 80%;
+            max-width: 80%;
+        }
+
+        .dDay{
+            padding: 20px;
+        }
+        .dDay input{
+            cursor: pointer;
+        }
+
 
 
     </style>
 
+
+
 </head>
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
 
-    <th:blcok th:fragment="content">
-
-    <form th:action="@{/board/register}" method="post">
-
-        <div class="gear-data-boxes">
-        </div>
-        <div class="col-md-12 list-pagination">
-            <ul class="pagination justify-content-center align-items-center">
-                <li class="page-item">
-
-                </li>
-            </ul>
-        </div>
+    <div class="container-lg content" layout:fragment="content">
 
 
-        <div class="titleAndSearchBox">
-            <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE">
-            <input th:if="${tellCategory == 'secondHands'}" class="form-control categorySelector" type="text" name="category" value="secondHands" readonly>
-            <select th:unless="${tellCategory == 'secondHands'}" class="form-control categorySelector" aria-label="Default select example" name="category">
-                <option th:selected="${tellCategory == 'talk'}" value="talk">잡담</option>
-                <option th:selected="${tellCategory == 'party'}" value="party">모임</option>
-                <option th:selected="${tellCategory == 'place'}" value="place">캠핑장</option>
-<!--                <option th:selected="${tellCategory == 'secondHands'}" value="secondHands">중고거래</option>-->
-            </select>
+
+        <th:block th:switch="${tellCategory}">
+            <div class="secondHans-deal-title">
+                <h2 th:case="party">캠핑 모임 게시글 작성</h2>
+                <h2 th:case="secondHands">중고 거래 게시글 작성</h2>
+            </div>
+        </th:block>
+
+        <div class="page-info-div" th:if="${tellCategory == 'secondHands'}">
+        <button class="btn btn-info page-info">페이지 설명</button>
         </div>
 
-        <textarea id="summernote" placeholder="CONTENT" name="content"></textarea>
-        <script>
-            $(document).ready(function() {
+        <form id="register-form" th:action="@{/board/register}" method="post">
 
-                var targetImageList = [];
+            <div style="display: none" class="register-hidden-for-state">
 
-                $('#summernote').summernote({
-                    height: 600,
-                    lang: "ko-KR",
-                    callbacks:{
-                        onImageUpload: function (files, editor, welEditable){
-                            for (var i = files.length -1; i >= 0; i--){
-                                console.info(files[i]);
-                                uploadImageFiles(files[i], this);
-                            } //for
-                        }, // onImageUpload
-                        onMediaDelete: function (target){
+            </div>
 
-                            var fileName = target.attr('src');
 
-                            fileName = fileName.substring(fileName.lastIndexOf("/") +1);
+            <div class="titleAndSearchBox">
+                <input name="title" type="text" class="form-control inputTitle" placeholder="TITLE" required>
+                <input th:if="${tellCategory == 'secondHands'}" class="form-control categorySelector" type="text" name="category" value="secondHands" readonly>
+                <input th:if="${tellCategory == 'party'}" class="form-control categorySelector" type="text" name="category" value="party" readonly>
+                <select th:unless="${tellCategory == 'secondHands' || tellCategory == 'party'}" class="form-control categorySelector" aria-label="Default select example" name="category" style="width: 20em;" required>
+                    <option value="">-------카테고리 선택-------</option>
+                    <option th:selected="${tellCategory == 'talk'}" value="talk">잡담</option>
+                    <option th:selected="${tellCategory == 'place'}" value="place">캠핑장</option>
+                </select>
+            </div>
 
-                            var targetS3 = target.attr('src');
+            <textarea id="summernote" placeholder="CONTENT" name="content" required></textarea>
+            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"
+                    integrity="sha256-5slxYrL5Ct3mhMAp/dgnb5JSnTYMtkr4dHby34N10qw=" crossorigin="anonymous"></script>
+            <!-- language pack -->
+            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-ko-KR.min.js"
+                    integrity="sha256-y2bkXLA0VKwUx5hwbBKnaboRThcu7YOFyuYarJbCnoQ=" crossorigin="anonymous"></script>
 
-                            console.log("fileName: " + fileName);
-                            console.log("targetS3: " + targetS3);
+            <script>
+                $(document).ready(function() {
 
-                            targetImageList.forEach(function (i){
+                    var targetImageList = [];
 
-                                console.log(targetImageList);
-                                console.log(i);
+                    $('#summernote').summernote({
+                        height: 600,
+                        lang: "ko-KR",
+                        maximumImageFileSize: 10485760,
+                        callbacks:{
+                            onImageUpload: function (files, editor, welEditable){
+                                for (var i = files.length -1; i >= 0; i--){
+                                    console.info(files[i]);
+                                    uploadImageFiles(files[i], this);
+                                } //for
+                            }, // onImageUpload
+                            onMediaDelete: function (target){
 
-                                var targetName = i;
+                                var fileName = target.attr('src');
 
-                                if (i == targetS3){
+                                fileName = fileName.substring(fileName.lastIndexOf("/") +1);
 
-                                    var targetLI = $("li[name='"+fileName+"']");
+                                var targetS3 = target.attr('src');
 
-                                    targetLI.remove();
+                                console.log("fileName: " + fileName);
+                                console.log("targetS3: " + targetS3);
 
-                                    $.ajax({
-                                        url: '/removeS3',
-                                        data: {files: fileName},
-                                        dataType: 'text',
-                                        type: 'delete',
-                                        success: function (result){
-                                        }
-                                    })
-                                }
-                            }); // targetImageList forEach
-                        } // onMediaDelete
-                    } // callbacks
-                }); // summernote
+                                targetImageList.forEach(function (i){
 
-                function uploadImageFiles(files, el){
+                                    console.log(targetImageList);
+                                    console.log(i);
 
-                    var formData = new FormData();
+                                    var targetName = i;
 
-                    formData.append("uploadFiles", files);
+                                    if (i == targetS3){
 
-                    $.ajax({
-                        url: '/uploadAjax',
-                        data: formData,
-                        dataType: 'json',
-                        contentType: false,
-                        processData: false,
-                        type: 'POST',
-                        success:function (result){
-                            console.info(result);
-                            uploadResultUL(result);
-                        },
-                        error: function (jqXHR, textStatus, errorThrown){
-                            console.info(textStatus);
-                        }
-                    }); // ajax
-                } // function uploadImageFiles
+                                        var targetLI = $("li[name='"+fileName+"']");
 
-                function uploadResultUL(result){
+                                        targetLI.remove();
 
-                    var uploadResultUL = $(".uploadResultUL ul");
-                    var str = "";
+                                        $.ajax({
+                                            url: '/removeS3',
+                                            data: {files: fileName},
+                                            dataType: 'text',
+                                            type: 'delete',
+                                            success: function (result){
+                                            }
+                                        })
+                                    }
+                                }); // targetImageList forEach
+                            } // onMediaDelete
+                        } // callbacks
+                    }); // summernote
 
-                    $(result).each(function (i, dto){
+                    function uploadImageFiles(files, el){
 
-                        str += '<li data-path="'+dto.folderPath+'" ' +
-                            'data-uuid="'+dto.uuid+'" ' +
-                            'data-name="'+dto.fileName+'" ' +
-                            'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'"></li>';
+                        var formData = new FormData();
 
-                        // var imageURL = dto.imageURL;
-                        //
-                        // console.log("imageURL: " + imageURL);
+                        formData.append("uploadFiles", files);
 
-                        $('#summernote').summernote('insertImage', dto.s3Url);
-                        // $('#summernote').summernote('insertImage', '/display?files='+dto.imageURL);
+                        $.ajax({
+                            url: '/uploadAjax',
+                            data: formData,
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            type: 'POST',
+                            success:function (result){
+                                console.info(result);
+                                uploadResultUL(result);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown){
+                                console.info(textStatus);
+                            }
+                        }); // ajax
+                    } // function uploadImageFiles
 
-                        var s3Url = dto.s3Url;
-                        console.log(s3Url)
+                    function uploadResultUL(result){
 
-                        targetImageList.push(s3Url);
-                        console.log(targetImageList);
+                        var uploadResultUL = $(".uploadResultUL ul");
+                        var str = "";
 
-                    }); // result each
+                        $(result).each(function (i, dto){
 
-                    uploadResultUL.append(str);
+                            str += '<li data-path="'+dto.folderPath+'" ' +
+                                'data-uuid="'+dto.uuid+'" ' +
+                                'data-name="'+dto.fileName+'" ' +
+                                'name="'+dto.uuid+'_'+dto.fileName+'" data-s3Url="'+dto.s3Url+'" data-tell="new"></li>';
 
-                }; // function uploadResultUL
+                            // var imageURL = dto.imageURL;
+                            //
+                            // console.log("imageURL: " + imageURL);
 
-            }); // the end
-        </script>
+                            $('#summernote').summernote('insertImage', dto.s3Url);
 
-        <div class="col-md-12 col-sm-12">
-            <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
-        </div>
-        <div class="hiddenBox">
+                            var s3Url = dto.s3Url;
+                            console.log(s3Url)
 
-        </div>
-        <div class="hidden-gear-box">
+                            targetImageList.push(s3Url);
+                            console.log(targetImageList);
 
-        </div>
-        <div class="col-md-12 col-sm-12 btnBox">
-            <button class="btn btn-outline-light registerBtn">글작성</button>
-        </div>
-    </form>
+                        }); // result each
+
+                        uploadResultUL.append(str);
+
+                    }; // function uploadResultUL
+
+                }); // the end
+            </script>
+
+            <div class="col-md-12 col-sm-12" style="display: none">
+                <input name="email" type="hidden" class="form-control inputEmail" placeholder="EMAIL" th:value="${#authentication.principal.username}" readonly>
+            </div>
+            <div class="hiddenBox" style="display: none"></div>
+            <div class="hidden-gear-box" style="display: none"></div>
+            <div class="hidden-address-box" style="display: none"></div>
+            <div class="hidden-dDay-box" style="display: none"></div>
+
+            <!--  중고 거래시 등록된 캠핑 장비 리스트 불러오기         -->
+            <th:block th:if="${tellCategory == 'secondHands'}">
+                <div class="modal myGearListModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+<!--                            <div class="modal-header">-->
+<!--                                <form action="">-->
+<!--                                    <input type="text" class="form-control" name="keyword" placeholder="SEARCH">-->
+<!--                                    <button type="submit" class="btn btn-outline-secondary">검색</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+                            <div class="modal-body">
+                                <div class="modal-gear-list">
+
+                                </div>
+                                <div class="col-md-12 list-pagination">
+                                    <ul class="pagination justify-content-center align-items-center">
+                                        <li class="page-item">
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </th:block>
+
+            <th:block th:if="${tellCategory == 'party'}">
+
+                <div class="party-get-info-wrapper">
+                    <div class="party-map-wrapper">
+                        <div id="map" style="width:100%;height:400px;"></div>
+
+                        <script th:inline="javascript">
+
+                            var mapOptions = {
+                                center: new naver.maps.LatLng(37.3595704, 127.105399),
+                                zoom: 10,
+                                mapTypeControl: true
+                            };
+
+                            var map = new naver.maps.Map('map', mapOptions);
+
+
+                            // 네이버 지도 검색 옵션
+                            var infoWindow = new naver.maps.InfoWindow({
+                                anchorSkew: true
+                            });
+
+                            map.setCursor('pointer');
+
+                            var savedAddress = "";
+
+                            function searchAddressToCoordinate(address) {
+                                naver.maps.Service.geocode({
+                                    query: address
+                                }, function(status, response) {
+                                    if (status === naver.maps.Service.Status.ERROR) {
+                                        return alert('Something Wrong!');
+                                    }
+
+                                    if (response.v2.meta.totalCount === 0) {
+                                        return alert('totalCount' + response.v2.meta.totalCount);
+                                    }
+
+                                    var htmlAddresses = [],
+                                        item = response.v2.addresses[0],
+                                        point = new naver.maps.Point(item.x, item.y);
+
+                                    if (item.roadAddress) {
+                                        htmlAddresses.push('[도로명 주소] ' + item.roadAddress);
+                                    }
+
+                                    if (item.jibunAddress) {
+                                        htmlAddresses.push('[지번 주소] ' + item.jibunAddress);
+                                    }
+
+                                    if (item.englishAddress) {
+                                        htmlAddresses.push('[영문명 주소] ' + item.englishAddress);
+                                    }
+
+                                    var roadAddress = item.roadAddress;
+                                    // var jibunAddress = item.jibunAddress;
+
+                                    // savedAddress = roadAddress + "|" + jibunAddress;
+
+                                    console.info(roadAddress);
+                                    // console.info(jibunAddress);
+                                    // console.info(savedAddress);
+
+                                    var str = '<input type="hidden" name="location" value="'+roadAddress+'">'
+
+                                    $(".hidden-address-box").html(str);
+
+                                    infoWindow.setContent([
+                                        '<div style="padding:10px;min-width:200px;line-height:150%;">',
+                                        '<h4 style="margin-top:5px;">검색 주소 : '+ address +'</h4><br />',
+                                        htmlAddresses.join('<br />'),
+                                        '</div>'
+                                    ].join('\n'));
+
+                                    map.setCenter(point);
+                                    infoWindow.open(map, point);
+                                });
+                            }
+
+                            function initGeocoder() {
+
+                                $('#address').on('keydown', function(e) {
+                                    var keyCode = e.which;
+
+                                    if (keyCode === 13) { // Enter Key
+                                        console.log(searchAddressToCoordinate($('#address').val()));
+                                        searchAddressToCoordinate($('#address').val());
+                                    }
+                                });
+
+                                // $('#submit').on('click', function(e) {
+                                //     e.preventDefault();
+                                //     console.log(searchAddressToCoordinate($('#address').val()))
+                                //     searchAddressToCoordinate($('#address').val());
+                                // });
+
+                                // 현 위치로 바꾸기
+                                // searchAddressToCoordinate('정자동 178-1');
+                            }
+
+
+                            naver.maps.onJSContentLoaded = initGeocoder;
+
+                        </script>
+                    </div>
+
+                    <div class="party-info-wrapper">
+                        <div class="searchAddress">
+                            <input id="address" class="form-control" type="text" placeholder="주소를 검색하세요." style="width: 100%">
+                        </div>
+                        <div class="dDay">
+<!--                            <input type="text" id="datepicker" class="form-control" placeholder="약속 날짜 정하기">-->
+                            <input type="text" class="form-control" name="singleDatepicker" value="" />
+                            <script>
+                                $(function() {
+                                    $('input[name="singleDatepicker"]').daterangepicker({
+                                        singleDatePicker: true,
+                                        showDropdowns: true,
+                                        alwaysShowCalendars: true
+                                    }, function(start, end, label) {
+
+                                        var data = start.format('YYYY-MM-DD');
+
+                                        console.log(data);
+
+                                        var hiddenBox = $(".hidden-dDay-box");
+                                        var str = "";
+                                        hiddenBox.html("");
+                                        str += '<input type="hidden" name="appointment" value="'+data+'">';
+                                        hiddenBox.html(str);
+                                    });
+                                });
+                            </script>
+                        </div>
+
+                        <div class="howManyPerson">
+                            <span class="select-group howManyPersonLabel" style="width: 127px">참가 인원 제한</span>
+                            <select class="form-control howManyPersonSelect" name="person" style="width: 80px">
+                                <option value="2">2인</option>
+                                <option value="3">3인</option>
+                                <option value="4">4인</option>
+                                <option value="5">5인</option>
+                                <option value="6">6인</option>
+                                <option value="7">7인</option>
+                                <option value="8">8인</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+            <div class="col-md-12 col-sm-12 btnBox">
+                <button th:if="${tellCategory == 'secondHands'}" type="button" class="btn btn-light changingAGear">장비 변경</button>
+                <button class="btn btn-outline-primary registerBtn">글작성</button>
+            </div>
+        </form>
+
+
         <div class="uploadResultUL" style="display: none">
             <ul>
 
             </ul>
         </div>
 
-<script layout:frgment="script" th:inline="javascript">
+        <!--/ introduce my project modal /-->
+        <div class="modal intro-myProject" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body intro-myProject-list">
+                        <div style="display: flex;">
+                            <span class="material-symbols-outlined">arrow_right</span><p>유저가 등록한 장비를 비동기 방식으로 불러 옵니다.</p>
+                        </div>
+                        <div style="display: flex;">
+                            <span class="material-symbols-outlined">arrow_right</span><p>장비를 선택하면 에디터에 정보 및 이미지가 업데이트 됩니다.</p>
+                        </div>
+                        <div style="display: flex;">
+                            <span class="material-symbols-outlined">arrow_right</span><p>중고거래 게시물을 등록하면 등록된 장비는 거래 중 상태로 변경 됩니다. (마이기어 페이지에서 확인가능)</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary reading-gear-close" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // const auth = [[${#authentication.principal}]]
-    // console.info(auth);
-    //
-    // const errors = [[${errors}]]
-    // console.info(errors)
+    </div>
+
+<script th:inline="javascript"  layout:fragment="script">
+
+    const errors = [[${errors}]]
+    console.info(errors)
+
+    let errorMsg = ''
+
+    if (errors){
+        errorMsg = '제목이 너무 짧거나 또는 내용 및 카테고리를 입력해주세요'
+        // for(let i =0; i < errors.length; i++){
+        //     errorMsg += `${errors[i].field}은(는) ${errors[i].code}\n`
+        // }
+        alert(errorMsg);
+    }
 
     $(document).ready(function (){
-
-
-        // var memberEmail = [[${pricipalName}]];
-        // console.info(memberEmail);
 
         var email = [[${#authentication.principal.username}]];
 
         var checkCategory = [[${tellCategory}]];
         console.log(checkCategory);
 
+
+        $("#register-form").on("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+            }
+        });
+
         // 게시판 작성 버튼 이벤트
         $(".registerBtn").on("click", function (e){
 
             e.preventDefault();
 
-            console.log("clicking");
+
+            var hiddenGearBox = $("input[name='state']").val();
+
+            if (checkCategory == 'secondHands' ){
+
+                if(!hiddenGearBox == '1'){
+                    console.log("hiddenGearBox != 1")
+                    alert('중고 장비를 선택해주세요.');
+                    return false;
+                }
+                if(hiddenGearBox == '1'){
+                    console.log("hiddenGearBox == 1")
+                }
+
+            }
+
+            if (checkCategory == 'party'){
+                var locationValue = $("input[name='location']").val();
+                if (locationValue == null || locationValue == ""){
+                    alert("주소를 검색해 주세요. ");
+                    return false;
+                }
+                var dDayValue = $("input[name='appointment']").val();
+                if (dDayValue == null || dDayValue == ""){
+                    alert("날짜를 선택해 주세요.");
+                    return false;
+                }
+            }
+
+
 
             var str = "";
 
@@ -313,66 +654,108 @@
             $(".hiddenBox").html(str);
             $("form").submit();
 
+
         }); // register btn clicking event
 
 
-        // 기어리스트 박스 업로드 function
-        if (checkCategory == 'secondHands'){
+        function loadGearBoxes(page){
+
+            console.log("page: " + page)
+
+            var alertBox = $(".alert-box");
+            var str = "";
+
+            $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
+            // $.getJSON('/gear/pagination/' + email +"/"+ page + "/" + keyword, function (data){
+                console.log(data.dtoList);
+                console.log(data);
+
+                if (data.dtoList.length == 0){
+                    alert('등록된 장비가 없습니다. 등록 페이지로 이동합니다.');
+                    window.self.location = '/member/myGear';
+                }
+
+                showGearBoxes(data.dtoList);
+                makingPagination(data);
+            })
+        }
+
+        $(".changingAGear").click(function (){
+            console.log("clicking");
+            $(".myGearListModal").modal('show');
 
             loadGearBoxes(1);
 
-            function loadGearBoxes(page){
+        });
 
-                console.log("page: " + page)
 
-                var testing = "junghwan";
-
-                $.getJSON('/gear/pagination/' + email +"/"+ page, function (data){
-
-                    console.log(data.dtoList);
-                    console.log(data);
-                    // 기어리스트 DTO 업로드
-                    showGearBoxes(data.dtoList);
-                    // pagination 업로드
-                    makingPagination(data);
-                })
-            }
-        }
+        // 장비 검색 액션
+        // $(".gear-search-input").change(function (e){
+        //
+        //     var keyword = $(this).val();
+        //     console.log(keyword);
+        //
+        //     var alertBox = $(".alert-box");
+        //     var str = "";
+        //
+        //     $.getJSON('/gear/pagination/' + email +"/"+ page + "/" + keyword, function (data){
+        //
+        //         console.log(data.dtoList);
+        //         console.log(data);
+        //
+        //         if (data.dtoList.length == 0){
+        //             console.log("there are no result");
+        //             str = '<h3>검색된 장비가 없습니다.</h3>';
+        //             alertBox.html(str);
+        //         }
+        //
+        //         // 기어리스트 DTO 업로드
+        //         showGearBoxes(data.dtoList);
+        //         // pagination 업로드
+        //         makingPagination(data);
+        //     })
+        // })
 
         // 기어리스트 DTO 업로드
         function showGearBoxes(dtoList){
 
-            var gearList = $(".gear-data-boxes");
+            var gearList = $(".modal-gear-list");
             var str = "";
 
             console.info(dtoList);
 
             $.each(dtoList, function (i, dto){
 
-                str += '<div class="col-md-2 my-gear-li" data-gno="'+dto.gno+'">';
+                str += '<div class="gear-boxes">';
 
-                str += '<div class="loadGear-img-box">';
+                if (dto.state == '0'){
+                    str += '<div class="gear-info selecting-gear" style="height: 100%" data-gno="'+dto.gno+'">';
+                }else if (dto.state == '1'){
+                    str += '<div class="gear-info on-the-market unable-gear" style="height: 100%">';
+                }
+
                 if (dto.gearImageDTOList[0] !== null){
-                    str += "<img src='"+dto.gearImageDTOList[0]?.thumbnailS3URL+"'>";
+                    str += "<img class='gear-info-img' src='"+dto.gearImageDTOList[0]?.thumbnailS3URL+"' data-gno='"+dto.gno+"'>";
                 }else {
-                    str += "<img src='/icon/img3.svg' style='height: 100%'>";
+                    str += "<img class='gear-info-img' src='/icon/img3.svg' style='height: 100%' data-gno='"+dto.gno+"'>";
+                }
+
+                str += '<div class="card-body gear-script">'
+                if(dto.state == '1'){
+                    str += '    <p class="card-title">'+dto.gname+' <b>[중고거래중]</b></p>';
+                }else if(dto.state == '0'){
+                    str += '    <p class="card-title">'+dto.gname+'</p>';
                 }
                 str += '</div>';
-
-                str += '<div class="gear-info">';
-                str += '<span>이름: '+dto.gname+'</span><span>브랜드: '+dto.brand+'</span><span>사이즈: '+dto.size+'</span><span>소재: '+dto.material+'</span>';
-                str += '<span class="gear-script">설명: '+dto.script+'</span><span>카테고리: '+dto.sort+'</span>';
                 str += '</div>';
 
                 str += '</div>';
-
 
             }) // dtoList each
 
             gearList.html(str);
-        }
+        } // showGearBoxes
 
-        // pagination 업로드
         function makingPagination(data){
 
             var gearPageUl = $(".pagination");
@@ -395,7 +778,7 @@
 
         } //makingPagination
 
-        var page = 1;
+        // var page = 1;
 
         // pagination 클릭시 이베트
         $(".list-pagination ul").on("click", "a", function (e){
@@ -415,8 +798,13 @@
         })
 
 
+
         // 기어선택 클릭 이벤트
-        $(".gear-data-boxes").on("click", ".my-gear-li", function (){
+        $(".modal-gear-list").on("click", ".selecting-gear", function (){
+
+            if (!confirm("해당 장비로 변경하시겠습니까?")){
+                return;
+            }
 
             $('#summernote').summernote('reset');
 
@@ -432,6 +820,26 @@
             str += '<input type="hidden" name="state" value="1">';
 
             hiddenGearBox.html(str);
+
+            $.getJSON('/gear/myGear/' + gno, function (dto){
+
+                var name = dto.gname;
+                var brand = dto.brand;
+                var size = dto.size;
+                var material = dto.material;
+                var script = dto.script;
+                var sort = dto.sort;
+                var state = dto.state;
+
+                // var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
+                //     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
+
+                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
+                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
+
+                $('#summernote').summernote('pasteHTML', HTMLString);
+
+            }); // getJSON for gear info
 
 
             $.getJSON('/gear/images/' + gno, function (arr){
@@ -451,39 +859,17 @@
 
             }); // getJSON for images
 
-            $.getJSON('/gear/myGear/' + gno, function (dto){
-
-                var name = dto.gname;
-                var brand = dto.brand;
-                var size = dto.size;
-                var material = dto.material;
-                var script = dto.script;
-                var sort = dto.sort;
-                var state = dto.state;
-
-                console.info(name);
-                console.info(brand);
-                console.info(size);
-                console.info(material);
-                console.info(script);
-                console.info(sort);
-                console.info(state);
-
-                // var HTMLString = '<div><p>이름: '+name+'</p><p>브랜드: '+brand+'</p><p>사이즈: '+size+'</p>' +
-                //     '<p>소재: '+material+'</p><p>설명: '+script+'</p><p><br></p></div>'
-
-                var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
-                    '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
-
-                $('#summernote').summernote('pasteHTML', HTMLString);
-
-            }); // getJSON for gear info
+            $(".myGearListModal").modal('hide');
 
         }); // 기어선택 클릭 이벤트 종료
 
 
+        $(".modal-gear-list").on("click", ".unable-gear", function (){
+            alert("이미 중고 거래 등록된 상태입니다.");
+            return false;
+        })
+
         var gearDTO = [[${gearDTO}]];
-        var secondHandsDeal = [[${tellCategory}]];
         console.log(gearDTO)
 
         // 선택된 중고 상품 editor로 업로드 from myGear
@@ -501,14 +887,6 @@
                 var script = dto.script;
                 var sort = dto.sort;
                 var state = dto.state;
-
-                console.info(name);
-                console.info(brand);
-                console.info(size);
-                console.info(material);
-                console.info(script);
-                console.info(sort);
-                console.info(state);
 
                 var HTMLString = '<div><p>'+name+'</p><p>'+brand+'</p><p>'+size+'</p>' +
                     '<p>'+material+'</p><p>'+script+'</p><p><br></p></div>'
@@ -546,14 +924,17 @@
         } // load gearDTO from myGear
 
 
+        $(".page-info").click(function (){
+            $(".intro-myProject").modal('show');
+        })
+
+
+
+
     }); // the end
 
 
 </script>
 
-    </th:blcok>
 
-</th:block>
-
-</body>
 </html>

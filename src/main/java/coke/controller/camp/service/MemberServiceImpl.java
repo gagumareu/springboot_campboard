@@ -1,19 +1,15 @@
 package coke.controller.camp.service;
 
-import coke.controller.camp.dto.BoardDTO;
 import coke.controller.camp.dto.MemberDTO;
 import coke.controller.camp.dto.MemberJoinDTO;
-import coke.controller.camp.entity.Board;
 import coke.controller.camp.entity.Member;
 import coke.controller.camp.entity.MemberRole;
 import coke.controller.camp.repository.MemberRepository;
-import coke.controller.camp.security.dto.MemberSecurityDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

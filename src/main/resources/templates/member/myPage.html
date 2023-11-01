@@ -1,220 +1,248 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 
 
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+
+        .myPage-wrapper{
+            display: flex;
+
+        }
+
+
+        .myPage-left-side{
+            flex: 30%;
+            /*background-color: lightblue;*/
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*border-bottom: 2px solid;*/
+        }
+
+
+        .meyPage-left-myName{
+            /*background-color: #9ec0dc;*/
+            width: 100%;
+            display: flex;
+            align-self: center;
+            align-items: center;
+            height: 142px;
+            margin: 36px 0px;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .myPage-left-imgDiv{
+            width: 75px;
+            /*margin-left: 15px;*/
+        }
+
+        .myPage-left-imgDiv img{
+            width: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .myPage-left-imgDiv span{
+            margin-left: 10px;
+        }
+
+        .myPage-left-category{
+            display: flex;
+            flex-direction: column;
+            row-gap: 6px;
+            font-size: 1.4em;
+            justify-content: center;
+
+            align-items: center;
+        }
+
+        .myPage-left-category div{
+            /*background-color: white;*/
+            /*padding: 6px;*/
+            /*border-radius: 4px 4px 0 0;*/
+        }
+
+        .myPage-left-category div:hover {
+            color: #0dcaf0;
+            cursor: grab;
+
+        }
+
+        .myPage-content{
+            flex: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-box{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid lightblue;
+        }
+
+        .data-title{
+            margin-left: 20px;
+        }
+
+        .data-date{
+            margin-right: 20px;
+        }
+
+        .myPage-title{
+            align-self: center;
+        }
+
+        .userInfo{
+            display: flex;
+            width: 90%;
+            flex-direction: row;
+            align-items: center;
+
+        }
+        .userName{
+            flex: 85%;
+            display: flex;
+            justify-content: center;
+        }
+        .gear-img{
+            width: 100%;
+            flex: 15%;
+        }
+
+        .userInfo:hover{
+            cursor: grab;
+            color: #0dcaf0;
+        }
+
+        .content-wrapper{
+            padding: 0px 20px;
+        }
+
+        .memberInfo-box{
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            font-size: 1.3em;
+            /* justify-content: center; */
+            row-gap: 11px;
+            height: 100%;
+            margin-top: 95px;
+
+        }
+
+        .profileImage{
+            height: 54px;
+        }
+
+        .profileImage:hover{
+            cursor: grab;
+        }
+
+        .profileImage img{
+            height: 100%;
+        }
+
+        .modify-info{
+            margin-top: 95px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+            align-items: center;
+        }
+
+        .inputName{
+            width: 270px;
+        }
+
+        .content{
+            margin-top: 25px;
+        }
+
+        #calendar{
+            flex: 65%;
+            max-width: 65%;
+            height: 665px;
+        }
+
+
+    </style>
+
+
+    <!-- toast editor   -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+    <!-- toast calendar   -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+
+
 </head>
 
-<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmecoefot7"></script>
 
 
-<style>
+    <div class="container-lg content" layout:fragment="content">
+        <div class="myPage-wrapper">
 
-    .myPage-wrapper{
-        display: flex;
-
-    }
-
-
-    .myPage-left-side{
-        flex: 30%;
-        /*background-color: lightblue;*/
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /*border-bottom: 2px solid;*/
-    }
-
-
-    .meyPage-left-myName{
-        /*background-color: #9ec0dc;*/
-        width: 100%;
-        display: flex;
-        align-self: center;
-        align-items: center;
-        height: 142px;
-        margin: 36px 0px;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .myPage-left-imgDiv{
-        width: 75px;
-        /*margin-left: 15px;*/
-    }
-
-    .myPage-left-imgDiv img{
-        width: 100%;
-        overflow: hidden;
-        border-radius: 50%;
-    }
-
-    .myPage-left-imgDiv span{
-        margin-left: 10px;
-    }
-
-    .myPage-left-category{
-        display: flex;
-        flex-direction: column;
-        row-gap: 6px;
-        font-size: 1.4em;
-        justify-content: center;
-
-        align-items: center;
-    }
-
-    .myPage-left-category div{
-        /*background-color: white;*/
-        /*padding: 6px;*/
-        /*border-radius: 4px 4px 0 0;*/
-    }
-
-    .myPage-left-category div:hover {
-        color: #0dcaf0;
-        cursor: grab;
-
-    }
-
-    .myPage-content{
-        flex: 70%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .data-box{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        border-bottom: 1px solid lightblue;
-    }
-
-    .data-title{
-        margin-left: 20px;
-    }
-
-    .data-date{
-        margin-right: 20px;
-    }
-
-    .myPage-title{
-        align-self: center;
-    }
-
-    .userInfo{
-        display: flex;
-        width: 90%;
-        flex-direction: row;
-        align-items: center;
-
-    }
-    .userName{
-        flex: 85%;
-        display: flex;
-        justify-content: center;
-    }
-    .gear-img{
-        width: 100%;
-        flex: 15%;
-    }
-
-    .userInfo:hover{
-        cursor: grab;
-        color: #0dcaf0;
-    }
-
-    .content-wrapper{
-        padding: 0px 20px;
-    }
-
-    .memberInfo-box{
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        font-size: 1.3em;
-        /* justify-content: center; */
-        row-gap: 11px;
-        height: 100%;
-        margin-top: 95px;
-
-    }
-
-    .profileImage{
-        height: 54px;
-    }
-
-    .profileImage:hover{
-        cursor: grab;
-    }
-
-    .profileImage img{
-        height: 100%;
-    }
-
-    .modify-info{
-        margin-top: 95px;
-        display: flex;
-        flex-direction: column;
-        row-gap: 20px;
-        align-items: center;
-    }
-
-    .inputEmail{
-        width: 35%;
-    }
-</style>
-
-
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
-    <th:block th:fragment="content">
-
-    <div class="myPage-wrapper">
-
-        <div class="myPage-left-side">
-            <div class="meyPage-left-myName">
-                <div class="myPage-left-imgDiv">
-                    <img th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
-                    <img th:unless="${dto.profileImg != null}" src="/icon/person-circle.svg">
+            <div class="myPage-left-side">
+                <div class="meyPage-left-myName">
+                    <div class="myPage-left-imgDiv">
+                        <img th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
+                        <img th:unless="${dto.profileImg != null}" src="/icon/person-circle.svg">
+                        <input type="file" name="uploadFiles" style="display: none">
+                    </div>
+                    <span class="userInfo">
+                        <h3 class="userName">[[${dto.memberName}]]</h3>
+                    </span>
                 </div>
-                <span class="userInfo">
-                    <h3 class="userName">[[${dto.memberName}]]</h3>
-                </span>
-            </div>
-            <div class="col-md-12 myPage-left-category">
-                <div class="modify-myInfo-btn">내 정보 변경</div>
-                <div class="my-writings-btn">작성한 게시글</div>
-                <div class="my-replies-btn">작성한 댓글</div>
-            </div>
-        </div>
+                <div class="col-md-12 myPage-left-category">
+                    <div class="modify-myInfo-btn">내 정보 변경<span>[공사중]</span></div>
+                    <div class="my-writings-btn">작성한 게시글</div>
+                    <div class="my-replies-btn">작성한 댓글</div>
+                    <div class="my-schedule-btn">
+                        <a href="/member/mySchedule" style="text-decoration: none">
+                            캠핑 모임 일정
+                        </a>
+                    </div>
+                </div>
+            </div> <!--/ myPage-left-side /-->
 
-        <div class="myPage-content">
-            <h1 class="myPage-title">마이 페이지</h1>
+            <div class="myPage-content">
+                <h1 class="myPage-title">마이 페이지</h1>
 
-            <div class="content-wrapper">
-                <div class="load-content">
-                    <div class="memberInfo-box">
-                        <div class="member-name">
-                            user name: [[${dto.memberName}]]
-                        </div>
-                        <div class="member-email">
-                            email: [[${dto.email}]]
+                <div class="content-wrapper">
+                    <div class="load-content">
+                        <div class="memberInfo-box">
+                            <div class="member-name">
+                                이름: [[${dto.memberName}]]
+                            </div>
+                            <div class="member-email">
+                                이메일: [[${dto.email}]]
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> <!--/ myPage-content /-->
 
-    </div>
+        </div> <!--/ myPage-wrapper /-->
 
- <script th:inline="javascript">
+    </div> <!--/ container content /-->
+
+ <script layout:fragment="script" th:inline="javascript">
 
     $(document).ready(function (){
-        var profileImg = [[${dto}]];
-        console.info(profileImg)
+
+        var dto = [[${dto}]];
+        console.info(dto)
 
         var email = [[${#authentication.principal.username}]];
         console.log(email);
@@ -250,21 +278,16 @@
 
                 $(arr).each(function (i, dto){
 
-                    console.info(dto)
-                    console.info(dto.title)
-
-                    var regDate =
-
-                        str += '<div class="data-box">';
-                    str += '<div class="data-title" data-bno="'+dto.bno+'"><a href="/board/read?bno='+dto.bno+'" target="_blank">'+dto.title+'</a></div>';
-                    str += '<div class="data-date">'+formatTime(dto.regDate)+'</div>';
+                    str += '<div class="data-box">';
+                    str += '<div class="data-title" data-bno="'+dto.bno+'"><a href="/board/read?bno='+dto.bno+'" >'+dto.title+'</a></div>';
+                    str += '<div class="data-date">'+dto.regDate+'</div>';
                     str += '</div>';
                 })
 
                 loadContent.html(str);
 
             })
-        }
+        } // function getBoardList
 
         // 작성한 댓글 클릭시 리스트 불러오는 이벤트
         $(".my-replies-btn").on("click", function (e){
@@ -283,40 +306,35 @@
 
                 $(arr).each(function (i, dto){
 
-                    console.info(dto)
-                    console.info(dto.title)
-
-                    var regDate =
-
-                        str += '<div class="data-box">';
-                    str += '<div class="data-title" data-rno="'+dto.rno+'"><a href="/board/read?bno='+dto.bno+'" target="_blank">'+dto.text+'</a></div>';
-                    str += '<div class="data-date">'+formatTime(dto.regDate)+'</div>';
+                    str += '<div class="data-box">';
+                    str += '<div class="data-title" data-rno="'+dto.rno+'"><a href="/board/read?bno='+dto.bno+'" >'+dto.text+'</a></div>';
+                    str += '<div class="data-date">'+dto.regDate+'</div>';
                     str += '</div>';
                 })
 
                 loadContent.html(str);
 
             })
-        }
+        } // function getRepliesList
 
         // 내 정보 변경 클릭 이벤트
-        $(".modify-myInfo-btn").click(function (){
-
-            $(".myPage-title").html("계정 정보 변경");
-
-            var str = "";
-
-            str += '<form class="modify-info" action="/member/modify" method="post">';
-            str += '<input type="text" class="form-control inputEmail" name="name" placeholder="NAME">';
-            str += '<input type="hidden" name="email" value="'+email+'">';
-            str += '<div class="profileImage"><img src="/icon/person-circle.svg" class="personIcon"></div>';
-            str += '<div class="modifyBtn">';
-            str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>';
-            str += '<div>';
-            str += '</form>';
-
-            loadContent.html(str);
-        })
+        // $(".modify-myInfo-btn").click(function (){
+        //
+        //     $(".myPage-title").html("계정 정보 변경");
+        //
+        //     var str = "";
+        //
+        //     str += '<form class="modify-info" action="/member/modify" method="post">';
+        //     str += '<input type="text" class="form-control inputName" name="name" placeholder="닉네임 변경">';
+        //     str += '<input type="hidden" name="email" value="'+email+'">';
+        //     str += '<div class="profileImage"><img src="/icon/person-circle.svg" class="personIcon"><input id="inputFile" type="file" name="uploadFiles"></div>';
+        //     str += '<div class="modifyBtn">';
+        //     str += '<button class="btn btn-outline-success modifyBtn" type="submit">수정</button>';
+        //     str += '<div>';
+        //     str += '</form>';
+        //
+        //     loadContent.html(str);
+        // }) // cliking modify-myInfo-btn
 
         // 왼쪽 사이드 이름 클릭시 이름 변경 이벤트
         $(".userInfo").click(function (e){
@@ -334,7 +352,7 @@
             str += '</form>';
 
             loadContent.html(str);
-        })
+        }) // clicking for updating userNicname
 
 
         $(".modifyBtn").on("click", function (e){
@@ -342,11 +360,39 @@
             console.log("clicking");
         })
 
+        var inputImage = $("input[name='uploadFiles']");
+
+        $(".myPage-left-imgDiv").click(function (){
+
+            console.info("clicking");
+
+            // inputImage.click();
+
+
+        });
+
+
+        inputImage.change(function (){
+
+            var formData = new FormData();
+
+            console.info("changing");
+
+            var file = $(this);
+
+            console.info(file);
+
+            formData.append(file);
+
+        });
+
+
+
+
+
+
     }) // the end
 
  </script>
 
-    </th:block>
-</th:block>
-</body>
 </html>

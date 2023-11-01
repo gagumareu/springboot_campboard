@@ -4,20 +4,15 @@ import coke.controller.camp.dto.BoardDTO;
 import coke.controller.camp.dto.BoardImageDTO;
 import coke.controller.camp.dto.PageRequestDTO;
 import coke.controller.camp.dto.PageResultDTO;
-import coke.controller.camp.entity.Board;
-import coke.controller.camp.entity.BoardImage;
-import coke.controller.camp.entity.Member;
-import coke.controller.camp.repository.BoardImageRepository;
-import coke.controller.camp.repository.BoardRepository;
-import coke.controller.camp.repository.ReplyRepository;
+import coke.controller.camp.entity.*;
+import coke.controller.camp.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import javax.transaction.Transactional;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,6 +26,8 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final BoardImageRepository boardImageRepository;
     private final ReplyRepository replyRepository;
+    private final GearRepository gearRepository;
+    private final PartyRepository partyRepository;
 
     @Transactional
     @Override
@@ -47,7 +44,9 @@ public class BoardServiceImpl implements BoardService{
         log.info(board);
         log.info(boardImageList);
 
-        boardRepository.save(board);
+        Board result = boardRepository.save(board);
+
+        log.info(result.getBno());
 
         if (boardImageList != null && boardImageList.size() > 0){
             boardImageList.forEach(boardImage -> {
@@ -55,7 +54,7 @@ public class BoardServiceImpl implements BoardService{
             });
         }
 
-        return board.getBno();
+        return result.getBno();
     }
 
     @Override
@@ -67,7 +66,9 @@ public class BoardServiceImpl implements BoardService{
                 (Board) en[0],
                 (List<BoardImage>) (Arrays.asList((BoardImage)en[1])),
                 (Member) en[2],
-                (Long) en[3]));
+                (Long) en[3],
+                (List<GearImage>) (Arrays.asList((GearImage)en[4]))
+        ));
 
 //        Page<Object[]> result = boardRepository.getListWithMemberAndReplyCount(
 //                pageRequestDTO.getPageable(Sort.by("bno").descending()));
@@ -102,12 +103,19 @@ public class BoardServiceImpl implements BoardService{
 
         Long replyCount = (Long) result.get(0)[3];
 
+        List<GearImage> gearImageList = new ArrayList<>();
+
+        result.forEach(arr -> {
+            GearImage gearImage = (GearImage) arr[4];
+            gearImageList.add(gearImage);
+        });
+
         log.info("board: " + board);
         log.info("image size: " + boardImageDTOList.size());
         log.info("member: " + member);
         log.info("reply counting : " + replyCount);
 
-        return entityToDTO(board, boardImageDTOList, member, replyCount);
+        return entityToDTO(board, boardImageDTOList, member, replyCount, gearImageList);
     }
 
     @Transactional
@@ -120,6 +128,8 @@ public class BoardServiceImpl implements BoardService{
         replyRepository.deleteByBno(bno);
         boardImageRepository.deleteByBno(bno);
         boardRepository.deleteById(bno);
+
+
     }
 
     @Transactional
@@ -127,6 +137,21 @@ public class BoardServiceImpl implements BoardService{
     public void modify(BoardDTO boardDTO) {
 
         log.info("---------modify-------");
+
+        if (boardDTO.getLocation() != null && boardDTO.getAppointment() != null){
+            log.info(boardDTO.getLocation());
+            log.info(boardDTO.getAppointment());
+
+            List<Party> parties = partyRepository.getPartiesByBno(boardDTO.getBno());
+
+            parties.forEach(party -> {
+                party.changeLocation(boardDTO.getLocation());
+                party.changeAppointment(boardDTO.getAppointment());
+                party.changePerson(boardDTO.getPerson());
+                partyRepository.save(party);
+            });
+
+        }
 
         boardImageRepository.deleteByBno(boardDTO.getBno());
 
@@ -165,9 +190,37 @@ public class BoardServiceImpl implements BoardService{
         log.info("-------getBoarListByEmail---------------------");
         log.info(email);
 
-        List<Board> result = boardRepository.getBoardByEmail(email);
+        Member member = Member.builder().email(email).build();
+
+        List<Board> result = boardRepository.getBoardsByMemberOrderByBnoDesc(member);
 
         return result.stream().map(board -> basicEntityToDTO(board)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BoardDTO> getBoardByTalkCategoryLimit() {
+
+        List<Object[]> resultList = boardRepository.getBoardListByCategoryTalkLimit();
+
+        List<BoardDTO> boardDTOList = resultList.stream().map(objects -> entityBoardNBoardImgToDTO(
+                (Board) objects[0],
+                (BoardImage) objects[1]
+        )).collect(Collectors.toList());
+
+        return boardDTOList;
+    }
+
+    @Override
+    public List<BoardDTO> getBoardBySecondHandsCategoryLimit() {
+
+        List<Object[]> resultList = boardRepository.getBoardListByCategorySecondHansLimit();
+
+        List<BoardDTO> boardDTOList = resultList.stream().map(objects -> entityBoardNGearImgToDTO(
+                (Board) objects[0],
+                (GearImage) objects[1]
+        )).collect(Collectors.toList());
+
+        return boardDTOList;
     }
 
 

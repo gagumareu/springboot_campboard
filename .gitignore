@@ -36,11 +36,12 @@ out/
 ### VS Code ###
 .vscode/
 
-.env
-
 application-aws.properties
-#**/application.properties
+**/application.properties
+**/application-real.properties
 **/application-oauth.properties
-**/application-db.yml
 **/application-s3.properties
 
+**/application-db.yml
+**/application-oauth.yml
+**/application-s3.yml

@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+    <title>CampingDirect</title>
 
     <style>
+
+        a{
+            text-decoration: none;
+        }
         .reply-box{
             /*border: 1px solid black;*/
             /*margin-bottom: 20px;*/
             padding: 18px 25px 24px;
             border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
         }
 
         .box{
@@ -23,11 +32,9 @@
         .read-title{
             font-size: 26px;
             color: #000;
+            margin: 10px 0px;
         }
 
-        .read-title{
-            margin-top: 10px;
-        }
 
         .writer-info{
             display: flex;
@@ -47,12 +54,15 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            text-decoration: none;
         }
         .readBoard-btn-box{
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             margin-bottom: 34px;
+            text-align: center;
+
         }
 
         .read-reply-box{
@@ -90,13 +100,22 @@
             display: flex;
             flex-direction: row;
             margin-bottom: 10px;
+            height: 40px;
+        }
+        .reply-writer-info img{
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
         }
 
         .reply-writer{
-            margin-right: 18px;
+            margin: 0px 18px;
+            font-weight: 600;
+            align-self: center;
         }
         .reply-regDate{
             color: #aaa;
+            align-self: center;
         }
 
         .reply-text{
@@ -104,6 +123,11 @@
             color: #3d3d3d;
             font-weight: normal;
             line-height: 1.714;
+            padding: 0px 16px;
+        }
+
+        .reply-text p{
+            word-break: break-all;
         }
 
         .container replyContainer{
@@ -112,12 +136,18 @@
 
         .ckEditor-content{
             margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
         }
 
         .profile-img-div{
             height: 46px;
             width: 46px;
             margin-right: 15px;
+        }
+
+        .writer-nameNDate a span{
+            color: #000000c9;
         }
 
         .profile-img{
@@ -129,299 +159,1292 @@
         .read-ragDate{
             margin-left: 20px;
         }
+
+        .reply-box-content{
+            width: 100%;
+
+        }
+
+        .reply-modify-div{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reply-modify-div button{
+            width: 60px;
+            margin: 5px;
+        }
+
+        .modify-textarea{
+            display: none;
+            width: 100%;
+            height: 100px;
+        }
+
+        .firstBtn{
+            border-radius: 10px;
+            background-color: #c5e8ef;
+            border: saddlebrown;
+        }
+        .secondBtn{
+            display: none;
+            border-radius: 10px;
+            background-color: #c5e8ef;
+            border: saddlebrown;
+        }
+
+        .telling-box{
+            position: fixed;
+            right: 80px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 25px;
+            width: 356px;
+            z-index: 999;
+            top: 178px;
+        }
+
+        .telling-box div{
+            display: flex;
+            flex-direction: row;
+
+        }
+
+        .read-title{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+        }
+
+        .page-info{
+            height: 100%;
+            align-self: center;
+        }
+
+        .read-btn-box{
+            display: flex;
+            flex-direction: row;
+            text-align: center;
+
+        }
+
+        .read-btn-box button{
+            margin-left: 10px;
+            height: 100%;
+        }
+
+        .modifyBtn {
+            width: 4em;
+        }
+
+        .read-reply-btn a{
+            height: 100%;
+            text-align: center;
+
+        }
+        .read-reply-btn button{
+            height: 100%;
+            margin-left: 12px;
+        }
+
+        .back-to-list{
+            height: 100%;
+            width: 73px;
+
+        }
+
+        .removeBtn{
+            width: 4em;
+
+        }
+
+        .marketDealDone{
+            width: 6em;
+        }
+
+        .party-member-gear{
+            display: flex;
+            flex-direction: row;
+            flex: 65%;
+            max-width: 65%;
+
+        }
+
+        .party-member-gear-img-box{
+            width: 60px;
+            height: 100%;
+            align-items: center;
+            display: flex;
+        }
+
+        .party-member-gear-img-box img{
+            width: 100%;
+            height: 85%;
+        }
+        .available-gear-img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .available-profile-img{
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .party-member-box{
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1px solid;
+            justify-content: space-between;
+        }
+
+        .party-member-img-box{
+            height: 43px;
+        }
+
+        .party-member-info{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex: 35%;
+            max-width: 35%;
+            justify-content: end;
+
+        }
+
+        .party-gear-info{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 45%;
+            margin-left: 1em;
+        }
+
+        .unable-gear-img{
+            width: 100%;
+            /*height: 100%;*/
+        }
+
+        .join-party{
+            margin: 35px 0px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .join-party button{
+            margin-right: 15px;
+        }
+
+        .underConst{
+            background: lightblue;
+            margin-top: 30px;
+        }
+
+
+        /* 파티 맴버 캠핑 장비 올 리스트    */
+        .party-member-gear-box{
+            display: flex;
+            flex-direction: row;
+            height: 80px;
+            border-bottom: 1px solid;
+            justify-content: space-between;
+        }
+
+        .party-gear-img{
+            height: 100%;
+
+        }
+        .party-gear-img img{
+            height: 100%;
+        }
+
+        .party-member-img-div{
+            height: 45px;
+        }
+        .availableProfile img{
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+
+        /* 로그인 사용자의 캠핑 장비들 리스트    */
+        .myGear-list-box{
+            display: flex;
+            flex-direction: row;
+            height: 80px;
+            border-bottom: 1px solid;
+        }
+
+        .myGear-img-box{
+            height: 100%;
+        }
+
+        .myGear-img-box img{
+            height: 100%;
+        }
+
+        .myGear-info{
+            display: flex;
+            flex-direction: row;
+        }
+
+        .list-pagination{
+            margin: 17px 0px;
+        }
+
+        .sortBtn-box{
+            display: none;
+            padding: 10px;
+            border-radius: 15px;
+            row-gap: 0.1em;
+            top: 45px;
+            flex-direction: column;
+            position: absolute;
+            z-index: 99;
+            background: #fafafa;
+        }
+
+        .sort-boxing{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 43px;
+            margin-bottom: 27px;
+            padding: 0px 20px;
+        }
+
+        .sort-boxing input {
+            width: 380px;
+        }
+
+        .sort-btn-boxing{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 100%;
+            /*margin: 16px 0px;*/
+            position: relative;
+        }
+
+        .sort-boxing button{
+            width: 75px;
+        }
+
+        .reboot-sort{
+            margin-right: 12px;
+            height: 59%;
+        }
+
+        .reboot-sort:hover{
+            cursor: pointer;
+        }
+
+        .party-gear-btn-box{
+            margin-left: 14px;
+        }
+
+        .party-member-name{
+            margin-left: 8px;
+        }
+
+        .party-gear-sort{
+            display: flex;
+            align-self: start;
+        }
+
+        .party-applicant-list-boxes{
+            display: flex;
+            flex-direction: row;
+            height: 58px;
+            align-items: center;
+
+        }
+
+        .party-applicant-div{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            margin-top: 30px;
+        }
+
+
+        .party-applicant-box{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .applicant-profile img{
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .applicant-profile{
+            height: 100%;
+        }
+
+        .party-applicant-name{
+            margin-left: 10px;
+        }
+
+        .party-counting-applicant{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .party-counting{
+            display: flex;
+            flex-direction: row;
+        }
+
+        .party-appointment-div{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .party-info-wrapper{
+            display: flex;
+
+        }
+
+
+        .party-member-info-wrapper{
+            flex: 50%;
+            max-width: 50%;
+        }
+        .party-gear-info-wrapper{
+            flex: 50%;
+            max-width: 50%;
+        }
+
+        .party-member-list{
+            padding: 0px 20px;
+        }
+
     </style>
-<body>
 
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-  <th:block th:fragment="content">
+    <!-- 네이버 지도 API   -->
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmecoefot7&submodules=geocoder"></script>
 
-  <div class="read-title">
-      <strong th:text="${dto.title}" class="read-title"></strong>
-  </div>
+</head>
 
-  <div class="writer-info">
-      <div class="writer-nameNDate">
-<!--          <a th:href="@{/member/myPage(email=${#authentication.principal.username})}" style="margin-right: 13px">-->
-          <a th:href="@{#}" style="margin-right: 13px">
-              <div class="profile-img-div">
-                  <img class="profile-img" th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
-                  <img class="profile-img" th:unless="${dto.profileImg != null}" src="/icon/person2.svg">
-              </div>
-              <span>[[${dto.memberName}]]</span>
-          </a>
-          <div th:if="${dto.regDate == dto.modDate}" class="read-ragDate">
-              [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
-          </div>
-          <div th:unless="${dto.regDate == dto.modDate}" class="read-ragDate">
-              [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
-          </div>
-      </div>
-      <div class="replyCounting">
-          <label>댓글 수</label>[[${dto.replyCount}]]
-      </div>
-  </div>
+    <div class="container-lg content" layout:fragment="content">
+        <div class="read-title">
+          <strong th:text="${dto.title}" class="read-title"></strong>
+        </div>
 
-  <div class="ckEditor-content">
-      <div th:utext="${dto.content}"></div>
-  </div>
-
-  <form id="remove-form" th:action="@{/board/remove}" method="post">
-      <input type="hidden" name="bno" th:value="${dto.bno}">
-      <input type="hidden" name="email" th:value="${dto.email}">
-  </form>
-
-  <div class="readBoard-btn-box">
-      <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
-      <button class="btn btn-outline-info">리스트</button>
-      </a>
-      <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
-          <button class="btn btn-outline-info">리스트</button>
-      </a>
-      <th:block th:with="user=${#authentication.principal}">
-          <div th:if="${user.username != null && user.username == dto.email}">
-              <a th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
-                  <button class="btn btn-outline-light modifyBtn">수정</button>
+        <div class="writer-info">
+          <div class="writer-nameNDate">
+              <a th:href="@{#}" style="margin-right: 13px">
+                  <div class="profile-img-div">
+                      <img class="profile-img" th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
+                      <img class="profile-img" th:unless="${dto.profileImg != null}" src="/icon/person2.svg">
+                  </div>
+                  <span>[[${dto.memberName}]]</span>
               </a>
-              <button class="btn btn-outline-info removeBtn">삭제</button>
+              <div th:if="${dto.regDate == dto.modDate}" class="read-ragDate">
+                  [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
+              </div>
+              <div th:unless="${dto.regDate == dto.modDate}" class="read-ragDate">
+                  [[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]
+              </div>
           </div>
-      </th:block>
-  </div>
-
-  <div th:with="user=${#authentication.principal}" class="read-reply-box">
-      <div th:action="@{/replies/}" class="read-reply-form">
-          <input type="hidden" name="bno" th:value="${dto.bno}">
-          <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
-          <div class="read-reply-btn">
-            <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
+          <div class="replyCounting">
+              <label>댓글 수</label>[[${dto.replyCount}]]
           </div>
-      </div>
-  </div> <!--read-reply-box-->
+        </div>
+
+        <!--  summernote editor content      -->
+        <div class="ckEditor-content">
+          <div th:utext="${dto.content}"></div>
+        </div>
+
+        <!-- 네이버 지도 API        -->
+        <th:block th:if="${dto.category eq 'party' || tellingCategory eq 'party'}">
+
+            <div class="party-info-wrapper">
+
+                <div class="party-member-info-wrapper">
+                    <div id="map" style="width:100%;height:400px;"></div>
+                    <script th:inline="javascript">
 
 
-  <div class="container replyContainer">
+                        var mapOptions = {
+                            center: new naver.maps.LatLng(37.3595704, 127.105399),
+                            zoom: 13,
+                            mapTypeControl: true
+                        };
 
-  </div>
+                        var map = new naver.maps.Map('map', mapOptions);
+
+                        var infoWindow = new naver.maps.InfoWindow({
+                            anchorSkew: true
+                        });
+
+                        map.setCursor('pointer');
 
 
-      <script th:inline="javascript">
+                        function searchAddressToCoordinate(address) {
+                            naver.maps.Service.geocode({
+                                query: address
+                            }, function(status, response) {
+                                if (status === naver.maps.Service.Status.ERROR) {
+                                    return alert('Something Wrong!');
+                                }
 
-          const auth = [[${#authentication.principal}]]
+                                if (response.v2.meta.totalCount === 0) {
+                                    return alert('totalCount' + response.v2.meta.totalCount);
+                                }
 
-          const errors = [[${errors}]]
-          console.info(errors)
+                                var htmlAddresses = [],
+                                    item = response.v2.addresses[0],
+                                    point = new naver.maps.Point(item.x, item.y);
 
-          $(document).ready(function (){
+                                if (item.roadAddress) {
+                                    htmlAddresses.push('[도로명 주소] ' + item.roadAddress);
+                                }
 
-              var bno = [[${dto.bno}]];
+                                if (item.jibunAddress) {
+                                    htmlAddresses.push('[지번 주소] ' + item.jibunAddress);
+                                }
 
-              var currentUser = [[${#authentication.principal.username}]]
-              console.info("currentUser: " + currentUser);
+                                if (item.englishAddress) {
+                                    htmlAddresses.push('[영문명 주소] ' + item.englishAddress);
+                                }
 
-              var userEmail = [[${dto.email}]];
-              console.log("userEmail: " + userEmail);
+                                infoWindow.setContent([
+                                    '<div style="padding:10px;min-width:200px;line-height:150%;">',
+                                    htmlAddresses.join('<br />'),
+                                    '</div>'
+                                ].join('\n'));
 
-              function formatTime(str){
+                                map.setCenter(point);
+                                infoWindow.open(map, point);
+                            });
+                        }
 
-                  var data = new Date(str);
+                        var address = [[${partyDTO.location}]];
+                        console.log(address);
+                        function initGeocoder() {
+                            searchAddressToCoordinate(address);
+                        }
 
-                  return data.getFullYear() + "/" +
-                      (data.getMonth() +1) + "/" +
-                      data.getDate() + ":" +
-                      data.getHours() + ":" +
-                      data.getMinutes();
+                        naver.maps.onJSContentLoaded = initGeocoder;
 
-              }  // formatTime
+                    </script>
 
-              // 게시물 삭제 이벤트
-              $(".removeBtn").on("click", function (){
+                    <div class="party-applicant-div">
+                        <div class="party-applicant-box">
+                            <h5>참가자 리스트</h5>
+                            <div class="applicant-list">
 
-                  if (!confirm("삭제 하시겠습니까?")){
-                      console.info("confirmed");
-                      return;
-                  } // if
+                            </div>
+                        </div>
+                        <div class="party-counting-applicant">
+                            <h5>현재 참가 인원</h5>
+                            <div class="party-counting">
+                                <span class="NowApplicant"></span>/<span class="totalApplicant">[[${partyDTO.person}]]</span>
+                            </div>
+                        </div>
+                        <div class="party-appointment-div">
+                            <h5>모임 날짜</h5>
+                            <div>
+                                [[${partyDTO.appointment}]]
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                  $("#remove-form").submit();
 
-              }); // removeBtn
+                <div class="party-gear-info-wrapper">
+<!--                    <div class="underConst">-->
+<!--                    </div>-->
 
-              loadReplyList();
+<!--                    -->
 
-              // 댓글 등록 이벤트
-              $(".insertReplyBtn").on("click", function (e){
+                    <!--   캠핑 모임 참가 버튼      -->
+                    <div class="join-party">
+                        <button class="btn btn-outline-success join-party-btn applyForParty">참가 신청</button>
+                        <button class="btn btn-outline-success AllGearList">참가자 장비 전체 리스트</button>
+                        <button class="btn btn-outline-success addMyGear">내 장비 선택</button>
+                        <button class="btn btn-outline-success finalList">최종 장비 리스트</button>
+                    </div>
 
-                  e.preventDefault();
 
-                  var replyText = $("#reply-input").val();
+                    <div class="sort-boxing">
+                        <input type="text" class="form-control memberGearSearch" name="keyword" placeholder="SEARCH">
+                        <div class="sort-btn-boxing">
+                            <img class="reboot-sort" src="/icon/reboot.svg"><button type="button" class="btn btn-outline-secondary sortBtn">정렬</button>
+                            <div class="sortBtn-box">
+                                <span class="sortMyGear sortAsc" data-sort="email" data-dir="asc"><img src="/icon/sort-asc.svg">유저순</span>
+                                <span class="sortMyGear sortAsc" data-sort="email" data-dir="desc"><img src="/icon/sort-des.svg">유저순</span>
+                                <span class="sortMyGear sortAsc" data-sort="gname" data-dir="asc"><img src="/icon/sort-asc.svg">이름순</span>
+                                <span class="sortMyGear sortAsc" data-sort="gname" data-dir="desc"><img src="/icon/sort-des.svg">이름순</span>
+                                <span class="sortMyGear sortAsc" data-sort="sort" data-dir="asc"><img src="/icon/sort-asc.svg">카테고리순</span>
+                                <span class="sortMyGear sortDesc" data-sort="sort" data-dir="desc"><img src="/icon/sort-des.svg">카테고리순</span>
+                            </div>
+                        </div>
 
-                  var reply = {
-                      bno: bno,
-                      text: replyText,
-                      email: currentUser
+                    </div>
+
+                    <div class="NoAvailable">
+
+                    </div>
+
+                    <div class="party-member-list">
+
+                    </div>
+
+                    <div class="col-md-12 list-pagination">
+                        <ul class="pagination justify-content-center align-items-center">
+                            <li class="page-item">
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>  <!-- party info wrapper -->
+
+        </th:block>
+
+
+        <!-- category가 party, 캠핑 모임일 경우        -->
+        <th:block th:if="${dto.category eq 'party'}">
+
+        </th:block>
+
+
+        <form id="remove-form" th:action="@{/board/remove}" method="post">
+            <input type="hidden" name="bno" th:value="${dto.bno}">
+            <input type="hidden" name="email" th:value="${dto.email}">
+            <input type="hidden" name="category" th:value="${pageRequestDTO.category}">
+        </form>
+
+        <!-- 수정, 삭제 버튼 (중고거래시 거래 완료 버튼 표기)       -->
+        <div class="readBoard-btn-box">
+          <a th:if="${pageRequestDTO.category != ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO?.category} )}">
+          <button class="btn btn-outline-info">리스트</button>
+          </a>
+          <a th:if="${pageRequestDTO.category == ''}" th:href="@{/board/list(page=${pageRequestDTO.page} , type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword} )}">
+              <button class="btn btn-outline-info back-to-list">리스트</button>
+          </a>
+          <th:block th:with="user=${#authentication.principal}">
+              <div class="read-btn-box" th:if="${user.username != null && user.username == dto.email}">
+                  <a class="read-modify-btn" th:href="@{/board/modify(bno=${dto.bno}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
+                      <button class="btn btn-outline-info modifyBtn">수정</button>
+                  </a>
+                  <button class="btn btn-outline-info removeBtn">삭제</button>
+                  <button class="btn btn-outline-info marketDealDone" th:if="${dto.category == 'secondHands'}">거래 완료</button>
+              </div>
+          </th:block>
+        </div>
+
+        <!-- 댓글 관련        -->
+        <div th:with="user=${#authentication.principal}" class="read-reply-box">
+          <div th:action="@{/replies/}" class="read-reply-form">
+              <input type="hidden" name="bno" th:value="${dto.bno}">
+              <textarea name="text" class="form-control reply-textarea" placeholder="댓글을 입력하세요." id="reply-input" style="height: 101px"></textarea>
+              <div class="read-reply-btn">
+                <button type="submit" class="btn btn-outline-info insertReplyBtn" >등록</button>
+              </div>
+          </div>
+        </div> <!--read-reply-box-->
+
+        <div class="container replyContainer">
+
+        </div>
+
+
+        <div class="add-my-gear-hidden-box" style="display: none">
+
+        </div>
+
+    </div> <!--/ the end /-->
+
+
+
+
+<script layout:fragment="script" th:inline="javascript">
+
+  // const auth = [[${#authentication.principal}]]
+
+  // const errors = [[${errors}]]
+  // console.info(errors)
+
+  $(document).ready(function (){
+
+
+      var bno = [[${dto.bno}]];
+
+      var currentUser = [[${#authentication.principal.username}]]
+      console.info("currentUser: " + currentUser);
+
+      var userEmail = [[${dto.email}]];
+      console.log("userEmail: " + userEmail);
+
+      var tellingCategory = [[${dto.category}]];
+      console.log(tellingCategory);
+
+
+
+      function formatTime(str){
+
+          var data = new Date(str);
+
+          return data.getFullYear() + "/" +
+              (data.getMonth() +1) + "/" +
+              data.getDate() + ":" +
+              data.getHours() + ":" +
+              data.getMinutes();
+
+      }  // formatTime
+
+
+
+      // 게시물 삭제 이벤트
+      $(".removeBtn").on("click", function (){
+
+          if (!confirm("삭제 하시겠습니까?")){
+              console.info("confirmed");
+              return;
+          } // if
+
+          $("#remove-form").submit();
+
+      }); // removeBtn
+
+      loadReplyList();
+
+      // 댓글 등록 이벤트
+      $(".insertReplyBtn").on("click", function (e){
+
+          e.preventDefault();
+
+          var replyText = $("#reply-input").val();
+
+          var reply = {
+              bno: bno,
+              text: replyText,
+              email: currentUser
+          }
+
+          console.info(reply);
+
+          $.ajax({
+              url:'/replies',
+              type: 'POST',
+              data: JSON.stringify(reply),
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              success: function (result){
+                  console.info(result.rno+ "번 댓글 작성 성공");
+                  loadReplyList();
+                  // self.location.reload();
+                  $("textarea[name='text']").val("");
+              }
+          }); // ajax
+
+      }); // insertReplyBtn event
+
+      var repliesContainer = $(".replyContainer");
+
+      // 댓글 리스트 로드 이벤트
+      function loadReplyList(){
+
+          $.getJSON('/replies/board/' + bno, function (arr){
+
+              var str = "";
+
+              $.each(arr, function (idx, dto){
+
+                  console.info(arr);
+
+                  str += ' <div class="reply-box" data-rno="'+dto.rno+'">';
+
+                  str += '<div class="reply-box-content">';
+                  str += '<div class="reply-writer-info">';
+                  if (dto.profileImg != null){
+                      str += '<img src="'+dto.profileImg+'">'
+                  }else {
+                      str += '<img src="/icon/person2.svg">'
                   }
+                  str += ' <span class="reply-writer">'+dto.memberName+'</span>';
+                  str += ' <span class="reply-regDate">'+formatTime(dto.regDate)+'</span>';
+                  str += '</div>';
+                  str += ' <div class="reply-text"><p>'+dto.text+'</p><textarea name="text" class="modify-textarea">'+dto.text+'</textarea></div>';
+                  str += '</div>';
+                  str += '<div class="reply-modify-div">';
+                  str += '<button type="button" class="reply-modify-btn firstBtn" data-email="'+dto.email+'">수정</button>';
+                  str += '<button type="button" class="replyDeleteBtn firstBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">삭제</button>';
+                  str += '<button type="button" class="doReplyModifying secondBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">완료</button>';
+                  str += '<button type="button" class="cancelReplyModifying secondBtn">취소</button></div></div>'
+                  str += '</div>';
 
-                  console.info(reply);
+                  str += ' </div>';
 
-                  $.ajax({
-                      url:'/replies/',
-                      method: 'POST',
-                      data: JSON.stringify(reply),
-                      contentType: 'application/json; charset=utf-8',
-                      dataType: 'json',
-                      success: function (result){
 
-                          if (result == "success"){
-                              console.info(result+ "번 댓글 작성 성공");
+              }); // each
 
-                          }
+              repliesContainer.html(str);
+
+          }); // getJSON /replies/board
+
+      } // loadReplyList
+
+      // 댓글 삭제 이벤트
+      $(".replyContainer").on("click", ".replyDeleteBtn", function (){
+
+         var rno = $(this).data("rno");
+         console.info("rno: " + rno);
+
+         var writerEmail = $(this).data("email");
+         console.info(writerEmail)
+
+          if(currentUser != writerEmail){
+              alert("댓글 작성자만 삭제가 가능합니다.");
+              return;
+          }
+
+          if(confirm("삭제 하시겠습니까?")){
+              $.ajax({
+                  url: '/replies/' + rno,
+                  method: 'DELETE',
+                  success: function (result){
+                      if (result === "success"){
+                          console.info(rno + "번 댓글이 삭제되었습니다.");
                           loadReplyList();
-                          // self.location.reload();
-                          $("textarea[name='text']").val("");
                       }
-
-                  }); // ajax
-
-              }); // insertReplyBtn event
-
-              var repliesContainer = $(".replyContainer");
-
-              // 댓글 리스트 로드 이벤트
-              function loadReplyList(){
-
-                  $.getJSON('/replies/board/' + bno, function (arr){
+                  }
+              }); // ajax
+          }
+      }); // reply delete event
 
 
-                      var str = "";
+      // 댓글 수정 이벤트
+      $(".replyContainer").on("click", ".reply-modify-btn", function (){
 
-                      $.each(arr, function (idx, dto){
+          var writerEmail = $(this).data("email");
+          console.info("writerEmail: " + writerEmail);
 
-                          str += ' <div class="reply-box" data-rno="'+dto.rno+'">';
+          // if(principalEmail == writerEmail){
+          if(currentUser != writerEmail){
+              alert("댓글 작성자만 삭제가 가능합니다.");
+              return;
+          }
 
-                          str += '<div class="reply-writer-info">';
-                          str += ' <span class="reply-writer">'+dto.memberName+'</span>';
-                          str += ' <span class="reply-regDate">'+formatTime(dto.regDate)+'</span>';
-                          str += '</div>';
+          console.info("equals");
 
-                          str += ' <div class="reply-text"><span>'+dto.text+'</span></div>';
+          $(this).closest('.reply-box').find('.reply-text p, .firstBtn').css("display", "none");
+          $(this).closest('.reply-box').find('.modify-textarea, .secondBtn').css("display", "block");
 
-                          str += '<div class="reply-modify-div">';
-                          str += '<button type="button" class="reply-modify-btn" data-email="'+dto.email+'">수정</button>';
-                          str += '<button type="button" class="replyDeleteBtn" data-rno="'+dto.rno+'" data-email="'+dto.email+'">삭제</button>';
-                          str += '</div>';
+          $(".doReplyModifying").on('click', function (){
 
-                          str += '<div class="replyModifyingForm">';
-                          str += '<input type="text" name="text" value="'+dto.text+'" class="replyModifyTextInput">';
-                          str += '<div>';
-                          str += '<button type="button" class="doReplyModifying" data-rno="'+dto.rno+'" data-email="'+dto.email+'">수정</button>';
-                          str += '<button type="button" class="cancelReplyModifying">취소</button></div></div>'
-                          str += ' </div>';
+              var rno = $(this).data("rno");
+              // var email = $(this).data("email");
+              var replyModifyInput = $(this).closest('.reply-box').find('.modify-textarea').val();
+              console.info("replyModifyInput: " + replyModifyInput);
+
+              console.info("rno: " + rno);
+
+              var reply = {
+                  rno: rno,
+                  bno: bno,
+                  text: replyModifyInput,
+                  email: currentUser
+              }
+
+              console.info(reply);
+
+              $.ajax({
+                  url: '/replies/' + rno,
+                  method: 'PUT',
+                  data: JSON.stringify(reply),
+                  contentType: 'application/json; charset=utf-8',
+                  success: function (result){
+                      if(result === "success"){
+                          console.info(rno + "번 댓글 수정완료");
+                      }
+                      loadReplyList();
+                  }
+              }) // ajax
+
+          }) // doReplyModifying event
+
+      }); // reply modifying event
+
+      // 댓글 수정 창 닫기 이벤트
+      $(".replyContainer").on("click", ".cancelReplyModifying", function (){
+
+          $(".modify-textarea, .secondBtn").css("display", "none");
+          $(".reply-text p, .firstBtn").css("display", "block");
 
 
-                      }); // each
+      });  // reply canceling modify event
 
-                      repliesContainer.html(str);
 
-                  }); // getJSON /replies/board
 
-              } // loadReplyList
+      // 거래 완료 버튼 클릭 (미구현)
+      $(".marketDealDone").click(function (e){
 
-              // 댓글 삭제 이벤트
-              $(".replyContainer").on("click", ".replyDeleteBtn", function (){
+          console.log("clicking");
 
-                 var rno = $(this).data("rno");
-                 console.info("rno: " + rno);
+      });
 
-                 var writerEmail = $(this).data("email");
-                 console.info(writerEmail)
 
-                  if(currentUser != writerEmail){
-                      alert("댓글 작성자만 삭제가 가능합니다.");
-                      return;
+
+      //********************************** 캠핑 모임 관련 *********************************************************
+
+
+
+      var NoAvailable = $(".NoAvailable");
+      var addMyGearToHidden = $(".add-my-gear-hidden-box");
+
+      var partyList = [[${partyList}]];
+      console.log(partyList);
+
+      var keywordMaster = "";
+      var witchGearList = "allList";
+
+      // 전체 참가자 장비 리스트 업 function
+      function getMemberGearList(arr){
+
+          var str = "";
+          var str2 = "";
+          var partyMemberListDiv = $(".party-member-list");
+
+          console.log(arr);
+
+          $(arr).each(function (i, dto){
+
+              if(dto.gname != null && dto.state == 0){
+                  str += '<div class="party-member-box" >';
+
+                  str += '  <div class="party-member-gear">';
+                  // str +=        '<div><b>'+i+'  '+dto.gno+'</b></div>';
+                  str += '    <div class="party-member-gear-img-box">';
+                  if (dto.gearImageDTOList != null){
+                      if (dto.gearImageDTOList[0] != null){
+                          str += '<img class="gear-img available-gear-img" src="'+dto.gearImageDTOList[0].s3Url+'">';
+                      }else if(dto.gearImageDTOList[0] == null){
+                          str += '<img class="gear-img unable-gear-img" src="/icon/img3.svg">';
+                      }
+                  }else {
+                      if (dto.s3Url != null){
+                          str += '<img class="gear-img available-gear-img" src="'+dto.s3Url+'">';
+                      }else if(dto.s3Url == null){
+                          str += '<img class="gear-img unable-gear-img" src="/icon/img3.svg">';
+                      }
+                  }
+                  str += '      </div>';
+                  str += '    <div class="party-gear-info">';
+                  str += '        <div>'+dto.gname+'</div><div class="party-gear-sort">'+dto.sort+'</div>';
+                  str += '    </div>';
+                  str += '  </div>';
+
+                  str += '  <div class="party-member-info">';
+                  str += '      <div class="party-member-img-box">';
+                  if(dto.profileImg != null){
+                      str += '<img class="profile-img available-profile-img" src="'+dto.profileImg+'">';
+                  }else if(dto.profileImg == null){
+                      str += '<img class="profile-img unable-profile-img" src="/icon/person2.svg">';
+                  }
+                  str += '      </div>';
+                  str += '      <div class="party-member-name">'+dto.memberName+'</div>';
+                  if (witchGearList == "myGears" && dto.email == currentUser){
+                      str += '<div class="party-gear-btn-box">';
+                      str += '<button class="btn btn-outline-danger add-my-gear" type="button" data-gno="'+dto.gno+'">등록</button>';
+                      str += '</div>';
+                  }else if (witchGearList == "finalList" && dto.email == currentUser){
+                      str += '<div class="party-gear-btn-box"><button type="button" class="btn btn-outline-danger remove-gear-onFinalList" data-gno="'+dto.gno+'">삭제</button></div>'
+                  }
+                  str += '      </div>';
+                  str += '  </div>';
+
+                  str += '</div>';
+              }else if (dto.gname == null){
+                  str2 = '<div>등록된 장비가 아직 없습니다. <button>등록하기</button></div>';
+                  NoAvailable.html(str2);
+              }
+
+          })
+
+          partyMemberListDiv.html(str);
+
+      }
+
+      // 참가자들 캠핑 장비 페이징
+      function makingPagination(data, sort, dir, keyword){
+
+          var gearPageUl = $(".pagination");
+
+          var str = "";
+
+          var sort = sort;
+          var dir = dir;
+          var keyword = keyword;
+
+          console.log(sort);
+          console.log(dir);
+          console.log(keyword);
+
+          console.log(data);
+
+          $(data).each(function (i, page){
+              str += '<li class="page-link">';
+              str += '<a href="'+page+'" data-sort="'+sort+'" data-dir="'+dir+'" data-keyword="'+keyword+'">'+page+'</a>';
+              str += '</li>';
+          }) // pageList each
+
+          gearPageUl.html(str);
+
+      } //makingPagination
+
+      // 캠핑 장비 페이지네이션 페이지 클릭 이벤트
+      $(".list-pagination ul").on("click", "a", function (e){
+
+          e.preventDefault();
+
+          var page = 1;
+
+          var targetPage = $(this).attr("href");
+          var sort = $(this).data('sort');
+          var dir = $(this).data('dir');
+          var keyword = $(this).data('keyword');
+
+          page = targetPage;
+
+          console.log(page);
+
+          loadGearDefault(page, sort, dir, keyword, witchGearList);
+
+      })
+
+      if(tellingCategory == "party"){
+
+          loadGearDefault(1, null, null, null, 'allList');
+          getApplicantsList();
+          getCountingApplicant();
+      }
+
+      // 참가자 리스트업
+      function getApplicantsList(){
+
+          $.getJSON('/party/applicants/' + bno, function (arr){
+
+              console.log(arr);
+
+              var str = "";
+              var str2 = "";
+
+              var applicantList = $(".applicant-list");
+
+              $(arr).each(function (i, dto){
+
+                  console.log(dto);
+                  str += '<div class="party-applicant-list-boxes">';
+
+                  if (dto.s3Url != null){
+                      str += '<div class="applicant-profile availableProfile"><img src="'+dto.s3Url+'"></div>'
+                  }else{
+                      str += '<div class="applicant-profile unableProfile"><img  src="/icon/person2.svg"></div>'
                   }
 
-                  if(confirm("삭제 하시겠습니까?")){
-                      $.ajax({
-                          url: '/replies/' + rno,
-                          method: 'DELETE',
-                          success: function (result){
-                              if (result === "success"){
-                                  console.info(rno + "번 댓글이 삭제되었습니다.");
-                                  loadReplyList();
-                              }
-                          }
-                      }); // ajax
-                  }
-              }); // reply delete event
+                  str += '<div class="party-applicant-name">'+dto.memberName+'</div>';
+
+                  str += '</div>';
+
+              })
+
+              applicantList.html(str);
+          })
+      }
+
+      // 현재 참가자 수 불러오기
+      function getCountingApplicant(){
+
+          $.getJSON('/party/countingApplicant/' + bno, function (count){
+
+              console.log(count);
+              var str = "";
+              var presentCounting = $(".NowApplicant");
+
+              str = '<span>'+count+'</span>';
+
+              presentCounting.html(str);
+          })
+      }
 
 
-              // 댓글 수정 이벤트
-              $(".replyContainer").on("click", ".reply-modify-btn", function (){
 
-                  var writerEmail = $(this).data("email");
-                  console.info("writerEmail: " + writerEmail);
+      // 장비 리스트 불러오기 getJSON
+      function loadGearDefault(pageValue, sortType, dir, keywordValue, witchGearList){
 
-                  // if(principalEmail == writerEmail){
-                  if(currentUser != writerEmail){
-                      alert("댓글 작성자만 삭제가 가능합니다.");
-                      return;
-                  }
+          var bno = [[${dto.bno}]];
+          var sort = "";
+          var direction = "";
+          var keyword = "";
+          var page = 1;
+          var witch = witchGearList
 
-                  console.info("equals");
+          var list = {allList: 'allList', myGears:'myGears', finalList: 'finalList'}
 
-                  $(this).closest('.reply-box').find('.replyModifyingForm').css("display", "block");
-                  $(this).closest('.reply-box').find('.reply-modify-div').css("display", "none");
+          console.log(witch);
 
-                  $(".doReplyModifying").on('click', function (){
+          if(pageValue != null){
+              var page = pageValue;
+          }
 
-                      var rno = $(this).data("rno");
-                      // var email = $(this).data("email");
-                      var replyModifyInput = $(this).closest('.reply-box').find('.replyModifyTextInput').val();
-                      console.info("replyModifyInput: " + replyModifyInput);
+          if(sortType != null){
+              sort = sortType;
+          }else if (sortType == null || sortType == "") {
+              sort = null;
+          }
 
-                      console.info("rno: " + rno);
-                      // console.info("email: " + email);
+          if(dir != null){
+              direction = dir;
+          }else if (dir == "" || dir == null) {
+              direction = null;
+          }
 
-                      var reply = {
-                          rno: rno,
+          if (keywordValue == null || keywordValue == ""){
+              console.log("-----keyword is null-----");
+              keyword = null;
+          }else if(keywordValue != null){
+              console.log("-----keyword is not null-----");
+              keyword = keywordValue;
+          }
+
+
+          if (witch == "allList"){      // 참가자 장비 전체 리스트
+              $.getJSON('/party/' + bno + "/" + sort + "/" + direction + "/" + keyword + "/" + page, function (arr){
+                  getMemberGearList(arr.dtoList);
+                  makingPagination(arr.pageList, sort, direction, keyword);
+              })
+          }else if (witch == "myGears"){  // 내가 등록한 장비 리스트
+              $.getJSON('/gear/' + currentUser + "/" + sort + "/" + direction + "/" + keyword + "/" + page, function (arr){
+                  getMemberGearList(arr.dtoList);
+                  makingPagination(arr.pageList, sort, direction, keyword);
+              })
+
+          }else if (witch == "finalList"){  // 맴버들이 선택한 장비 리스트
+              $.getJSON('/party/gear/' + bno + "/" + sort + "/" + direction + "/" + keyword + "/" + page, function (arr){
+                  getMemberGearList(arr.dtoList);
+                  makingPagination(arr.pageList, sort, direction, keyword);
+              })
+
+          }
+
+      }
+
+      // 검색 input 이벤트
+      $('.memberGearSearch').on('keydown', function(e) {
+          var keyCode = e.which;
+          if (keyCode === 13) { // Enter Key
+              keywordMaster = $(this).val();
+              loadGearDefault(1, null, null, $(this).val(), witchGearList);
+          }
+      });
+
+
+      //  리스트 정렬 버튼 클릭 이벤트
+      $(".sortMyGear").click(function (){
+
+          var sort = $(this).data("sort");
+          var direction = $(this).data("dir");
+          // var keyword = $(this).data('keyword');
+          // var keyword = null;
+
+          console.log(sort);
+          console.log(direction);
+          // console.log(keyword);
+          $(".sortBtn-box").css("display", "none");
+
+          loadGearDefault(1, sort, direction, keywordMaster, witchGearList);
+      })
+
+      // 리스트 새로고침
+      $(".reboot-sort").click(function (){
+          console.log(witchGearList);
+          loadGearDefault(1, null, null, null, witchGearList);
+          $(".memberGearSearch").val("");
+      })
+
+      // 모임 참가한 모든 멤버의 장비리스트
+      $(".AllGearList").click(function (){
+          $(".party-member-list").html("");
+          witchGearList = "allList";
+          loadGearDefault(1, null, null, null, witchGearList);
+      });
+
+      // 내장비 리스트 보이기
+      $(".addMyGear").click(function (){
+          $(".party-member-list").html("");
+          witchGearList = "myGears";
+          loadGearDefault(1, null, null, null, witchGearList);
+      });
+
+      // 최종 참가자 장비 리스트
+      $(".finalList").click(function (){
+          $(".party-member-list").html("");
+          witchGearList = "finalList";
+          loadGearDefault(1, null, null, null, witchGearList);
+      });
+
+      if (tellingCategory == "party"){
+
+          var address = "";
+          var appoint = "";
+          // 참가 가능한 인원
+          var totalApplicantCounting = "";
+
+          $.getJSON('/party/get/' + bno, function (dto){
+
+              console.log(dto);
+
+              address = dto.location;
+              appoint = dto.appointment;
+              totalApplicantCounting = dto.person;
+
+          })
+
+
+          $(".join-party-btn").click(function (){
+
+              var presentcounting = "";
+
+              $.getJSON('/party/countingApplicant/' + bno, function (count){
+                  presentcounting = count;
+                  console.log("----현재 참가 인원----");
+                  console.log(presentcounting);
+                  console.log("----총 참가 가능 인원----")
+                  console.log(totalApplicantCounting);
+              })
+
+              $.getJSON('/party/' + bno + "/" + currentUser, function (count){
+                  console.log(count);
+
+                  if (count == '0'){
+
+                      if (!confirm("캠핑 모임에 참가하겠습니까?")){
+                          return;
+                      }
+                      // if (presentcounting >= totalApplicantCounting){
+                      //     alert("참가 가능한 총 인원이 마감됐습니다.");
+                      //     return false;
+                      // }
+
+                      var data = {
                           bno: bno,
-                          text: replyModifyInput,
-                          email: currentUser
+                          location: address,
+                          appointment: appoint,
+                          email: currentUser,
+                          person: totalApplicantCounting
                       }
 
-                      console.info(reply);
+                      console.log(data);
 
                       $.ajax({
-                          url: '/replies/' + rno,
-                          method: 'PUT',
-                          data: JSON.stringify(reply),
-                          contentType: 'application/json; charset=utf-8',
+                          url: '/party/' + bno,
+                          method: "POST",
+                          data: JSON.stringify(data),
+                          contentType: "application/json; charset=utf-8",
+                          dataType: "json",
                           success: function (result){
-                              if(result === "success"){
-                                  console.info(rno + "번 댓글 수정완료");
-                              }
-                              loadReplyList();
+                              console.log("---참가 신청---")
+                              console.log(result);
+                              loadGearDefault(1, null, null, null, "myGears");
+                              getApplicantsList();
+                              getCountingApplicant();
                           }
                       }) // ajax
+                  }else if(count == '1'){
 
-                  }) // doReplyModifying event
+                      if(currentUser == userEmail){
+                          alert('작성자는 수정 불가능합니다.');
 
-              }); // reply modifying event
+                      }else{
+                          if(confirm("이미 참가했습니다. 취소하겠습니까?")){
+                              console.log("---참가 취소---");
+                              $.ajax({
+                                  url:'/party/' + bno + "/" + currentUser,
+                                  type: "DELETE",
+                                  success: function (result ){
+                                      console.log(result);
+                                      loadGearDefault(1, null, null, null, "finalList");
+                                      getApplicantsList();
+                                      getCountingApplicant();
+                                      NoAvailable.html("");
+                                  }
+                              })
+                          }
+                      }
+                      return false;
+                  } // end if
+              })
+          })
 
-              // 댓글 수정 창 닫기 이벤트
-              $(".replyContainer").on("click", ".cancelReplyModifying", function (){
+      } // if
 
-                  $(".replyModifyingForm").css("display", "none");
-                  $(".reply-modify-div").css("display", "block");
+      // 캠핑 모임 신청 버튼 클릭
 
 
-              });  // reply canceling modify event
+      //  내장비 최종 장비 리스트에 등록
+      $(".party-member-list").on("click", ".add-my-gear", function (){
+
+          console.log("clicking");
+
+          var gno = $(this).data('gno');
+          var data = { gno: gno, email: currentUser }
+
+          console.log(data);
+
+          $.ajax({
+              url: '/party/gear/' + bno,
+              method: 'POST',
+              data: JSON.stringify(data),
+              contentType: 'application/json; charset=utf-8',
+              success: function (pgno){
+                  console.log(pgno);
+              }
+          })
+      })
+
+      // 선택한 장비 최종 장비 리스트에서 삭제
+      $(".party-member-list").on("click", ".remove-gear-onFinalList", function () {
+
+          var gno = $(this).data('gno');
+
+          console.log(gno);
+
+          $.ajax({
+              url: '/party/gear/' + gno,
+              method: 'DELETE',
+              success: function (result){
+                  console.log(result);
+                  loadGearDefault(1, null, null, null, "finalList");
+              }
+          })
+      })
+
+      $(".sortBtn").click(function (){
+          $(".sortBtn-box").css("display", "flex");
+          // $(".sortBtn-box").css("position", "absolute");
+      })
 
 
-          }); // the end
 
-      </script>
 
-  </th:block>
-</th:block>
 
-</body>
+
+
+  }); // the end
+
+</script>
+
+
 </html>

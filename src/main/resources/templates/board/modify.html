@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-</head>
 
   <style>
     form{
@@ -24,6 +25,7 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
+      margin-top: 25px;
     }
 
     .modify-btn-box button{
@@ -45,28 +47,97 @@
     .categorySelector{
       flex: 20%;
     }
+
+    .content{
+      margin-top: 25px;
+    }
+
+    .party-get-info-wrapper{
+      display: flex;
+      margin-top: 30px;
+    }
+
+    .party-map-wrapper{
+      flex: 80%;
+      max-width: 80%;
+    }
+
+    .party-info-wrapper{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      /*height: 47px;*/
+
+      flex: 20%;
+      max-width: 20%;
+      /* padding: 20px; */
+      margin-top: 76px;
+      height: 100%;
+    }
+
+    .howManyPerson{
+      display: flex;
+      /*flex-direction: row;*/
+      /*align-self: center;*/
+      padding: 20px;
+    }
+
+    .searchAddress{
+      display: flex;
+      flex-direction: row;
+      /*align-self: center;*/
+      width: 100%;
+      padding: 20px;
+    }
+
+    .howManyPerson{
+      display: flex;
+      /*flex-direction: row;*/
+      /*align-self: center;*/
+      padding: 20px;
+    }
+
+    .howManyPersonLabel{
+      /*width: 127px;*/
+      flex: 70%;
+      max-width: 70%;
+      /* background: bisque; */
+      border-radius: 10px;
+      align-self: center;
+      /* height: 100%; */
+      justify-content: center;
+      display: flex;
+    }
+
+    .howManyPersonSelect{
+      flex: 30%;
+      max-width: 30%;
+      cursor: pointer;
+    }
+
+    .dDay{
+      padding: 20px;
+    }
+    .dDay input{
+      cursor: pointer;
+    }
+
   </style>
+</head>
 
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-    <th:blocK th:fragment="content">
 
-    <form th:action="@{/board/modify}" method="post">
+  <div class="container-lg content" layout:fragment="content">
+
+    <form id="modify-form" th:action="@{/board/modify}" method="post">
 
       <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
       <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
       <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
-<!--      <th:block th:if="${pageRequestDTO.category != ''}">-->
-<!--        <input type="hidden" name="category" th:value="${pageRequestDTO.category}">-->
+<!--      <th:block th:unless="${pageRequestDTO.category != ''}">-->
 <!--      </th:block>-->
-      <th:block th:unless="${pageRequestDTO.category != ''}">
-      </th:block>
       <input type="hidden" name="email" th:value="${dto.email}">
       <input type="hidden" name="bno" th:value="${dto.bno}">
 
-<!--      <div class="modify-title">-->
-<!--        <input name="title" type="text" class="form-control" th:value="${dto.title}" required>-->
-<!--      </div>-->
 
       <div class="titleAndSearchBox">
         <input name="title" type="text" class="form-control inputTitle" th:value="${dto.title}" required placeholder="TITLE">
@@ -75,10 +146,14 @@
           <option th:selected="${pageRequestDTO.category == 'talk'}" value="talk">잡담</option>
           <option th:selected="${pageRequestDTO.category == 'party'}" value="party">모임</option>
           <option th:selected="${pageRequestDTO.category == 'place'}" value="place">캠핑장</option>
-          <!--                <option th:selected="${tellCategory == 'secondHands'}" value="secondHands">중고거래</option>-->
         </select>
       </div>
 
+      <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"
+              integrity="sha256-5slxYrL5Ct3mhMAp/dgnb5JSnTYMtkr4dHby34N10qw=" crossorigin="anonymous"></script>
+      <!-- language pack -->
+      <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-ko-KR.min.js"
+              integrity="sha256-y2bkXLA0VKwUx5hwbBKnaboRThcu7YOFyuYarJbCnoQ=" crossorigin="anonymous"></script>
 
       <textarea id="summernote" name="content" th:utext="${dto.content}"></textarea>
       <script th:inline="javascript">
@@ -87,10 +162,12 @@
           var bno = [[${dto.bno}]];
           console.log("bno: " + bno);
 
-          var targetImageList = [];
+          // var targetImageList = [];
 
           $('#summernote').summernote({
             height: 600,
+            lang: "ko-KR",
+            maximumImageFileSize: 10485760,
             callbacks:{
               onImageUpload: function (files, editor, welEditable){
                 for (var i = files.length -1; i >= 0; i--){
@@ -146,7 +223,7 @@
                     }
 
                   } // if
-                 }); // targetImageList forEach
+                 }); // uploadResultUL forEach
 
               } // onMediaDelete
 
@@ -198,7 +275,7 @@
               var s3Url = dto.s3Url;
               console.log(s3Url)
 
-              targetImageList.push(s3Url);
+              // targetImageList.push(s3Url);
 
             }); // result each
 
@@ -221,7 +298,7 @@
 
               console.log("imageURL: " + dto.imageURL);
 
-              targetImageList.push(dto.s3Url);
+              // targetImageList.push(dto.s3Url);
 
             }); // array
 
@@ -234,9 +311,176 @@
 
       </script>
 
-      <div class="hiddenBox">
+<!--  ************************************  캠핑 모임 카테고리 **************************************************** -->
 
+    <th:block th:if="${tellingCategory == 'party'}">
+
+      <div class="party-get-info-wrapper">
+
+        <div class="party-map-wrapper">
+          <div id="map" style="width:100%;height:400px;"></div>
+
+          <script th:inline="javascript">
+
+            var mapOptions = {
+              center: new naver.maps.LatLng(37.3595704, 127.105399),
+              zoom: 10,
+              mapTypeControl: true
+            };
+
+            var map = new naver.maps.Map('map', mapOptions);
+
+
+            // 네이버 지도 검색 옵션
+            var infoWindow = new naver.maps.InfoWindow({
+              anchorSkew: true
+            });
+
+            map.setCursor('pointer');
+
+            var savedAddress = "";
+
+            function searchAddressToCoordinate(address) {
+              naver.maps.Service.geocode({
+                query: address
+              }, function(status, response) {
+                if (status === naver.maps.Service.Status.ERROR) {
+                  return alert('Something Wrong!');
+                }
+
+                if (response.v2.meta.totalCount === 0) {
+                  return alert('totalCount' + response.v2.meta.totalCount);
+                }
+
+                var htmlAddresses = [],
+                        item = response.v2.addresses[0],
+                        point = new naver.maps.Point(item.x, item.y);
+
+                if (item.roadAddress) {
+                  htmlAddresses.push('[도로명 주소] ' + item.roadAddress);
+                }
+
+                if (item.jibunAddress) {
+                  htmlAddresses.push('[지번 주소] ' + item.jibunAddress);
+                }
+
+                if (item.englishAddress) {
+                  htmlAddresses.push('[영문명 주소] ' + item.englishAddress);
+                }
+
+                var roadAddress = item.roadAddress;
+                // var jibunAddress = item.jibunAddress;
+
+                // savedAddress = roadAddress + "|" + jibunAddress;
+
+                console.info(roadAddress);
+                // console.info(jibunAddress);
+                // console.info(savedAddress);
+
+                var str = '<input type="hidden" name="location" value="'+roadAddress+'">'
+
+                $(".hidden-address-box").html(str);
+
+                infoWindow.setContent([
+                  '<div style="padding:10px;min-width:200px;line-height:150%;">',
+                  '<h4 style="margin-top:5px;">검색 주소 : '+ address +'</h4><br />',
+                  htmlAddresses.join('<br />'),
+                  '</div>'
+                ].join('\n'));
+
+                map.setCenter(point);
+                infoWindow.open(map, point);
+              });
+            }
+
+            function initGeocoder() {
+
+              $('#address').on('keydown', function(e) {
+                var keyCode = e.which;
+
+                if (keyCode === 13) { // Enter Key
+                  console.log(searchAddressToCoordinate($('#address').val()));
+                  searchAddressToCoordinate($('#address').val());
+                }
+              });
+
+              // $('#submit').on('click', function(e) {
+              //     e.preventDefault();
+              //     console.log(searchAddressToCoordinate($('#address').val()))
+              //     searchAddressToCoordinate($('#address').val());
+              // });
+
+              var campingLocation = [[${partyDTO.location}]];
+
+
+              searchAddressToCoordinate(campingLocation);
+            }
+
+
+            naver.maps.onJSContentLoaded = initGeocoder;
+
+          </script>
+        </div>   <!--  party map  -->
+
+        <div class="party-info-wrapper">
+          <div class="searchAddress">
+            <input id="address" class="form-control" type="text" placeholder="주소 수정" style="width: 100%">
+          </div>
+          <div class="dDay">
+            <input type="text" name="singleDatepicker" class="form-control">
+            <script>
+              $(function() {
+
+                  $('input[name="singleDatepicker"]').daterangepicker({
+                      singleDatePicker: true,
+                      showDropdowns: true,
+                  }, function(start, end, label) {
+
+                    var data = start.format('YYYY-MM-DD');
+
+                    console.log("----data----");
+                    console.log(data);
+
+                    var hiddenBox = $(".hidden-dDay-box");
+                    var str = "";
+
+                    hiddenBox.html("");
+
+                    str += '<input type="hidden" name="appointment" value="'+data+'">';
+
+                    hiddenBox.html(str);
+                  });
+
+              });
+            </script>
+          </div> <!-- 날짜 예약 -->
+
+          <div class="howManyPerson">
+            <span class="select-group howManyPersonLabel" style="width: 127px">참가 인원 변경</span>
+            <select class="form-control howManyPersonSelect" name="person" style="width: 80px">
+              <option value="2" th:selected="${partyDTO.person} == '2'">2인</option>
+              <option value="3" th:selected="${partyDTO.person} == '3'">3인</option>
+              <option value="4" th:selected="${partyDTO.person} == '4'">4인</option>
+              <option value="5" th:selected="${partyDTO.person} == '5'">5인</option>
+              <option value="6" th:selected="${partyDTO.person} == '6'">6인</option>
+              <option value="7" th:selected="${partyDTO.person} == '7'">7인</option>
+              <option value="8" th:selected="${partyDTO.person} == '8'">8인</option>
+            </select>
+          </div> <!-- 참가 인원 -->
+        </div>  <!-- party 정로 날짜 예약 및 장소 -->
+
+      </div>  <!--/  party wrapper   /-->
+
+      <div class="hidden-dDay-box" style="display: none">
+<!--        <input name="appointment" th:value="${partyDTO.appointment}">-->
       </div>
+
+    </th:block>  <!-- party category  -->
+
+
+      <div class="hiddenBox" style="display: none"></div>
+      <div class="hidden-address-box" style="display: none"></div>
+
       <div class="modify-btn-box">
         <button class="btn btn-outline-primary registBtn">수정</button>
         <button class="btn btn-outline-success listBackBtn">리스트</button>
@@ -248,61 +492,77 @@
 
         </ul>
       </div>
+  </div>
+  <script layout:fragment="script" th:inline="javascript">
 
-      <script th:inline="javascript">
+    var errors = [[${errors}]]
 
-        $(document).ready(function (){
+    console.info(errors)
 
-          $(".registBtn").on("click", function (e){
+    if (errors){
+      errorMsg = `제목 또는 내용을 입력해주세요`
+      alert(errorMsg);
+    }
 
-            e.preventDefault();
+    $(document).ready(function (){
 
-            var str = "";
-
-            $(".uploadResultUL li").each(function (i, dto){
-
-              var target = $(dto);
-
-              str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
-              str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
-              str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
-              str += '<input type="hidden" name="boardImageDTOList['+i+'].s3Url" value="'+target.data("s3url")+'">';
-
-            });
-
-            $(".hiddenBox").html(str);
-            $("form").submit();
-
-          }); // register event
-
-          $(".listBackBtn").on("click", function (){
-
-            var page = $("input[name='page']");
-            var type = $("input[name='type']");
-            var keyword = $("input[name='keyword']");
-            var category = $("input[name='category']");
-
-            var actionForm = $("form");
-
-            actionForm.empty();
-            actionForm.append(page);
-            actionForm.append(type);
-            actionForm.append(keyword);
-            actionForm.append(category);
-
-            actionForm.attr("action", "/board/list").attr("method", "get").submit();
+      var $category = [[${tellingCategory}]];
+      console.log($category);
 
 
-          });
+      $("#modify-form").on("keydown", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      });
+
+      // 수정 완료 클릭 이벤트
+      $(".registBtn").on("click", function (e){
+
+        e.preventDefault();
+
+        var str = "";
+
+        $(".uploadResultUL li").each(function (i, dto){
+
+          var target = $(dto);
+
+          str += '<input type="hidden" name="boardImageDTOList['+i+'].folderPath" value="'+target.data("path")+'">';
+          str += '<input type="hidden" name="boardImageDTOList['+i+'].uuid" value="'+target.data("uuid")+'">';
+          str += '<input type="hidden" name="boardImageDTOList['+i+'].fileName" value="'+target.data("name")+'">';
+          str += '<input type="hidden" name="boardImageDTOList['+i+'].s3Url" value="'+target.data("s3url")+'">';
+
+        });
+
+        $(".hiddenBox").html(str);
+        $("form").submit();
+
+      }); // register event
+
+      $(".listBackBtn").on("click", function (){
+
+        var page = $("input[name='page']");
+        var type = $("input[name='type']");
+        var keyword = $("input[name='keyword']");
+        var category = $("input[name='category']");
+
+        var actionForm = $("form");
+
+        actionForm.empty();
+        actionForm.append(page);
+        actionForm.append(type);
+        actionForm.append(keyword);
+        actionForm.append(category);
+
+        actionForm.attr("action", "/board/list").attr("method", "get").submit();
 
 
-        }); // the end
+      });
 
 
-      </script>
+    }); // the end
 
 
-    </th:blocK>
-</th:block>
-</body>
+  </script>
+
 </html>

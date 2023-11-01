@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -17,22 +19,21 @@
         .pagination{
             display: flex;
             flex-direction: column;
+            flex-direction: row;
         }
 
         .boardList-content{
             display: flex;
             flex-direction: row;
-            /*justify-content: center;*/
             width: 100%;
-            /*justify-content: space-between;*/
             align-items: center;
-            flex: 100%;
+            flex: 91%;
         }
 
         .img-box{
-            flex: 230px;
+            flex: 17%;
             max-width: 230px;
-
+            height: 92%;
         }
 
         .img-thumbnail{
@@ -40,11 +41,11 @@
         }
 
         .img-thumbnail-div{
-            height: 92%;
         }
 
         .board_thumbnail_img{
             height: 100%;
+            border-radius: 5px;
         }
 
         .board-title-a{
@@ -53,7 +54,6 @@
         }
 
         .board-memberName{
-            flex: 35%;
             display: flex;
             flex-direction: row;
             height: 100%;
@@ -61,17 +61,21 @@
         }
 
         .board-replyCount{
-            flex: 5%;
             display: flex;
             flex-direction: row;
+            justify-content: flex-end;
+            padding-right: 9px;
         }
 
         .board-title-div{
-            flex: 60%;
+            display: flex;
+            flex-direction: column;
+            /*justify-content: space-between;*/
         }
 
         #board-title{
             color: #000;
+            font-size: 1.1em;
         }
 
         .list-pagination{
@@ -89,16 +93,13 @@
             width: 400px;
         }
 
-        .form-select{
+        .list-form-select{
             display: flex;
+            flex-direction: row;
         }
 
-        .form-select select{
-            width: 129px;
-        }
-
-        .form-select input{
-            width: 394px;
+        .form-select{
+            width: 130px;
         }
         .wrapper-list{
             margin-top: 16px;
@@ -126,24 +127,112 @@
 
         .userLink{
             margin-left: 7px;
+            color: #000000c9;
         }
 
         .reply-count{
             margin-left: 4px;
         }
 
+        .board-list-category{
+            display: flex;
+            flex-direction: row;
+        }
+
+        .board-list-category-link{
+            margin-left: 20px;
+            font-size: 0.8em;
+            align-self: flex-end;
+            margin-left: 20px;
+            text-decoration: none;
+            color: #808080b8;
+        }
+
+        .content{
+            margin-top: 25px;
+        }
+
+        .list-register-btn{
+            width: 5em;
+        }
+
+        .list-img-object-fit-box{
+            width: 60px;
+            height: 100%;
+        }
+
+        .availImg{
+            width: 100%;
+            object-fit: cover;
+
+        }
+
+        .category-header{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .category-header span{
+            margin-right: 9px;
+            padding: 5px;
+            border-radius: 7px;
+        }
+
+        .category-header a{
+            text-decoration: none;
+            color: #000000c9;
+        }
+        .active{
+            background-color: #d6dcdf;
+        }
+
+        .unableImg{
+            width: 100%;
+
+        }
+
+        .pagination-active{
+            background-color: lightgray;
+        }
+
+        .unableImg{
+            margin-left: 9px;
+        }
+
+        .page-link{
+            color: #000000c9;
+        }
+
     </style>
 
 </head>
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-    <th:block th:fragment="content">
+<div class="container-lg content" layout:fragment="content">
 
-    <div class="search-box">
+    <div class="category-header">
+        <span th:class="'category-header' + ${pageRequestDTO.category == null ? ' active' : ''}">
+            <a th:href="@{/board/list}">전체글</a>
+        </span>
+        <span th:class="'category-header' + ${pageRequestDTO.category == 'talk' ? ' active' : ''}">
+            <a th:href="@{/board/list(category='talk')}">커뮤니티</a>
+        </span>
+        <span th:class="'category-header' + ${pageRequestDTO.category == 'place' ? ' active' : ''}">
+            <a th:href="@{/board/list(category='place')}">캠핑장</a>
+        </span>
+        <span th:class="'category-header' + ${pageRequestDTO.category == 'party' ? ' active' : ''}">
+            <a th:href="@{/board/list(category='party')}">캠핑모임</a>
+        </span>
+        <span th:class="'category-header' + ${pageRequestDTO.category == 'secondHands' ? ' active' : ''}">
+            <a th:href="@{/board/list(category='secondHands')}">중고거래</a>
+        </span>
+    </div>
+
+    <div class="search-box" >
         <form th:action="@{/board/list}" method="get">
             <input type="hidden" name="page" value="1">
-            <div class="form-select">
-                <select name="type" class="form-control" style="margin-right: 7px">
+            <div class="list-form-select">
+                <select name="type" class="form-select" style="margin-right: 7px; width: 130px;">
                     <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">전체</option>
                     <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
                     <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
@@ -153,76 +242,86 @@
             </div>
         </form>
         <a th:href="@{/board/register(category=${pageRequestDTO.category})}">
-            <button class="btn btn-outline-light">글작성</button>
+            <button class="btn btn-outline-primary list-register-btn">글작성</button>
         </a>
-    </div>
-
-
+    </div> <!--/ search-box /-->
 
     <div class="wrapper-list">
-    <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
-        <div class="img-box">
-            <div class="img-thumbnail-div">
-                <img class="board_thumbnail_img availImg" th:if="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null && dto.boardImageDTOList[0]?.fileName != null  }"
-                     th:src="${dto.boardImageDTOList[0].thumbnailS3URL}">
-                <img class="board_thumbnail_img" th:unless="${dto.boardImageDTOList[0]?.folderPath != null && dto.boardImageDTOList[0]?.uuid != null &&
-            dto.boardImageDTOList[0]?.fileName != null  }" th:src="@{/icon/img3.svg}">
-            </div>
-        </div>
+        <div class="boardListBoxes" th:each="dto :${boardList.dtoList}">
 
-        <div class="container boardList-content">
+            <div class="img-box">
+                <div class="list-img-object-fit-box">
+                <a class="img-thumbnail-div" th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">
+                    <img class="board_thumbnail_img availImg" th:if="${dto.boardImageDTOList[0] != null && dto.category != 'secondHands' }"
+                         th:src="${dto.boardImageDTOList[0].thumbnailS3URL}">
+                    <img class="board_thumbnail_img availImg" th:if="${dto.category == 'secondHands' && dto.gearImageDTOList[0] != null}"  th:src="${dto.gearImageDTOList[0].thumbnailS3URL}">
+                    <img class="board_thumbnail_img unableImg" th:unless="${dto.boardImageDTOList[0] != null || dto.gearImageDTOList[0] != null }" th:src="@{/icon/img3.svg}">
 
-            <div class="col-md-3 board-title-div">
-                <a th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}" class="board-title-a">
-                    <div id="board-title">[[${dto.title}]]</div>
-                    <div th:if="${dto.regDate == dto.modDate}">
-                        [[${#temporals.format(dto.regDate, 'yyyy/MM/dd') }]]
-                    </div>
-                    <div th:unless="${dto.regDate == dto.modDate}">
-                        [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
-                    </div>
                 </a>
-            </div>
-
-            <div class="col-md-3 board-memberName">
-
-                <div class="profile-img-div">
-                    <img class="profile-img" th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
-                    <img class="profile-img" th:unless="${dto.profileImg != null}" src="/icon/person2.svg">
                 </div>
-                <a class="userLink">[[${dto.memberName}]]</a>
             </div>
 
-            <div class="col-md-3 board-replyCount">
-                <img th:src="@{/icon/chatIcon3.svg}">
-                <div class="reply-count">[[${dto.replyCount}]]</div>
+            <div class="boardList-content">
+                <div class="col-md-9 board-title-div">
+                    <a th:href="@{/board/read(bno=${dto.bno}, page=${boardList.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}" class="board-title-a">
+                        <div id="board-title">[[${dto.title}]]</div>
+                    </a>
+                    <div class="board-list-category">
+                        <div th:if="${dto.regDate == dto.modDate}">
+                            [[${#temporals.format(dto.regDate, 'yyyy/MM/dd') }]]
+                        </div>
+                        <div th:unless="${dto.regDate == dto.modDate}">
+                            [[${#temporals.format(dto.modDate, 'yyyy/MM/dd') }]]
+                        </div>
+                        <th:block th:switch="${dto.category}">
+                            <a th:case="talk" th:href="@{/board/list(category=${dto.category})}" class="board-list-category-link">커뮤니티</a>
+                            <a th:case="party" th:href="@{/board/list(category=${dto.category})}" class="board-list-category-link">캠핑모임</a>
+                            <a th:case="place" th:href="@{/board/list(category=${dto.category})}" class="board-list-category-link">캠핑장</a>
+                            <a th:case="secondHands" th:href="@{/board/list(category=${dto.category})}" class="board-list-category-link">중고거래</a>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="col-md-2 board-memberName">
+                    <div class="profile-img-div">
+                        <img class="profile-img" th:if="${dto.profileImg != null}" th:src="${dto.profileImg}">
+                        <img class="profile-img" th:unless="${dto.profileImg != null}" src="/icon/person2.svg">
+                    </div>
+                    <a class="userLink">[[${dto.memberName}]]</a>
+                </div>
+
+                <div class="col-md-1 board-replyCount">
+                    <img th:src="@{/icon/chatIcon3.svg}">
+                    <div class="reply-count">[[${dto.replyCount}]]</div>
+                </div>
             </div>
-        </div>
-    </div> <!-- boardListBoxes -->
+        </div> <!-- boardListBoxes -->
     </div>
-    <div class="list-pagination">
-        <ul class="pagination h-100 justify-content-center align-items-center">
+    <nav aria-label="" class="list-pagination">
+        <ul class="pagination">
             <li class="page-item" th:if="${boardList.prev}">
-                <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">PREV</a>
-                <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
+                <a class="page-link" th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">PREV</a>
+                <a class="page-link" th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.start -1},  type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">PREV</a>
             </li>
 
-            <li class="page-item" th:each="page : ${boardList.pageList}">
-                <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">[[${page}]]</a>
-                <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">[[${page}]]</a>
+            <li th:class="'page-item' + ${boardList.page == page ? ' pagination-active' : ''}" th:each="page : ${boardList.pageList}">
+                <a class="page-link" th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">[[${page}]]</a>
+                <a class="page-link" th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${page}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">[[${page}]]</a>
             </li>
 
             <li class="page-item" th:if="${boardList.next}">
-                <a th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">NEXT</a>
-                <a th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
+                <a class="page-link" th:if="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword}, category=${pageRequestDTO.category} )}">NEXT</a>
+                <a class="page-link" th:unless="${pageRequestDTO.category != null}" th:href="@{/board/list(page=${boardList.end +1}, type=${pageRequestDTO.type }, keyword=${pageRequestDTO.keyword} )}">NEXT</a>
             </li>
         </ul>
+    </nav>
+</div>
 
-    </div>
+<script th:inline="javascript" layout:fragment="script">
 
+    var pageRequest = [[${pageRequestDTO}]];
+    console.log(pageRequest);
 
-    </th:block>
-</th:block>
+</script>
 
-</body>
 </html>

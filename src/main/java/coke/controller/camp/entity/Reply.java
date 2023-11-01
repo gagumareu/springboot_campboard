@@ -1,8 +1,8 @@
 package coke.controller.camp.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 
 @Entity
 @Builder
@@ -23,5 +23,12 @@ public class Reply extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
+
+    public void changeText(String text){
+        this.text = text;
+    }
+
+
+
 
 }

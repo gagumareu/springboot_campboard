@@ -1,7 +1,6 @@
 package coke.controller.camp.controller;
 
 import coke.controller.camp.dto.*;
-import coke.controller.camp.security.dto.MemberSecurityDTO;
 import coke.controller.camp.service.BoardService;
 import coke.controller.camp.service.GearService;
 import coke.controller.camp.service.MemberService;
@@ -14,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -65,19 +67,6 @@ public class MemberController {
 
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myGear")
-    public void myGear(Model model, Principal principal, PageRequestDTO pageRequestDTO){
-
-        log.info("my gear....");
-
-        String email = principal.getName();
-        log.info(email);
-
-        PageResultDTO<GearDTO, Object[]> gearList = gearService.getListWithPagination(email, pageRequestDTO);
-
-        model.addAttribute("gearDTOList", gearList);
-    }
 
     @GetMapping("/join")
     public void joinGET(){
@@ -138,6 +127,29 @@ public class MemberController {
         log.info("checking email for sign in : " + email);
 
         return new ResponseEntity<>(memberService.checkIdForDuplication(email), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myGear")
+    public void myGear(Model model, Principal principal, PageRequestDTO pageRequestDTO){
+
+        log.info("-----myGear--------");
+        log.info(pageRequestDTO);
+        String email = principal.getName();
+        log.info(email);
+
+        PageResultDTO<GearDTO, Object[]> gearList = gearService.getListWithPagination(email, pageRequestDTO);
+
+        model.addAttribute("gearList", gearList);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/mySchedule")
+    public void mySchedule(Principal principal){
+
+        log.info(principal.getName());
+
     }
 
 }

@@ -1,9 +1,6 @@
 package coke.controller.camp.repository.Search;
 
-import coke.controller.camp.entity.Gear;
-import coke.controller.camp.entity.QGear;
-import coke.controller.camp.entity.QGearImage;
-import coke.controller.camp.entity.QMember;
+import coke.controller.camp.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -30,45 +27,47 @@ public class GearSearchRepositoryImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<Object[]> getGearListWithSearching(String email, String type, String keyword, Pageable pageable) {
+    public Page<Object[]> getGearListWithSearching(String email, String sortType, String direction, String keyword, Pageable pageable) {
+
+        log.info("-------gear search repository impl----------");
+        log.info(email);
+        log.info(sortType);
+        log.info(direction);
+        log.info(keyword);
+        log.info(pageable);
 
         QGear gear = QGear.gear;
         QGearImage gearImage = QGearImage.gearImage;
         QMember member = QMember.member;
+        QBoard board = QBoard.board;
+
 
         JPQLQuery<Gear> query = from(gear);
         query.leftJoin(member).on(gear.member.eq(member));
         query.leftJoin(gearImage).on(gearImage.gear.eq(gear));
+        query.leftJoin(board).on(gear.board.eq(board));
 
-        JPQLQuery<Tuple> tuple = query.select(gear, member, gearImage);
+        JPQLQuery<Tuple> tuple = query.select(gear, member, gearImage, board);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        BooleanExpression expression = gear.gno.gt(0L);
 
+        BooleanExpression expression = gear.gno.gt(0L);
         booleanBuilder.and(expression);
 
         BooleanExpression emailExpression = gear.member.email.eq(email);
         booleanBuilder.and(emailExpression);
 
-        if ((type != null && type.length() > 0) && keyword != null){
+        if (keyword ==null || keyword == "" || keyword.isEmpty()){
+            keyword = "";
+        }
 
-            String[] typeArr = type.split("");
-
+        if (keyword.equals("null")){
+            log.info("keyword is null");
+        }else {
+            log.info("keyword is available");
             BooleanBuilder conditionBuilder = new BooleanBuilder();
-
-            // n = 기어이름 b= 브랜드명 s = 카테고리(sort)
-            for (String types: typeArr){
-                switch (types){
-                    case "n":
-                        conditionBuilder.or(gear.gname.contains(keyword));
-                        break;
-                    case "b":
-                        conditionBuilder.or(gear.brand.contains(keyword));
-                        break;
-                    case "s":
-                        conditionBuilder.or(gear.sort.contains(keyword));
-                }
-            }
+            conditionBuilder.or(gear.gname.contains(keyword));
+//            conditionBuilder.or(gear.brand.contains(keyword));
             booleanBuilder.and(conditionBuilder);
         }
 
@@ -77,12 +76,31 @@ public class GearSearchRepositoryImpl extends QuerydslRepositorySupport implemen
         Sort sort = pageable.getSort();
 
         sort.stream().forEach(order -> {
-            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+            Order orderDirection = order.isAscending() ? Order.ASC : Order.DESC;
             String property = order.getProperty();
 
-            PathBuilder oderByExpression = new PathBuilder(Gear.class, "gear");
-            tuple.orderBy(new OrderSpecifier(direction, oderByExpression.get(property)));
+            switch (property){
+                case "email":
+                    tuple.orderBy(new OrderSpecifier(orderDirection, member.email));
+                    break;
+                case "sort":
+                    tuple.orderBy(new OrderSpecifier(orderDirection, gear.sort));
+                    break;
+                case "gname":
+                    tuple.orderBy(new OrderSpecifier(orderDirection, gear.gname));
+                    break;
+                case "gno":
+                    tuple.orderBy(new OrderSpecifier(orderDirection, gear.gno));
+                    break;
+                case "state":
+                    tuple.orderBy(new OrderSpecifier(orderDirection, gear.state));
+            }
+
+//            PathBuilder oderByExpression = new PathBuilder(Gear.class, "gear");
+//            tuple.orderBy(new OrderSpecifier(orderDirection, oderByExpression.get(property)));
         });
+
+        log.info(sort);
 
         tuple.groupBy(gear);
 
@@ -99,4 +117,6 @@ public class GearSearchRepositoryImpl extends QuerydslRepositorySupport implemen
 
         return new PageImpl<Object[]>(result.stream().map(t -> t.toArray()).collect(Collectors.toList()), pageable, count);
     }
+
+
 }

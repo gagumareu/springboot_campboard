@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{layout/basic.html}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+
+  <style>
+
+      *{color: #000000c9;}
+
+      a{
+          text-decoration: none;
+          color: #000000c9;
+      }
+
+
+      .party-main {
+          margin: 45px 35px;
+          /*padding: 0 10px 100px;*/
+          /*width: 960px;*/
+          height: 100%;
+      }
+
+      .party-container {
+          margin: auto 35px;
+          padding: 0;
+          height: 100%;
+      }
+
+      .party-container:after{
+          content:'';
+          display:block;
+          clear:both;
+      }
+
+      .party-item {
+          margin-bottom: 5px;
+          /*background:silver;*/
+          padding:20px;
+          animation: fadeIn 1s;
+          display: flex;
+          flex-direction: column;
+          height: 390px;
+          /*border: 3px solid red;*/
+      }
+
+      .party-item:nth-child(4n) {
+          margin-right:0;
+      }
+
+      /*@keyframes fadeIn{*/
+      /*    0% {*/
+      /*        opacity:0;*/
+      /*    }*/
+      /*    100% {*/
+      /*        opacity:1;*/
+      /*    }*/
+      /*}*/
+
+      /*  이미지를 로딩하는 동안 보이지 않게 함*/
+      .party-item.is-loading {
+          opacity: 0;
+      }
+
+      .available-party-img{
+        width: 100%;
+      }
+
+      .party-item-img{
+          flex: 90%;
+          max-height: 90%;
+          max-width: 100%;
+          display: flex;
+          justify-content: center;
+
+      }
+
+      .party-item-img img{
+          border-radius: 20px;
+      }
+
+      .party-item-date{
+          flex: 10%;
+          max-height: 10%;
+      }
+
+      .party-item-title{
+          flex: 10%;
+          max-height: 10%;
+      }
+
+      .party-item-link{
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          text-decoration: none;
+      }
+
+      .none-party-img{
+          object-fit: contain;
+          width: 100%;
+          height: 100%;
+      }
+
+      .available-party-img{
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+      }
+
+      .party-main{
+          /*background: #e5fafb;*/
+      }
+
+      .party-container-btn{
+          display: flex;
+          justify-content: center;
+      }
+
+      /*        */
+
+      .semi-list-wrapper{
+          display: flex;
+      }
+
+      .semi-list-info{
+          display: flex;
+          /* justify-content: center; */
+          align-items: center;
+          margin-left: 17px;
+      }
+
+      .semi-list-li{
+          /*animation: fadeIn 1s;*/
+          height: 85px;
+          /*border: 1px solid red;*/
+      }
+      .semi-list-li a{
+          height: 100%;
+          display: flex;
+          flex-direction: row;
+          text-decoration: none;
+      }
+
+      /*@keyframes fadeIn{*/
+      /*    0% {opacity:0; }*/
+      /*    100% { opacity:1;}*/
+      /*}*/
+
+
+      .semi-list-img{
+          height: 100%;
+          border-radius: 5px;
+          width: 85px;
+          object-fit: cover;
+      }
+
+      /* 잡담 리스트 */
+
+      .talk-main{
+          flex: 50;
+          max-width: 50%;
+          padding: 54px;
+      }
+
+
+      .talk-list-ul{
+          row-gap: 10px;
+          display: flex;
+          flex-direction: column;
+      }
+
+
+
+    /*  중고거래 리스트   */
+
+
+      .secondHands-main{
+          flex: 50;
+          max-width: 50%;
+          padding: 54px;
+      }
+
+      .secondHands-list-ul{
+          row-gap: 10px;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .semi-list-loadMore{
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 11px;
+      }
+
+      .semi-list-loadMore a{
+          text-decoration: none;
+          color: #0000009e;
+
+      }
+
+
+      .party-item-title{
+          font-weight: 300;
+      }
+
+      .semi-list-title{
+          font-weight: 300;
+      }
+
+      .content{
+          margin-top: 50px;
+      }
+
+  </style>
+
+
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+
+</head>
+
+<div class="container-lg content" layout:fragment="content">
+
+    <div class="home-head-info">
+        <h3>캠핑 커뮤니티</h3>
+        <p>[이 프로잭트의 주요기능]</p>
+        <p>내가 소유한 캠핑 장비를 등록 및 관리할 수 있습니다.</p>
+        <p>등록된 장비를 중고거래에 쉽게 등록할 수 있습니다.</p>
+        <br>
+        <p>캠핑 일정을 작성하고 다른 회원들과 함께 캠핑 모임을 만듭니다.</p>
+        <p>회원들 끼리 등록된 장비를 모임일정에 맞게 공유할 수 있습니다.</p>
+
+    </div>
+
+
+    <div class="party-main">
+        <div class="party-item-title">
+            금일 부터 6개월 동안 캠핑 모임 게시물 리스트
+        </div>
+        <div class="row party-container">
+
+        </div>
+        <div class="party-container-btn">
+            <button class="btn btn-outline-primary party-load-more-btn">더보기</button>
+        </div>
+    </div>
+
+    <div class="semi-list-wrapper">
+
+        <div class="talk-main">
+            <div class="semi-list-loadMore">
+                <div class="semi-list-title">커뮤니티 게시판</div>
+                <a href="/board/list?category=talk">더보기</a>
+            </div>
+            <ul class="talk-list-ul">
+
+            </ul>
+        </div>
+
+        <div class="secondHands-main">
+            <div class="semi-list-loadMore">
+                <div class="semi-list-title">중고거래 게시판</div>
+                <a href="/board/list?category=secondHands">더보기</a>
+            </div>
+            <ul class="secondHands-list-ul">
+
+            </ul>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</div> <!--/ container content  /-->
+
+<script th:inline="javascript" layout:fragment="script">
+
+    $(function (){
+
+        var $partyContainer = $(".party-container"),
+            $partyLoadMoreBtn = $('.party-load-more-btn'),
+            $addItemCount = 4,
+            $added = 0,
+            $allPartiesData =[];
+
+
+        var $now = new Date(), y = $now.getFullYear(), m = $now.getMonth();
+        var $today = $now.getFullYear() + "-" + ("0" + ($now.getMonth() +1)).slice(-2) + "-" + ("0" + $now.getDate()).slice(-2);
+        console.log($today);
+
+        var $sixMonth = new Date(y, m + 7, 0);
+        var $sixMonthLater = $sixMonth.getFullYear() + "-" + ("0" + ($sixMonth.getMonth() +1)).slice(-2) + "-" + $sixMonth.getDate();
+        console.log($sixMonthLater);
+
+
+        // 이번 달로 부터 6개월 캠핑 모임 리스트 불러오기
+        $.getJSON('/party/rangeList', {start: $today, end: $sixMonthLater}, initPartyBox);
+
+        function initPartyBox(data){
+
+            console.log(data);
+
+            $allPartiesData = data;
+
+            console.log($allPartiesData);
+
+            addItem();
+
+            $partyLoadMoreBtn.click(addItem);
+
+        }
+        // 더보기 클릭 이벤트
+        function addItem(){
+
+            var slicedData;
+            var elements = [];
+
+            slicedData = $allPartiesData.slice($added, $added + $addItemCount);
+            console.log(slicedData);
+
+            var str = "";
+
+            $.each(slicedData, function (i, dto){
+
+                str += '<div class="col-lg-3 col-sm-6 party-item">';
+                str += '<a class="party-item-link" href="/board/read?bno='+dto.bno+'&category='+dto.category+'">';
+                str += '    <div class="party-item-img">';
+                    if(dto.s3Url != null){
+                        str += '<img src="'+dto.s3Url+'" class="available-party-img">';
+                    }else{
+                        str += '<img src="/icon/img3.svg" class="none-party-img"> ';
+                    }
+                str += '    </div>';
+                // str += '    <div class="party-item-date">';
+                // str +=      dto.appointment ;
+                // str += '    </div>';
+                str += '    <div class="party-item-title">';
+                str +=      dto.title ;
+                str += '    </div>';
+
+                str += '</a>';
+                str += '</div>';
+
+            })
+
+            console.log(elements);
+
+            $partyContainer.append(str);
+
+            $added += slicedData.length;
+
+            if ($added < $allPartiesData.length){
+                $partyLoadMoreBtn.show();
+            }else{
+                $partyLoadMoreBtn.hide();
+            }
+
+        }  // function addItem
+        // *************** board talk category list *************
+
+        var $homeMain = $(".talk-main"),
+            $talkUl = $(".talk-list-ul"),
+            $talkLi = $(".semi-list-li"),
+            $secondHands = $(".secondHands-list-ul");
+
+
+        // 잡담 게시판 리스트 불러오기
+        $.getJSON('/board/list/talkCategory', loadTalkBoard);
+
+        function loadTalkBoard(arr){
+
+            console.log("talk");
+
+            console.log(arr);
+
+            var str ="";
+
+            $.each(arr, function (i, dto){
+
+
+
+                str += '<li class="semi-list-li">';
+                str += '    <a href="/board/read?bno='+dto.bno+'&category='+dto.category+'">'
+                if(dto.boardImageDTOList[0] != null){
+                    str += '        <img src="'+dto.boardImageDTOList[0].s3Url+'" class="semi-list-img">'
+                }else if(dto.gearImageDTOList[0] == null){
+                    str += '<img src="/icon/img3.svg">';
+                }
+                str += '        <div class="semi-list-info">';
+                str +=         '<span>'+dto.title+'</span>';
+                str += '        </div>';
+                str += '    </a>'
+                str += '</li>';
+
+            });
+
+            $talkUl.html(str);
+
+        } // loadTalkBoard
+
+
+        //  중고거래 불러오기
+        $.getJSON('/board/list/secondHands',loadSecondHands);
+
+        function loadSecondHands(arr){
+
+            console.log("secondHands");
+
+            console.log(arr);
+
+            var str ="";
+
+            $.each(arr, function (i, dto){
+
+                str += '<li class="semi-list-li">';
+                str += '    <a href="/board/read?bno='+dto.bno+'&category='+dto.category+'">'
+                if(dto.gearImageDTOList[0] != null){
+                    str += '        <img src="'+dto.gearImageDTOList[0].s3Url+'" class="semi-list-img">'
+                }else if(dto.gearImageDTOList[0] == null){
+                    str += '<img src="/icon/img3.svg">';
+                }
+                str += '        <div class="semi-list-info">';
+                str +=         '<span>'+dto.title+'</span>';
+                str += '        </div>';
+                str += '    </a>'
+                str += '</li>';
+
+            });
+
+            $secondHands.html(str);
+
+        } // loadSecondHands
+
+
+
+
+
+
+
+
+    }); // the end ready function
+
+
+
+</script>
+
+</html>

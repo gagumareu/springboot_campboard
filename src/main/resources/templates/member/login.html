@@ -1,56 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+        .login-form-wrapper{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 85px;
+        }
+
+
+        .social-login{
+            /*font-size: 1.5em;*/
+            /*height: 32px;*/
+            margin-bottom: 6px;
+            width: 100%;
+
+        }
+
+        .social-login a img{
+            height: 100%;
+            width: 100%;
+        }
+
+        .input-group{
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        #registerForm{
+            width: 300px;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .social-login-box{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* row-gap: 5px; */
+            /* font-size: 13px; */
+            /*font-size: 1.2em;*/
+            width: 12em;
+        }
+
+        .telling-box{
+            position: fixed;
+            right: 80px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 25px;
+            width: 14em;
+            z-index: 999;
+            top: 178px;
+            font-size: 0.9em;
+
+        }
+        .telling-box p{
+            margin-top: 0;
+            margin-bottom: 7px;
+        }
+
+        .login-sign-in{
+            width: 6em;
+        }
+    </style>
+
 </head>
 
-<style>
-    .login-form-wrapper{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 85px;
-    }
 
-
-    .social-login{
-        /*font-size: 1.5em;*/
-        height: 32px;
-        margin-bottom: 6px;
-    }
-
-    .social-login a img{
-        height: 100%;
-    }
-
-    .input-group{
-        width: 100%;
-        margin-bottom: 12px;
-    }
-
-    #registerForm{
-        width: 300px;
-        margin-bottom: 14px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .social-login-box{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /* row-gap: 5px; */
-        /* font-size: 13px; */
-        font-size: 1.2em;
-    }
-
-</style>
-
-<body>
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content} )}">
-  <th:blocK th:fragment="content">
+  <div class="container-lg content" layout:fragment="content">
 
       <div class="login-form-wrapper">
 
@@ -68,36 +94,38 @@
               <div class="input-group ">
                   <input type="password" name="password" class="form-control" placeholder="PASSWORD">
               </div>
-              <div class="my-4">
+              <div class="login-btn">
                   <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
               </div>
           </form>
 
           <div class="social-login-box">
               <div class="social-login">
-                  <a href="/oauth2/authorization/kakao">KAKAO</a>
-              </div>
-
-              <div class="social-login">
                   <a href="/oauth2/authorization/google">
-                      <img src="/icon/google.svg">
-                      GOOGLE
+                      <img src="/icon/btn_google_signin_dark_normal_web@2x.png">
                   </a>
               </div>
 
               <div class="sign-up-box">
                 <a href="/member/join">
-                    <div class="btn-secondary">회원 가입</div>
+                    <button class="btn btn-secondary login-sign-in">회원 가입</button>
                 </a>
               </div>
+          </div> <!--/ social-login-box /-->
+
+          <div class="telling-box">
+            <p>샘플 아이디</p>
+            <p>ID : user1@email.com </p>
+            <p>PWD : 1234 </p>
+              <p>캠핑 장비를 미리 등록 했습니다.</p>
           </div>
-      </div>
+
+      </div> <!--/ login-form-wrapper /-->
 
 
 
 
-  </th:blocK>
-</th:block>
+  </div>
+<!--</th:block>-->
 
-</body>
 </html>
